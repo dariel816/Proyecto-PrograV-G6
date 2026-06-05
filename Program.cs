@@ -13,7 +13,7 @@ namespace SistemadeVentas.Presentacion
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new FrmProductos());//Inicia la aplicación mostrando el formulario FrmProductos, que es el formulario principal de la aplicación
+            Application.Run(new FrmMenu());//Incia el formulario FrmMenu al iniciar la aplicación
         }
     }
 }
