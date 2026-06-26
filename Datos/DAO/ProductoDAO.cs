@@ -53,6 +53,38 @@ namespace SistemaVentas.Datos.DAO
             return lista;
         }
 
+        public Producto ObtenerProductoPorId(int id)
+        {
+            Producto producto = null;
+            MySqlConnection conexion = conexionDB.ObtenerConexion();
+            string query = "SELECT * FROM productos WHERE id = @id";
+
+            try
+            {
+                conexion.Open();
+                MySqlCommand comando = new MySqlCommand(query, conexion);
+                comando.Parameters.AddWithValue("@id", id);
+                MySqlDataReader reader = comando.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    producto = new Producto();
+                    producto.Id = Convert.ToInt32(reader["id"]);
+                    producto.Codigo = reader["codigo"].ToString();
+                    producto.Nombre = reader["nombre"].ToString();
+                    producto.Descripcion = reader["descripcion"].ToString();
+                    producto.Precio = Convert.ToDecimal(reader["precio"]);
+                    producto.Stock = Convert.ToInt32(reader["stock"]);
+                }
+                conexion.Close();
+            }
+            catch
+            {
+                conexion.Close();
+            }
+            return producto;
+        }
+
         public bool InsertarProducto(Producto producto)
         {  // Método para insertar un nuevo producto en la base de datos
 

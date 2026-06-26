@@ -146,7 +146,7 @@
             dgvClientes.Name = "dgvClientes";
             dgvClientes.Size = new Size(727, 150);
             dgvClientes.TabIndex = 3;
-            dgvClientes.CellClick += dgvClientes_CellClick;
+            dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
             // 
             // FrmClientes
             // 

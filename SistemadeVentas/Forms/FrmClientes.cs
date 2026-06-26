@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,130 +7,171 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SistemaVentas.Datos.DAO;//Importación del espacio de nombres que contiene la clase ClienteDAO para acceder a los métodos de datos relacionados con clientes
-using SistemaVentas.Entidades.Modelos;//Importación del espacio de nombres que contiene la clase Cliente para trabajar con los objetos de tipo Cliente
+using SistemaVentas.Negocio;
+using SistemaVentas.Entidades.Modelos;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
     public partial class FrmClientes : Form
-
-
     {
-
-        ClienteDAO clienteDAO = new ClienteDAO(); // Creación de una instancia de ClienteDAO para acceder a los métodos de datos relacionados con clientes
+        private ClienteNegocio clienteNegocio = new ClienteNegocio();
 
         public FrmClientes()
         {
-
-
             InitializeComponent();
-            CargarClientes(); // Llamada al método para cargar los clientes en el DataGridView al iniciar el formulario
+            CargarClientes();
         }
 
-        private void CargarClientes()// Método para cargar los clientes en el DataGridView
+        private void CargarClientes()
         {
-            dgvClientes.DataSource = null; // Limpiar la fuente de datos del DataGridView antes de cargar los nuevos datos
-            dgvClientes.DataSource = clienteDAO.ObtenerClientes(); // Establecer la fuente de datos del DataGridView con la lista de clientes obtenida del método ObtenerClientes() de ClienteDAO
+            try
+            {
+                dgvClientes.DataSource = null;
+                dgvClientes.DataSource = clienteNegocio.ObtenerClientes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar clientes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-        private void limpiarCampos() // Método para limpiar los campos de entrada después de agregar o actualizar un cliente
+
+        private void LimpiarCampos()
         {
-            txtId.Clear(); // Limpiar el campo de ID (aunque generalmente no se debería mostrar ni editar el ID directamente)
-            txtNombre.Clear(); // Limpiar el campo de nombre
-            txtCorreo.Clear(); // Limpiar el campo de correo
-            txtTelefono.Clear(); // Limpiar el campo de teléfono
-            txtNombre.Focus(); // Establecer el foco en el campo de nombre para facilitar la entrada de datos
+            txtId.Clear();
+            txtNombre.Clear();
+            txtCorreo.Clear();
+            txtTelefono.Clear();
+            txtNombre.Focus();
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            Cliente cliente = new Cliente();
-
-            cliente.Nombre = txtNombre.Text;
-            cliente.Telefono = txtTelefono.Text;
-            cliente.Correo = txtCorreo.Text;
-
-            bool resultado = clienteDAO.InsertarCliente(cliente);
-
-            if (resultado)
+            try
             {
-                MessageBox.Show("Cliente guardado correctamente");
-                CargarClientes();
-                limpiarCampos();
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("El nombre del cliente es requerido", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Cliente cliente = new Cliente
+                {
+                    Nombre = txtNombre.Text,
+                    Telefono = txtTelefono.Text,
+                    Correo = txtCorreo.Text
+                };
+
+                bool resultado = clienteNegocio.InsertarCliente(cliente);
+
+                if (resultado)
+                {
+                    MessageBox.Show("Cliente guardado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarCampos();
+                    CargarClientes();
+                }
+                else
+                {
+                    MessageBox.Show("Error al guardar el cliente", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No se pudo guardar el cliente");
-            }
-        }
-
-        private void dgvClientes_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0)
-            {
-                DataGridViewRow fila = dgvClientes.Rows[e.RowIndex];
-
-                txtId.Text = fila.Cells["Id"].Value.ToString();
-                txtNombre.Text = fila.Cells["nombre"].Value.ToString();
-                txtTelefono.Text = fila.Cells["telefono"].Value.ToString();
-                txtCorreo.Text = fila.Cells["correo"].Value.ToString();
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            Cliente cliente = new Cliente();
-
-            cliente.Id = Convert.ToInt32(txtId.Text);
-            cliente.Nombre = txtNombre.Text;
-            cliente.Telefono = txtTelefono.Text;
-            cliente.Correo = txtCorreo.Text;
-
-            bool resultado = clienteDAO.EditarCliente(cliente);
-
-            if (resultado)
+            try
             {
-                MessageBox.Show("Cliente actualizado correctamente");
-                CargarClientes();
-                limpiarCampos();
+                if (string.IsNullOrWhiteSpace(txtId.Text))
+                {
+                    MessageBox.Show("Seleccione un cliente para actualizar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("El nombre del cliente es requerido", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Cliente cliente = new Cliente
+                {
+                    Id = Convert.ToInt32(txtId.Text),
+                    Nombre = txtNombre.Text,
+                    Telefono = txtTelefono.Text,
+                    Correo = txtCorreo.Text
+                };
+
+                bool resultado = clienteNegocio.EditarCliente(cliente);
+
+                if (resultado)
+                {
+                    MessageBox.Show("Cliente actualizado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LimpiarCampos();
+                    CargarClientes();
+                }
+                else
+                {
+                    MessageBox.Show("Error al actualizar el cliente", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("No se pudo actualizar el cliente");
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (txtId.Text == "")
+            try
             {
-                MessageBox.Show("Seleccione un cliente");
-                return;
-            }
-
-            DialogResult confirmacion = MessageBox.Show(
-                "¿Desea eliminar este cliente?",
-                "Confirmar",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (confirmacion == DialogResult.Yes)
-            {
-                int id = Convert.ToInt32(txtId.Text);
-
-                bool resultado = clienteDAO.EliminarCliente(id);
-
-                if (resultado)
+                if (string.IsNullOrWhiteSpace(txtId.Text))
                 {
-                    MessageBox.Show("Cliente eliminado correctamente");
-                    CargarClientes();
-                    limpiarCampos();
+                    MessageBox.Show("Seleccione un cliente para eliminar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
+
+                DialogResult resultado = MessageBox.Show("¿Desea eliminar el cliente seleccionado?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (resultado == DialogResult.Yes)
+                {
+                    bool eliminado = clienteNegocio.EliminarCliente(Convert.ToInt32(txtId.Text));
+
+                    if (eliminado)
+                    {
+                        MessageBox.Show("Cliente eliminado exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LimpiarCampos();
+                        CargarClientes();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al eliminar el cliente", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
-            limpiarCampos();
+            LimpiarCampos();
+        }
+
+        private void dgvClientes_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvClientes.SelectedRows.Count > 0)
+            {
+                DataGridViewRow row = dgvClientes.SelectedRows[0];
+                txtId.Text = row.Cells["Id"].Value?.ToString() ?? "";
+                txtNombre.Text = row.Cells["Nombre"].Value?.ToString() ?? "";
+                txtCorreo.Text = row.Cells["Correo"].Value?.ToString() ?? "";
+                txtTelefono.Text = row.Cells["Telefono"].Value?.ToString() ?? "";
+            }
         }
     }
 }

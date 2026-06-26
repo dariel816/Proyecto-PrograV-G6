@@ -30,6 +30,7 @@
         {
             btnProductos = new Button();
             btnClientes = new Button();
+            btnVentas = new Button();
             SuspendLayout();
             // 
             // btnProductos
@@ -52,11 +53,22 @@
             btnClientes.UseVisualStyleBackColor = true;
             btnClientes.Click += btnClientes_Click;
             // 
+            // btnVentas
+            // 
+            btnVentas.Location = new Point(452, 68);
+            btnVentas.Name = "btnVentas";
+            btnVentas.Size = new Size(75, 23);
+            btnVentas.TabIndex = 1;
+            btnVentas.Text = "Ventas";
+            btnVentas.UseVisualStyleBackColor = true;
+            btnVentas.Click += btnVentas_Click;
+            // 
             // FrmMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnVentas);
             Controls.Add(btnClientes);
             Controls.Add(btnProductos);
             Name = "FrmMenu";
@@ -68,5 +80,6 @@
 
         private Button btnProductos;
         private Button btnClientes;
+        private Button btnVentas;
     }
 }
