@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.7.0" />
+    <PackageReference Include="QuestPDF" Version="2025.1.1" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
   </ItemGroup>
 
   <ItemGroup>

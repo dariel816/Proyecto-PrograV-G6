@@ -31,6 +31,7 @@
             btnProductos = new Button();
             btnClientes = new Button();
             btnVentas = new Button();
+            btnReportes = new Button();
             SuspendLayout();
             // 
             // btnProductos
@@ -62,12 +63,23 @@
             btnVentas.Text = "Ventas";
             btnVentas.UseVisualStyleBackColor = true;
             btnVentas.Click += btnVentas_Click;
-            // 
+            //
+            // btnReportes
+            //
+            btnReportes.Location = new Point(595, 68);
+            btnReportes.Name = "btnReportes";
+            btnReportes.Size = new Size(75, 23);
+            btnReportes.TabIndex = 2;
+            btnReportes.Text = "Reportes";
+            btnReportes.UseVisualStyleBackColor = true;
+            btnReportes.Click += btnReportes_Click;
+            //
             // FrmMenu
-            // 
+            //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnReportes);
             Controls.Add(btnVentas);
             Controls.Add(btnClientes);
             Controls.Add(btnProductos);
@@ -81,5 +93,6 @@
         private Button btnProductos;
         private Button btnClientes;
         private Button btnVentas;
+        private Button btnReportes;
     }
 }
