@@ -176,20 +176,32 @@ namespace SistemadeVentas.Presentacion.Forms
                 var venta = new Venta
                 {
                     ClienteId = (int)cmbCliente.SelectedValue,
+                    Fecha = DateTime.Now,
                     Detalles = detallesTemp
                 };
 
-                int ventaId = ventaNegocio.CrearVenta(venta);
+                bool ventaGuardada =
+     ventaNegocio.CrearVenta(venta, detallesTemp);
 
-                if (ventaId > 0)
+                if (ventaGuardada)
                 {
-                    MessageBox.Show("Venta guardada exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(
+                        "Venta guardada exitosamente",
+                        "Éxito",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
                     LimpiarFormulario();
+                    CargarProductos();
                     CargarVentas();
                 }
                 else
                 {
-                    MessageBox.Show("Error al guardar la venta", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Error al guardar la venta",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
