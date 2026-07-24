@@ -55,7 +55,7 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
-        public void GenerarPdfProductos(List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
+        public void GenerarPdfProductos( List<Producto> productos, List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             Document.Create(documento =>
             {
@@ -65,6 +65,42 @@ namespace SistemaVentas.Negocio.Reportes
                     pagina.Header().Text("Reporte de Productos").FontSize(18).Bold();
                     pagina.Content().Column(columna =>
                     {
+                        columna.Item().Text("Listado completo de productos")
+                            .FontSize(14)
+                            .Bold();
+
+                        columna.Item().Table(tabla =>
+                        {
+                            tabla.ColumnsDefinition(columnas =>
+                            {
+                                columnas.RelativeColumn();
+                                columnas.RelativeColumn(2);
+                                columnas.RelativeColumn(2);
+                                columnas.RelativeColumn();
+                                columnas.RelativeColumn();
+                            });
+
+                            tabla.Header(encabezado =>
+                            {
+                                encabezado.Cell().Text("Código").Bold();
+                                encabezado.Cell().Text("Nombre").Bold();
+                                encabezado.Cell().Text("Descripción").Bold();
+                                encabezado.Cell().Text("Precio").Bold();
+                                encabezado.Cell().Text("Stock").Bold();
+                            });
+
+                            foreach (var producto in productos)
+                            {
+                                tabla.Cell().Text(producto.Codigo);
+                                tabla.Cell().Text(producto.Nombre);
+                                tabla.Cell().Text(producto.Descripcion);
+                                tabla.Cell().Text(producto.Precio.ToString("C2"));
+                                tabla.Cell().Text(producto.Stock.ToString());
+                            }
+                        });
+
+                        columna.Item().PaddingTop(20);
+
                         columna.Item().Text("Productos mas vendidos").FontSize(14).Bold();
                         columna.Item().Table(tabla =>
                         {
@@ -178,10 +214,37 @@ namespace SistemaVentas.Negocio.Reportes
             }
         }
 
-        public void GenerarExcelProductos(List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
+        public void GenerarExcelProductos( List<Producto> productos, List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())
             {
+
+                var hojaProductos = libro.Worksheets.Add("Todos los productos");
+
+                hojaProductos.Cell(1, 1).Value = "Código";
+                hojaProductos.Cell(1, 2).Value = "Nombre";
+                hojaProductos.Cell(1, 3).Value = "Descripción";
+                hojaProductos.Cell(1, 4).Value = "Precio";
+                hojaProductos.Cell(1, 5).Value = "Stock";
+
+                hojaProductos.Row(1).Style.Font.Bold = true;
+
+                int filaProductos = 2;
+
+                foreach (var producto in productos)
+                {
+                    hojaProductos.Cell(filaProductos, 1).Value = producto.Codigo;
+                    hojaProductos.Cell(filaProductos, 2).Value = producto.Nombre;
+                    hojaProductos.Cell(filaProductos, 3).Value = producto.Descripcion;
+                    hojaProductos.Cell(filaProductos, 4).Value = producto.Precio;
+                    hojaProductos.Cell(filaProductos, 5).Value = producto.Stock;
+
+                    filaProductos++;
+                }
+
+                hojaProductos.Columns().AdjustToContents();
+
+
                 var hojaVendidos = libro.Worksheets.Add("Mas vendidos");
                 hojaVendidos.Cell(1, 1).Value = "Producto";
                 hojaVendidos.Cell(1, 2).Value = "Cantidad vendida";

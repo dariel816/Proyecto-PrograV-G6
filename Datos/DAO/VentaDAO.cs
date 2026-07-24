@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using SistemaVentas.Datos.Conexion;
 using SistemaVentas.Entidades.Modelos;
@@ -11,132 +8,288 @@ namespace SistemaVentas.Datos.DAO
 {
     public class VentaDAO
     {
-        ConexionDB conexionDB = new ConexionDB();
+        private readonly ConexionDB conexionDB = new ConexionDB();
 
         public List<Venta> ObtenerVentas()
         {
             List<Venta> lista = new List<Venta>();
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "SELECT * FROM ventas";
+
+            string query =
+                @"SELECT id, fecha, cliente_id, total
+                  FROM ventas";
 
             try
             {
-                conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                MySqlDataReader reader = comando.ExecuteReader();
-
-                while (reader.Read())
+                using (MySqlConnection conexion =
+                       conexionDB.ObtenerConexion())
                 {
-                    Venta venta = new Venta();
-                    venta.Id = Convert.ToInt32(reader["id"]);
-                    venta.Fecha = Convert.ToDateTime(reader["fecha"]);
-                    venta.ClienteId = Convert.ToInt32(reader["cliente_id"]);
-                    venta.Total = Convert.ToDecimal(reader["total"]);
-                    lista.Add(venta);
+                    conexion.Open();
+
+                    using (MySqlCommand comando =
+                           new MySqlCommand(query, conexion))
+                    {
+                        using (MySqlDataReader reader =
+                               comando.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Venta venta = new Venta
+                                {
+                                    Id = Convert.ToInt32(reader["id"]),
+                                    Fecha = Convert.ToDateTime(reader["fecha"]),
+                                    ClienteId = Convert.ToInt32(
+                                        reader["cliente_id"]),
+                                    Total = Convert.ToDecimal(reader["total"])
+                                };
+
+                                lista.Add(venta);
+                            }
+                        }
+                    }
                 }
-                conexion.Close();
+
+                return lista;
             }
-            catch
+            catch (Exception ex)
             {
-                conexion.Close();
+                throw new Exception(
+                    "Error al obtener la lista de ventas: " +
+                    ex.Message,
+                    ex);
             }
-            return lista;
         }
 
         public Venta? ObtenerVentaPorId(int id)
         {
-            Venta? venta = null;
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "SELECT * FROM ventas WHERE id = @id";
+            string query =
+                @"SELECT id, fecha, cliente_id, total
+                  FROM ventas
+                  WHERE id = @id";
 
             try
             {
-                conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@id", id);
-                MySqlDataReader reader = comando.ExecuteReader();
-
-                if (reader.Read())
+                using (MySqlConnection conexion =
+                       conexionDB.ObtenerConexion())
                 {
-                    venta = new Venta();
-                    venta.Id = Convert.ToInt32(reader["id"]);
-                    venta.Fecha = Convert.ToDateTime(reader["fecha"]);
-                    venta.ClienteId = Convert.ToInt32(reader["cliente_id"]);
-                    venta.Total = Convert.ToDecimal(reader["total"]);
+                    conexion.Open();
+
+                    using (MySqlCommand comando =
+                           new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@id", id);
+
+                        using (MySqlDataReader reader =
+                               comando.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Venta
+                                {
+                                    Id = Convert.ToInt32(reader["id"]),
+                                    Fecha = Convert.ToDateTime(
+                                        reader["fecha"]),
+                                    ClienteId = Convert.ToInt32(
+                                        reader["cliente_id"]),
+                                    Total = Convert.ToDecimal(
+                                        reader["total"])
+                                };
+                            }
+                        }
+                    }
                 }
-                conexion.Close();
+
+                return null;
             }
-            catch
+            catch (Exception ex)
             {
-                conexion.Close();
+                throw new Exception(
+                    $"Error al obtener la venta con Id={id}: " +
+                    ex.Message,
+                    ex);
             }
-            return venta;
         }
 
         public int InsertarVenta(Venta venta)
         {
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "INSERT INTO ventas (fecha, cliente_id, total) VALUES (@fecha, @cliente_id, @total); SELECT LAST_INSERT_ID();";
+            string query =
+                @"INSERT INTO ventas
+                  (fecha, cliente_id, total)
+                  VALUES
+                  (@fecha, @cliente_id, @total);
+
+                  SELECT LAST_INSERT_ID();";
+
             try
             {
-                conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@fecha", venta.Fecha);
-                comando.Parameters.AddWithValue("@cliente_id", venta.ClienteId);
-                comando.Parameters.AddWithValue("@total", venta.Total);
+                using (MySqlConnection conexion =
+                       conexionDB.ObtenerConexion())
+                {
+                    conexion.Open();
 
-                object resultado = comando.ExecuteScalar();
-                conexion.Close();
-                return Convert.ToInt32(resultado);
+                    using (MySqlCommand comando =
+                           new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue(
+                            "@fecha", venta.Fecha);
+
+                        comando.Parameters.AddWithValue(
+                            "@cliente_id", venta.ClienteId);
+
+                        comando.Parameters.AddWithValue(
+                            "@total", venta.Total);
+
+                        object? resultado = comando.ExecuteScalar();
+
+                        if (resultado == null ||
+                            resultado == DBNull.Value)
+                        {
+                            throw new Exception(
+                                "La base de datos no devolvió " +
+                                "el Id de la venta.");
+                        }
+
+                        return Convert.ToInt32(resultado);
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                conexion.Close();
-                return 0;
+                throw new Exception(
+                    "Error al insertar la venta: " +
+                    ex.Message,
+                    ex);
             }
         }
 
         public bool EditarVenta(Venta venta)
         {
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "UPDATE ventas SET fecha=@fecha, cliente_id=@cliente_id, total=@total WHERE id=@id";
+            string query =
+                @"UPDATE ventas
+                  SET fecha = @fecha,
+                      cliente_id = @cliente_id,
+                      total = @total
+                  WHERE id = @id";
+
             try
             {
-                conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@id", venta.Id);
-                comando.Parameters.AddWithValue("@fecha", venta.Fecha);
-                comando.Parameters.AddWithValue("@cliente_id", venta.ClienteId);
-                comando.Parameters.AddWithValue("@total", venta.Total);
+                using (MySqlConnection conexion =
+                       conexionDB.ObtenerConexion())
+                {
+                    conexion.Open();
 
-                int resultado = comando.ExecuteNonQuery();
-                conexion.Close();
-                return resultado > 0;
+                    using (MySqlCommand comando =
+                           new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue(
+                            "@id", venta.Id);
+
+                        comando.Parameters.AddWithValue(
+                            "@fecha", venta.Fecha);
+
+                        comando.Parameters.AddWithValue(
+                            "@cliente_id", venta.ClienteId);
+
+                        comando.Parameters.AddWithValue(
+                            "@total", venta.Total);
+
+                        int resultado = comando.ExecuteNonQuery();
+
+                        return resultado > 0;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                conexion.Close();
-                return false;
+                throw new Exception(
+                    $"Error al editar la venta con Id={venta.Id}: " +
+                    ex.Message,
+                    ex);
             }
         }
 
         public bool EliminarVenta(int id)
         {
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "DELETE FROM ventas WHERE id = @id";
+            string query =
+                @"DELETE FROM ventas
+                  WHERE id = @id";
+
             try
             {
-                conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@id", id);
-                int resultado = comando.ExecuteNonQuery();
-                conexion.Close();
-                return resultado > 0;
+                using (MySqlConnection conexion =
+                       conexionDB.ObtenerConexion())
+                {
+                    conexion.Open();
+
+                    using (MySqlCommand comando =
+                           new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@id", id);
+
+                        int resultado = comando.ExecuteNonQuery();
+
+                        return resultado > 0;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                conexion.Close();
-                return false;
+                throw new Exception(
+                    $"Error al eliminar la venta con Id={id}: " +
+                    ex.Message,
+                    ex);
+            }
+        }
+
+        public int InsertarVenta(
+            Venta venta,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            string query =
+                @"INSERT INTO ventas
+                  (fecha, cliente_id, total)
+                  VALUES
+                  (@fecha, @cliente_id, @total);
+
+                  SELECT LAST_INSERT_ID();";
+
+            try
+            {
+                using (MySqlCommand comando =
+                       new MySqlCommand(
+                           query,
+                           conexion,
+                           transaccion))
+                {
+                    comando.Parameters.AddWithValue(
+                        "@fecha", venta.Fecha);
+
+                    comando.Parameters.AddWithValue(
+                        "@cliente_id", venta.ClienteId);
+
+                    comando.Parameters.AddWithValue(
+                        "@total", venta.Total);
+
+                    object? resultado = comando.ExecuteScalar();
+
+                    if (resultado == null ||
+                        resultado == DBNull.Value)
+                    {
+                        throw new Exception(
+                            "La base de datos no devolvió " +
+                            "el Id de la venta.");
+                    }
+
+                    return Convert.ToInt32(resultado);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    "Error al insertar la venta dentro " +
+                    "de la transacción: " +
+                    ex.Message,
+                    ex);
             }
         }
     }

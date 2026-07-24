@@ -35,6 +35,13 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        public List<Producto> ObtenerTodosLosProductos()
+        {
+            return productoNegocio.ObtenerProductos()
+                .OrderBy(p => p.Nombre)
+                .ToList();
+        }
+
         public List<ProductoVendido> ObtenerProductosMasVendidos(int top = 5)
         {
             return ventaNegocio.ObtenerVentas()

@@ -176,5 +176,28 @@ namespace SistemaVentas.Datos.DAO
                 return false; // Retornar false si ocurrió un error durante la eliminación del producto
             }
         }
+
+
+        public bool ActualizarStock(
+    int productoId,
+    int nuevoStock,
+    MySqlConnection conexion,
+    MySqlTransaction transaccion)
+        {
+            string query =
+                @"UPDATE productos
+          SET stock = @stock
+          WHERE id = @id";
+
+            MySqlCommand comando =
+                new MySqlCommand(query, conexion, transaccion);
+
+            comando.Parameters.AddWithValue("@stock", nuevoStock);
+            comando.Parameters.AddWithValue("@id", productoId);
+
+            int resultado = comando.ExecuteNonQuery();
+
+            return resultado > 0;
+        }
     }
 }
