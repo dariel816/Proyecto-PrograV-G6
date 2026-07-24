@@ -20,7 +20,8 @@ namespace SistemadeVentas.Presentacion.Forms
         private List<Venta> ventasActuales = new List<Venta>();
         private List<ProductoVendido> productosMasVendidosActuales = new List<ProductoVendido>();
         private List<Producto> productosBajoStockActuales = new List<Producto>();
-        private List<ClienteCompra> clientesActuales = new List<ClienteCompra>();
+        private List<ClienteCompra> clientesActuales = new List<ClienteCompra>(); // Lista para almacenar los clientes actuales
+        private List<Producto> productosActuales = new List<Producto>(); // Lista para almacenar los productos actuales
 
         public FrmReportes()
         {
@@ -100,21 +101,36 @@ namespace SistemadeVentas.Presentacion.Forms
 
         private void GenerarReporteProductos()
         {
-            productosMasVendidosActuales = reporteNegocio.ObtenerProductosMasVendidos(5);
-            productosBajoStockActuales = reporteNegocio.ObtenerProductosBajoStock(5);
+            productosActuales = reporteNegocio.ObtenerTodosLosProductos();
+
+            productosMasVendidosActuales =
+                reporteNegocio.ObtenerProductosMasVendidos(5);
+
+            productosBajoStockActuales =
+                reporteNegocio.ObtenerProductosBajoStock(5);
 
             dgvReporte.DataSource = null;
-            dgvReporte.DataSource = productosMasVendidosActuales;
+            dgvReporte.DataSource = productosActuales;
+
+            if (dgvReporte.Columns.Contains("Id"))
+                dgvReporte.Columns["Id"].Visible = false;
 
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
             serie.ChartType = SeriesChartType.Column;
+
             foreach (var producto in productosMasVendidosActuales)
             {
-                serie.Points.AddXY(producto.Nombre, producto.CantidadVendida);
+                serie.Points.AddXY(
+                    producto.Nombre,
+                    producto.CantidadVendida);
             }
-            chartReporte.ChartAreas["ChartArea1"].AxisX.Title = "Producto";
-            chartReporte.ChartAreas["ChartArea1"].AxisY.Title = "Cantidad vendida";
+
+            chartReporte.ChartAreas["ChartArea1"].AxisX.Title =
+                "Producto";
+
+            chartReporte.ChartAreas["ChartArea1"].AxisY.Title =
+                "Cantidad vendida";
         }
 
         private void GenerarReporteClientes()
@@ -150,7 +166,7 @@ namespace SistemadeVentas.Presentacion.Forms
                             reporteExportador.GenerarPdfVentas(ventasActuales, dialogo.FileName);
                             break;
                         case TipoProductos:
-                            reporteExportador.GenerarPdfProductos(productosBajoStockActuales, productosMasVendidosActuales, dialogo.FileName);
+                            reporteExportador.GenerarPdfProductos(productosActuales, productosBajoStockActuales, productosMasVendidosActuales, dialogo.FileName);
                             break;
                         case TipoClientes:
                             reporteExportador.GenerarPdfClientes(clientesActuales, dialogo.FileName);
@@ -181,7 +197,7 @@ namespace SistemadeVentas.Presentacion.Forms
                             reporteExportador.GenerarExcelVentas(ventasActuales, dialogo.FileName);
                             break;
                         case TipoProductos:
-                            reporteExportador.GenerarExcelProductos(productosBajoStockActuales, productosMasVendidosActuales, dialogo.FileName);
+                            reporteExportador.GenerarExcelProductos(productosActuales, productosBajoStockActuales, productosMasVendidosActuales, dialogo.FileName);
                             break;
                         case TipoClientes:
                             reporteExportador.GenerarExcelClientes(clientesActuales, dialogo.FileName);
