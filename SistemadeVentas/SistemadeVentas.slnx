@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Documentacion/">
+    <File Path="DiagramaEntidades.puml" />
+  </Folder>
   <Project Path="../Datos/SistemaVentas.Datos.csproj" />
   <Project Path="../Entidades/SistemaVentas.Entidades.csproj" />
   <Project Path="../Negocio/SistemaVentas.Negocio.csproj" />

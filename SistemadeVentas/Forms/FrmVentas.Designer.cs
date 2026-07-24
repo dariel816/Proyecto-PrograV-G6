@@ -15,189 +15,251 @@ namespace SistemadeVentas.Presentacion.Forms
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.gbVentas = new System.Windows.Forms.GroupBox();
-            this.dgvVentas = new System.Windows.Forms.DataGridView();
-            this.gbDetalles = new System.Windows.Forms.GroupBox();
-            this.dgvDetalles = new System.Windows.Forms.DataGridView();
-            this.gbNuevaVenta = new System.Windows.Forms.GroupBox();
-            this.lblCliente = new System.Windows.Forms.Label();
-            this.cmbCliente = new System.Windows.Forms.ComboBox();
-            this.lblProducto = new System.Windows.Forms.Label();
-            this.cmbProducto = new System.Windows.Forms.ComboBox();
-            this.lblCantidad = new System.Windows.Forms.Label();
-            this.txtCantidad = new System.Windows.Forms.TextBox();
-            this.btnAgregar = new System.Windows.Forms.Button();
-            this.btnGuardar = new System.Windows.Forms.Button();
-            this.btnEliminar = new System.Windows.Forms.Button();
-            this.btnNueva = new System.Windows.Forms.Button();
-            this.lblTotal = new System.Windows.Forms.Label();
-            this.txtTotal = new System.Windows.Forms.TextBox();
-            this.gbVentas.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVentas)).BeginInit();
-            this.gbDetalles.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvDetalles)).BeginInit();
-            this.gbNuevaVenta.SuspendLayout();
-            this.SuspendLayout();
-
-            this.gbVentas.Controls.Add(this.dgvVentas);
-            this.gbVentas.Location = new System.Drawing.Point(12, 12);
-            this.gbVentas.Name = "gbVentas";
-            this.gbVentas.Size = new System.Drawing.Size(776, 200);
-            this.gbVentas.TabIndex = 0;
-            this.gbVentas.TabStop = false;
-            this.gbVentas.Text = "Ventas";
-
-            this.dgvVentas.AllowUserToAddRows = false;
-            this.dgvVentas.AllowUserToDeleteRows = false;
-            this.dgvVentas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVentas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvVentas.Location = new System.Drawing.Point(3, 16);
-            this.dgvVentas.Name = "dgvVentas";
-            this.dgvVentas.ReadOnly = true;
-            this.dgvVentas.Size = new System.Drawing.Size(770, 181);
-            this.dgvVentas.TabIndex = 0;
-            this.dgvVentas.SelectionChanged += new System.EventHandler(this.dgvVentas_SelectionChanged);
-
-            this.gbDetalles.Controls.Add(this.dgvDetalles);
-            this.gbDetalles.Location = new System.Drawing.Point(12, 218);
-            this.gbDetalles.Name = "gbDetalles";
-            this.gbDetalles.Size = new System.Drawing.Size(776, 150);
-            this.gbDetalles.TabIndex = 1;
-            this.gbDetalles.TabStop = false;
-            this.gbDetalles.Text = "Detalles de la Venta";
-
-            this.dgvDetalles.AllowUserToAddRows = false;
-            this.dgvDetalles.AllowUserToDeleteRows = false;
-            this.dgvDetalles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDetalles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvDetalles.Location = new System.Drawing.Point(3, 16);
-            this.dgvDetalles.Name = "dgvDetalles";
-            this.dgvDetalles.ReadOnly = true;
-            this.dgvDetalles.Size = new System.Drawing.Size(770, 131);
-            this.dgvDetalles.TabIndex = 0;
-
-            this.gbNuevaVenta.Controls.Add(this.lblCantidad);
-            this.gbNuevaVenta.Controls.Add(this.txtCantidad);
-            this.gbNuevaVenta.Controls.Add(this.btnAgregar);
-            this.gbNuevaVenta.Controls.Add(this.lblProducto);
-            this.gbNuevaVenta.Controls.Add(this.cmbProducto);
-            this.gbNuevaVenta.Controls.Add(this.lblCliente);
-            this.gbNuevaVenta.Controls.Add(this.cmbCliente);
-            this.gbNuevaVenta.Location = new System.Drawing.Point(12, 374);
-            this.gbNuevaVenta.Name = "gbNuevaVenta";
-            this.gbNuevaVenta.Size = new System.Drawing.Size(776, 80);
-            this.gbNuevaVenta.TabIndex = 2;
-            this.gbNuevaVenta.TabStop = false;
-            this.gbNuevaVenta.Text = "Nueva Venta";
-
-            this.lblCliente.AutoSize = true;
-            this.lblCliente.Location = new System.Drawing.Point(6, 22);
-            this.lblCliente.Name = "lblCliente";
-            this.lblCliente.Size = new System.Drawing.Size(39, 13);
-            this.lblCliente.TabIndex = 0;
-            this.lblCliente.Text = "Cliente";
-
-            this.cmbCliente.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbCliente.FormattingEnabled = true;
-            this.cmbCliente.Location = new System.Drawing.Point(51, 19);
-            this.cmbCliente.Name = "cmbCliente";
-            this.cmbCliente.Size = new System.Drawing.Size(200, 21);
-            this.cmbCliente.TabIndex = 1;
-
-            this.lblProducto.AutoSize = true;
-            this.lblProducto.Location = new System.Drawing.Point(260, 22);
-            this.lblProducto.Name = "lblProducto";
-            this.lblProducto.Size = new System.Drawing.Size(50, 13);
-            this.lblProducto.TabIndex = 2;
-            this.lblProducto.Text = "Producto";
-
-            this.cmbProducto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbProducto.FormattingEnabled = true;
-            this.cmbProducto.Location = new System.Drawing.Point(316, 19);
-            this.cmbProducto.Name = "cmbProducto";
-            this.cmbProducto.Size = new System.Drawing.Size(200, 21);
-            this.cmbProducto.TabIndex = 3;
-
-            this.lblCantidad.AutoSize = true;
-            this.lblCantidad.Location = new System.Drawing.Point(527, 22);
-            this.lblCantidad.Name = "lblCantidad";
-            this.lblCantidad.Size = new System.Drawing.Size(49, 13);
-            this.lblCantidad.TabIndex = 4;
-            this.lblCantidad.Text = "Cantidad";
-
-            this.txtCantidad.Location = new System.Drawing.Point(582, 19);
-            this.txtCantidad.Name = "txtCantidad";
-            this.txtCantidad.Size = new System.Drawing.Size(65, 20);
-            this.txtCantidad.TabIndex = 5;
-
-            this.btnAgregar.Location = new System.Drawing.Point(653, 19);
-            this.btnAgregar.Name = "btnAgregar";
-            this.btnAgregar.Size = new System.Drawing.Size(107, 23);
-            this.btnAgregar.TabIndex = 6;
-            this.btnAgregar.Text = "Agregar Detalle";
-            this.btnAgregar.UseVisualStyleBackColor = true;
-            this.btnAgregar.Click += new System.EventHandler(this.btnAgregar_Click);
-
-            this.btnGuardar.Location = new System.Drawing.Point(651, 460);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(75, 23);
-            this.btnGuardar.TabIndex = 7;
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.UseVisualStyleBackColor = true;
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
-
-            this.btnEliminar.Location = new System.Drawing.Point(488, 460);
-            this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(75, 23);
-            this.btnEliminar.TabIndex = 8;
-            this.btnEliminar.Text = "Eliminar";
-            this.btnEliminar.UseVisualStyleBackColor = true;
-            this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
-
-            this.btnNueva.Location = new System.Drawing.Point(569, 460);
-            this.btnNueva.Name = "btnNueva";
-            this.btnNueva.Size = new System.Drawing.Size(75, 23);
-            this.btnNueva.TabIndex = 9;
-            this.btnNueva.Text = "Nueva";
-            this.btnNueva.UseVisualStyleBackColor = true;
-            this.btnNueva.Click += new System.EventHandler(this.btnNueva_Click);
-
-            this.lblTotal.AutoSize = true;
-            this.lblTotal.Location = new System.Drawing.Point(15, 460);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(34, 13);
-            this.lblTotal.TabIndex = 10;
-            this.lblTotal.Text = "Total:";
-
-            this.txtTotal.Location = new System.Drawing.Point(55, 460);
-            this.txtTotal.Name = "txtTotal";
-            this.txtTotal.ReadOnly = true;
-            this.txtTotal.Size = new System.Drawing.Size(100, 20);
-            this.txtTotal.TabIndex = 11;
-
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 500);
-            this.Controls.Add(this.txtTotal);
-            this.Controls.Add(this.lblTotal);
-            this.Controls.Add(this.btnNueva);
-            this.Controls.Add(this.btnEliminar);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.gbNuevaVenta);
-            this.Controls.Add(this.gbDetalles);
-            this.Controls.Add(this.gbVentas);
-            this.Name = "FrmVentas";
-            this.Text = "Gestión de Ventas";
-            this.Load += new System.EventHandler(this.FrmVentas_Load);
-            this.gbVentas.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvVentas)).EndInit();
-            this.gbDetalles.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvDetalles)).EndInit();
-            this.gbNuevaVenta.ResumeLayout(false);
-            this.gbNuevaVenta.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            gbVentas = new GroupBox();
+            dgvVentas = new DataGridView();
+            gbDetalles = new GroupBox();
+            dgvDetalles = new DataGridView();
+            gbNuevaVenta = new GroupBox();
+            lblCantidad = new Label();
+            txtCantidad = new TextBox();
+            btnAgregar = new Button();
+            lblProducto = new Label();
+            cmbProducto = new ComboBox();
+            lblCliente = new Label();
+            cmbCliente = new ComboBox();
+            btnGuardar = new Button();
+            btnEliminar = new Button();
+            btnNueva = new Button();
+            lblTotal = new Label();
+            txtTotal = new TextBox();
+            gbVentas.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvVentas).BeginInit();
+            gbDetalles.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDetalles).BeginInit();
+            gbNuevaVenta.SuspendLayout();
+            SuspendLayout();
+            // 
+            // gbVentas
+            // 
+            gbVentas.Controls.Add(dgvVentas);
+            gbVentas.Location = new Point(22, 26);
+            gbVentas.Margin = new Padding(6, 7, 6, 7);
+            gbVentas.Name = "gbVentas";
+            gbVentas.Padding = new Padding(6, 7, 6, 7);
+            gbVentas.Size = new Size(1422, 431);
+            gbVentas.TabIndex = 0;
+            gbVentas.TabStop = false;
+            gbVentas.Text = "Ventas";
+            // 
+            // dgvVentas
+            // 
+            dgvVentas.AllowUserToAddRows = false;
+            dgvVentas.AllowUserToDeleteRows = false;
+            dgvVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvVentas.Dock = DockStyle.Fill;
+            dgvVentas.Location = new Point(6, 34);
+            dgvVentas.Margin = new Padding(6, 7, 6, 7);
+            dgvVentas.Name = "dgvVentas";
+            dgvVentas.ReadOnly = true;
+            dgvVentas.RowHeadersWidth = 62;
+            dgvVentas.Size = new Size(1410, 390);
+            dgvVentas.TabIndex = 0;
+            dgvVentas.SelectionChanged += dgvVentas_SelectionChanged;
+            // 
+            // gbDetalles
+            // 
+            gbDetalles.Controls.Add(dgvDetalles);
+            gbDetalles.Location = new Point(22, 469);
+            gbDetalles.Margin = new Padding(6, 7, 6, 7);
+            gbDetalles.Name = "gbDetalles";
+            gbDetalles.Padding = new Padding(6, 7, 6, 7);
+            gbDetalles.Size = new Size(1422, 323);
+            gbDetalles.TabIndex = 1;
+            gbDetalles.TabStop = false;
+            gbDetalles.Text = "Detalles de la Venta";
+            // 
+            // dgvDetalles
+            // 
+            dgvDetalles.AllowUserToAddRows = false;
+            dgvDetalles.AllowUserToDeleteRows = false;
+            dgvDetalles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDetalles.Dock = DockStyle.Fill;
+            dgvDetalles.Location = new Point(6, 34);
+            dgvDetalles.Margin = new Padding(6, 7, 6, 7);
+            dgvDetalles.Name = "dgvDetalles";
+            dgvDetalles.ReadOnly = true;
+            dgvDetalles.RowHeadersWidth = 62;
+            dgvDetalles.Size = new Size(1410, 282);
+            dgvDetalles.TabIndex = 0;
+            // 
+            // gbNuevaVenta
+            // 
+            gbNuevaVenta.Controls.Add(lblCantidad);
+            gbNuevaVenta.Controls.Add(txtCantidad);
+            gbNuevaVenta.Controls.Add(btnAgregar);
+            gbNuevaVenta.Controls.Add(lblProducto);
+            gbNuevaVenta.Controls.Add(cmbProducto);
+            gbNuevaVenta.Controls.Add(lblCliente);
+            gbNuevaVenta.Controls.Add(cmbCliente);
+            gbNuevaVenta.Location = new Point(22, 805);
+            gbNuevaVenta.Margin = new Padding(6, 7, 6, 7);
+            gbNuevaVenta.Name = "gbNuevaVenta";
+            gbNuevaVenta.Padding = new Padding(6, 7, 6, 7);
+            gbNuevaVenta.Size = new Size(1422, 172);
+            gbNuevaVenta.TabIndex = 2;
+            gbNuevaVenta.TabStop = false;
+            gbNuevaVenta.Text = "Nueva Venta";
+            // 
+            // lblCantidad
+            // 
+            lblCantidad.AutoSize = true;
+            lblCantidad.Location = new Point(966, 47);
+            lblCantidad.Margin = new Padding(6, 0, 6, 0);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(91, 28);
+            lblCantidad.TabIndex = 4;
+            lblCantidad.Text = "Cantidad";
+            // 
+            // txtCantidad
+            // 
+            txtCantidad.Location = new Point(1067, 41);
+            txtCantidad.Margin = new Padding(6, 7, 6, 7);
+            txtCantidad.Name = "txtCantidad";
+            txtCantidad.Size = new Size(116, 34);
+            txtCantidad.TabIndex = 5;
+            // 
+            // btnAgregar
+            // 
+            btnAgregar.Location = new Point(1197, 41);
+            btnAgregar.Margin = new Padding(6, 7, 6, 7);
+            btnAgregar.Name = "btnAgregar";
+            btnAgregar.Size = new Size(196, 49);
+            btnAgregar.TabIndex = 6;
+            btnAgregar.Text = "Agregar Detalle";
+            btnAgregar.UseVisualStyleBackColor = true;
+            btnAgregar.Click += btnAgregar_Click;
+            // 
+            // lblProducto
+            // 
+            lblProducto.AutoSize = true;
+            lblProducto.Location = new Point(476, 47);
+            lblProducto.Margin = new Padding(6, 0, 6, 0);
+            lblProducto.Name = "lblProducto";
+            lblProducto.Size = new Size(93, 28);
+            lblProducto.TabIndex = 2;
+            lblProducto.Text = "Producto";
+            // 
+            // cmbProducto
+            // 
+            cmbProducto.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbProducto.FormattingEnabled = true;
+            cmbProducto.Location = new Point(580, 41);
+            cmbProducto.Margin = new Padding(6, 7, 6, 7);
+            cmbProducto.Name = "cmbProducto";
+            cmbProducto.Size = new Size(364, 36);
+            cmbProducto.TabIndex = 3;
+            // 
+            // lblCliente
+            // 
+            lblCliente.AutoSize = true;
+            lblCliente.Location = new Point(11, 47);
+            lblCliente.Margin = new Padding(6, 0, 6, 0);
+            lblCliente.Name = "lblCliente";
+            lblCliente.Size = new Size(72, 28);
+            lblCliente.TabIndex = 0;
+            lblCliente.Text = "Cliente";
+            // 
+            // cmbCliente
+            // 
+            cmbCliente.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbCliente.FormattingEnabled = true;
+            cmbCliente.Location = new Point(94, 41);
+            cmbCliente.Margin = new Padding(6, 7, 6, 7);
+            cmbCliente.Name = "cmbCliente";
+            cmbCliente.Size = new Size(364, 36);
+            cmbCliente.TabIndex = 1;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(1194, 991);
+            btnGuardar.Margin = new Padding(6, 7, 6, 7);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(138, 49);
+            btnGuardar.TabIndex = 7;
+            btnGuardar.Text = "Guardar";
+            btnGuardar.UseVisualStyleBackColor = true;
+            btnGuardar.Click += btnGuardar_Click;
+            // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(894, 991);
+            btnEliminar.Margin = new Padding(6, 7, 6, 7);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(138, 49);
+            btnEliminar.TabIndex = 8;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.UseVisualStyleBackColor = true;
+            btnEliminar.Click += btnEliminar_Click;
+            // 
+            // btnNueva
+            // 
+            btnNueva.Location = new Point(1043, 991);
+            btnNueva.Margin = new Padding(6, 7, 6, 7);
+            btnNueva.Name = "btnNueva";
+            btnNueva.Size = new Size(138, 49);
+            btnNueva.TabIndex = 9;
+            btnNueva.Text = "Nueva";
+            btnNueva.UseVisualStyleBackColor = true;
+            btnNueva.Click += btnNueva_Click;
+            // 
+            // lblTotal
+            // 
+            lblTotal.AutoSize = true;
+            lblTotal.Location = new Point(28, 991);
+            lblTotal.Margin = new Padding(6, 0, 6, 0);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(58, 28);
+            lblTotal.TabIndex = 10;
+            lblTotal.Text = "Total:";
+            // 
+            // txtTotal
+            // 
+            txtTotal.Location = new Point(101, 991);
+            txtTotal.Margin = new Padding(6, 7, 6, 7);
+            txtTotal.Name = "txtTotal";
+            txtTotal.ReadOnly = true;
+            txtTotal.Size = new Size(180, 34);
+            txtTotal.TabIndex = 11;
+            // 
+            // FrmVentas
+            // 
+            AutoScaleDimensions = new SizeF(11F, 28F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(966, 553);
+            Controls.Add(txtTotal);
+            Controls.Add(lblTotal);
+            Controls.Add(btnNueva);
+            Controls.Add(btnEliminar);
+            Controls.Add(btnGuardar);
+            Controls.Add(gbNuevaVenta);
+            Controls.Add(gbDetalles);
+            Controls.Add(gbVentas);
+            Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(6, 7, 6, 7);
+            MaximizeBox = false;
+            Name = "FrmVentas";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Sistema de Ventas";
+            Load += FrmVentas_Load;
+            gbVentas.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvVentas).EndInit();
+            gbDetalles.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDetalles).EndInit();
+            gbNuevaVenta.ResumeLayout(false);
+            gbNuevaVenta.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         private System.Windows.Forms.GroupBox gbVentas;

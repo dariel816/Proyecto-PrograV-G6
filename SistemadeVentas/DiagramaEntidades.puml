@@ -1,0 +1,43 @@
+@startuml
+
+title Sistema de Ventas - Diagrama de Entidades
+
+skinparam classAttributeIconSize 0
+
+class Cliente {
+    +IdCliente : int
+    +Nombre : string
+    +Correo : string
+    +Telefono : string
+}
+
+class Producto {
+    +IdProducto : int
+    +Codigo : string
+    +Nombre : string
+    +Descripcion : string
+    +Precio : decimal
+    +Stock : int
+}
+
+class Venta {
+    +IdVenta : int
+    +IdCliente : int
+    +Fecha : DateTime
+    +Total : decimal
+}
+
+class DetalleVenta {
+    +IdDetalleVenta : int
+    +IdVenta : int
+    +IdProducto : int
+    +Cantidad : int
+    +PrecioUnitario : decimal
+    +Subtotal : decimal
+}
+
+Cliente "1" -- "0..*" Venta : realiza
+Venta "1" -- "1..*" DetalleVenta : contiene
+Producto "1" -- "0..*" DetalleVenta : pertenece
+
+@enduml
