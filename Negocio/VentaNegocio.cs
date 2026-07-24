@@ -21,30 +21,46 @@ namespace SistemaVentas.Negocio
 
             foreach (var venta in ventas)
             {
-                venta.Cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+                var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+                if (cliente == null)
+                    throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
+                venta.Cliente = cliente;
+
                 venta.Detalles = detalleVentaDAO.ObtenerDetallesPorVenta(venta.Id);
 
                 foreach (var detalle in venta.Detalles)
                 {
-                    detalle.Producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
+                    var producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
+                    if (producto == null)
+                        throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
+
+                    detalle.Producto = producto;
                 }
             }
 
             return ventas;
         }
 
-        public Venta ObtenerVentaPorId(int id)
+        public Venta? ObtenerVentaPorId(int id)
         {
-            Venta venta = ventaDAO.ObtenerVentaPorId(id);
+            Venta? venta = ventaDAO.ObtenerVentaPorId(id);
 
             if (venta != null)
             {
-                venta.Cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+                var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+                if (cliente == null)
+                    throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
+                venta.Cliente = cliente;
+
                 venta.Detalles = detalleVentaDAO.ObtenerDetallesPorVenta(venta.Id);
 
                 foreach (var detalle in venta.Detalles)
                 {
-                    detalle.Producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
+                    var producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
+                    if (producto == null)
+                        throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
+
+                    detalle.Producto = producto;
                 }
             }
 
@@ -55,6 +71,10 @@ namespace SistemaVentas.Negocio
         {
             if (venta.ClienteId <= 0)
                 throw new Exception("El cliente es requerido.");
+
+            var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+            if (cliente == null)
+                throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
 
             if (venta.Detalles == null || venta.Detalles.Count == 0)
                 throw new Exception("La venta debe contener al menos un detalle.");

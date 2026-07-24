@@ -46,9 +46,9 @@ namespace SistemaVentas.Datos.DAO
             return lista;
         }
 
-        public DetalleVenta ObtenerDetallePorId(int id)
+        public DetalleVenta? ObtenerDetallePorId(int id)
         {
-            DetalleVenta detalle = null;
+            DetalleVenta? detalle = null;
             MySqlConnection conexion = conexionDB.ObtenerConexion();
             string query = "SELECT * FROM detalle_ventas WHERE id = @id";
 
@@ -62,12 +62,12 @@ namespace SistemaVentas.Datos.DAO
                 if (reader.Read())
                 {
                     detalle = new DetalleVenta();
-                    detalle.Id = Convert.ToInt32(reader["id"]);
-                    detalle.VentaId = Convert.ToInt32(reader["venta_id"]);
-                    detalle.ProductoId = Convert.ToInt32(reader["producto_id"]);
-                    detalle.Cantidad = Convert.ToInt32(reader["cantidad"]);
-                    detalle.PrecioUnitario = Convert.ToDecimal(reader["precio_unitario"]);
-                    detalle.Subtotal = Convert.ToDecimal(reader["subtotal"]);
+                    detalle.Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]);
+                    detalle.VentaId = reader.IsDBNull(reader.GetOrdinal("venta_id")) ? 0 : Convert.ToInt32(reader["venta_id"]);
+                    detalle.ProductoId = reader.IsDBNull(reader.GetOrdinal("producto_id")) ? 0 : Convert.ToInt32(reader["producto_id"]);
+                    detalle.Cantidad = reader.IsDBNull(reader.GetOrdinal("cantidad")) ? 0 : Convert.ToInt32(reader["cantidad"]);
+                    detalle.PrecioUnitario = reader.IsDBNull(reader.GetOrdinal("precio_unitario")) ? 0m : Convert.ToDecimal(reader["precio_unitario"]);
+                    detalle.Subtotal = reader.IsDBNull(reader.GetOrdinal("subtotal")) ? 0m : Convert.ToDecimal(reader["subtotal"]);
                 }
                 conexion.Close();
             }

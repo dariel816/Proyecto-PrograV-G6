@@ -20,8 +20,8 @@ namespace SistemaVentas.Entidades.Modelos
 
         public decimal Subtotal { get; set; }
 
-        public Venta Venta { get; set; }
+        public Venta? Venta { get; set; }
 
-        public Producto Producto { get; set; }
+        public Producto? Producto { get; set; }
     }
 }

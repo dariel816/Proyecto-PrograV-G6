@@ -33,12 +33,12 @@ namespace SistemaVentas.Datos.DAO
                 {
                     Producto producto = new Producto();
 
-                    producto.Id = Convert.ToInt32(reader["id"]);
-                    producto.Codigo = reader["codigo"].ToString();
-                    producto.Nombre = reader["nombre"].ToString();
-                    producto.Descripcion = reader["descripcion"].ToString();
-                    producto.Precio = Convert.ToDecimal(reader["precio"]);
-                    producto.Stock = Convert.ToInt32(reader["stock"]);
+                    producto.Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]);
+                    producto.Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo"));
+                    producto.Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre"));
+                    producto.Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion"));
+                    producto.Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]);
+                    producto.Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]);
 
                     lista.Add(producto);
                 }
@@ -53,9 +53,9 @@ namespace SistemaVentas.Datos.DAO
             return lista;
         }
 
-        public Producto ObtenerProductoPorId(int id)
+        public Producto? ObtenerProductoPorId(int id)
         {
-            Producto producto = null;
+            Producto? producto = null;
             MySqlConnection conexion = conexionDB.ObtenerConexion();
             string query = "SELECT * FROM productos WHERE id = @id";
 
@@ -69,12 +69,12 @@ namespace SistemaVentas.Datos.DAO
                 if (reader.Read())
                 {
                     producto = new Producto();
-                    producto.Id = Convert.ToInt32(reader["id"]);
-                    producto.Codigo = reader["codigo"].ToString();
-                    producto.Nombre = reader["nombre"].ToString();
-                    producto.Descripcion = reader["descripcion"].ToString();
-                    producto.Precio = Convert.ToDecimal(reader["precio"]);
-                    producto.Stock = Convert.ToInt32(reader["stock"]);
+                    producto.Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]);
+                    producto.Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo"));
+                    producto.Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre"));
+                    producto.Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion"));
+                    producto.Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]);
+                    producto.Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]);
                 }
                 conexion.Close();
             }

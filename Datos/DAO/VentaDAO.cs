@@ -43,9 +43,9 @@ namespace SistemaVentas.Datos.DAO
             return lista;
         }
 
-        public Venta ObtenerVentaPorId(int id)
+        public Venta? ObtenerVentaPorId(int id)
         {
-            Venta venta = null;
+            Venta? venta = null;
             MySqlConnection conexion = conexionDB.ObtenerConexion();
             string query = "SELECT * FROM ventas WHERE id = @id";
 

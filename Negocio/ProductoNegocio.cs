@@ -17,7 +17,7 @@ namespace SistemaVentas.Negocio
             return productoDAO.ObtenerProductos();
         }
 
-        public Producto ObtenerProductoPorId(int id)
+        public Producto? ObtenerProductoPorId(int id)
         {
             return productoDAO.ObtenerProductoPorId(id);
         }

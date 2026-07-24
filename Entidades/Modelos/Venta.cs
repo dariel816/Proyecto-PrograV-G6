@@ -16,7 +16,7 @@ namespace SistemaVentas.Entidades.Modelos
 
         public decimal Total { get; set; }
 
-        public Cliente Cliente { get; set; }
+        public Cliente? Cliente { get; set; }
 
         public List<DetalleVenta> Detalles { get; set; } = new List<DetalleVenta>();
     }

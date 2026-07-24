@@ -19,19 +19,27 @@ namespace SistemaVentas.Negocio
 
             foreach (var detalle in detalles)
             {
-                detalle.Producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
+                var producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
+                if (producto == null)
+                    throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
+
+                detalle.Producto = producto;
             }
 
             return detalles;
         }
 
-        public DetalleVenta ObtenerDetallePorId(int id)
+        public DetalleVenta? ObtenerDetallePorId(int id)
         {
-            DetalleVenta detalle = detalleVentaDAO.ObtenerDetallePorId(id);
+            DetalleVenta? detalle = detalleVentaDAO.ObtenerDetallePorId(id);
 
             if (detalle != null)
             {
-                detalle.Producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
+                var producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
+                if (producto == null)
+                    throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
+
+                detalle.Producto = producto;
             }
 
             return detalle;

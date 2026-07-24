@@ -23,7 +23,7 @@ namespace SistemaVentas.Negocio
             return clienteDAO.ObtenerTodos();
         }
 
-        public Cliente ObtenerClientePorId(int id)
+        public Cliente? ObtenerClientePorId(int id)
         {
             return clienteDAO.ObtenerPorId(id);
         }
