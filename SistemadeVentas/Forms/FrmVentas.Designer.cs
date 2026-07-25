@@ -66,11 +66,11 @@ namespace SistemadeVentas.Presentacion.Forms
             // gbVentas
             //
             gbVentas.Controls.Add(dgvVentas);
-            gbVentas.Location = new Point(22, 96);
+            gbVentas.Location = new Point(22, 90);
             gbVentas.Margin = new Padding(6, 7, 6, 7);
             gbVentas.Name = "gbVentas";
             gbVentas.Padding = new Padding(6, 7, 6, 7);
-            gbVentas.Size = new Size(1422, 431);
+            gbVentas.Size = new Size(1422, 260);
             gbVentas.TabIndex = 0;
             gbVentas.TabStop = false;
             gbVentas.Text = "Ventas";
@@ -88,18 +88,18 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvVentas.Name = "dgvVentas";
             dgvVentas.ReadOnly = true;
             dgvVentas.RowHeadersWidth = 62;
-            dgvVentas.Size = new Size(1410, 390);
+            dgvVentas.Size = new Size(1410, 219);
             dgvVentas.TabIndex = 0;
             dgvVentas.SelectionChanged += dgvVentas_SelectionChanged;
             //
             // gbDetalles
             //
             gbDetalles.Controls.Add(dgvDetalles);
-            gbDetalles.Location = new Point(22, 539);
+            gbDetalles.Location = new Point(22, 365);
             gbDetalles.Margin = new Padding(6, 7, 6, 7);
             gbDetalles.Name = "gbDetalles";
             gbDetalles.Padding = new Padding(6, 7, 6, 7);
-            gbDetalles.Size = new Size(1422, 323);
+            gbDetalles.Size = new Size(1422, 190);
             gbDetalles.TabIndex = 1;
             gbDetalles.TabStop = false;
             gbDetalles.Text = "Detalles de la Venta";
@@ -117,7 +117,7 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvDetalles.Name = "dgvDetalles";
             dgvDetalles.ReadOnly = true;
             dgvDetalles.RowHeadersWidth = 62;
-            dgvDetalles.Size = new Size(1410, 282);
+            dgvDetalles.Size = new Size(1410, 149);
             dgvDetalles.TabIndex = 0;
             //
             // gbNuevaVenta
@@ -129,11 +129,11 @@ namespace SistemadeVentas.Presentacion.Forms
             gbNuevaVenta.Controls.Add(cmbProducto);
             gbNuevaVenta.Controls.Add(lblCliente);
             gbNuevaVenta.Controls.Add(cmbCliente);
-            gbNuevaVenta.Location = new Point(22, 875);
+            gbNuevaVenta.Location = new Point(22, 570);
             gbNuevaVenta.Margin = new Padding(6, 7, 6, 7);
             gbNuevaVenta.Name = "gbNuevaVenta";
             gbNuevaVenta.Padding = new Padding(6, 7, 6, 7);
-            gbNuevaVenta.Size = new Size(1422, 172);
+            gbNuevaVenta.Size = new Size(1422, 110);
             gbNuevaVenta.TabIndex = 2;
             gbNuevaVenta.TabStop = false;
             gbNuevaVenta.Text = "Nueva Venta";
@@ -230,7 +230,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.IconColor = Color.White;
             btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnGuardar.IconSize = 24;
-            btnGuardar.Location = new Point(1194, 1061);
+            btnGuardar.Location = new Point(1194, 695);
             btnGuardar.Margin = new Padding(6, 7, 6, 7);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(138, 49);
@@ -238,7 +238,6 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.Text = "Guardar";
             btnGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnGuardar.UseVisualStyleBackColor = false;
-            btnGuardar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnGuardar.Click += btnGuardar_Click;
             //
             // btnEliminar
@@ -252,7 +251,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.IconColor = Color.White;
             btnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEliminar.IconSize = 24;
-            btnEliminar.Location = new Point(894, 1061);
+            btnEliminar.Location = new Point(894, 695);
             btnEliminar.Margin = new Padding(6, 7, 6, 7);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(138, 49);
@@ -260,7 +259,6 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.Text = "Eliminar";
             btnEliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnEliminar.UseVisualStyleBackColor = false;
-            btnEliminar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnEliminar.Click += btnEliminar_Click;
             //
             // btnNueva
@@ -274,7 +272,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnNueva.IconColor = Color.DimGray;
             btnNueva.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnNueva.IconSize = 24;
-            btnNueva.Location = new Point(1043, 1061);
+            btnNueva.Location = new Point(1043, 695);
             btnNueva.Margin = new Padding(6, 7, 6, 7);
             btnNueva.Name = "btnNueva";
             btnNueva.Size = new Size(138, 49);
@@ -282,39 +280,35 @@ namespace SistemadeVentas.Presentacion.Forms
             btnNueva.Text = "Nueva";
             btnNueva.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnNueva.UseVisualStyleBackColor = false;
-            btnNueva.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnNueva.Click += btnNueva_Click;
             //
             // lblTotal
             //
             lblTotal.AutoSize = true;
-            lblTotal.Location = new Point(28, 1061);
+            lblTotal.Location = new Point(28, 695);
             lblTotal.Margin = new Padding(6, 0, 6, 0);
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(58, 28);
             lblTotal.TabIndex = 10;
             lblTotal.Text = "Total:";
-            lblTotal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             //
             // txtTotal
             //
             txtTotal.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTotal.ForeColor = Color.RoyalBlue;
-            txtTotal.Location = new Point(101, 1061);
+            txtTotal.Location = new Point(101, 695);
             txtTotal.Margin = new Padding(6, 7, 6, 7);
             txtTotal.Name = "txtTotal";
             txtTotal.ReadOnly = true;
             txtTotal.Size = new Size(180, 34);
             txtTotal.TabIndex = 11;
-            txtTotal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             //
             // FrmVentas
             //
-            AutoScaleDimensions = new SizeF(11F, 28F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             // increase default client size to accommodate controls and allow expanding
-            ClientSize = new Size(1460, 1070);
+            ClientSize = new Size(1460, 790);
             Controls.Add(txtTotal);
             Controls.Add(lblTotal);
             Controls.Add(btnNueva);
@@ -329,7 +323,7 @@ namespace SistemadeVentas.Presentacion.Forms
             FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(6, 7, 6, 7);
             MaximizeBox = true;
-            MinimumSize = new Size(1000, 700);
+            MinimumSize = new Size(1000, 650);
             Name = "FrmVentas";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Sistema de Ventas";

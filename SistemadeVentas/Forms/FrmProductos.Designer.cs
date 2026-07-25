@@ -252,8 +252,7 @@ namespace SistemadeVentas.Presentacion.Forms
             //
             // FrmProductos
             //
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(900, 600);
             Controls.Add(txtID);

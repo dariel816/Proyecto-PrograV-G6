@@ -188,8 +188,7 @@ namespace SistemadeVentas.Presentacion.Forms
             //
             // FrmMenu
             //
-            AutoScaleDimensions = new SizeF(11F, 28F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(1100, 700);
             Controls.Add(label4);
