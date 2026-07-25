@@ -30,6 +30,13 @@ namespace SistemaVentas.Negocio
             if (producto.Precio <= 0)
                 throw new Exception("El precio debe ser mayor a 0.");
 
+            // Validaciones de unicidad
+            if (productoDAO.ExisteCodigo(producto.Codigo, null))
+                throw new Exception("El código ya está registrado.");
+
+            if (productoDAO.ExisteNombre(producto.Nombre, null))
+                throw new Exception("El nombre del producto ya está registrado.");
+
             return productoDAO.InsertarProducto(producto);
         }
 
@@ -40,6 +47,13 @@ namespace SistemaVentas.Negocio
 
             if (producto.Precio <= 0)
                 throw new Exception("El precio debe ser mayor a 0.");
+
+            // Validaciones de unicidad (excluir el propio registro)
+            if (productoDAO.ExisteCodigo(producto.Codigo, producto.Id))
+                throw new Exception("El código ya está registrado por otro producto.");
+
+            if (productoDAO.ExisteNombre(producto.Nombre, producto.Id))
+                throw new Exception("El nombre del producto ya está registrado por otro producto.");
 
             return productoDAO.EditarProducto(producto);
         }

@@ -211,7 +211,8 @@
             AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLight;
-            ClientSize = new Size(966, 553);
+            // enlarge default size and allow resizing
+            ClientSize = new Size(1100, 700);
             Controls.Add(btnProductosNuevo);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -226,9 +227,9 @@
             Controls.Add(btnClientes);
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ForeColor = SystemColors.ActiveCaptionText;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(4, 6, 4, 6);
-            MaximizeBox = false;
+            MaximizeBox = true;
             Name = "FrmMenu";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Sistema de Ventas";

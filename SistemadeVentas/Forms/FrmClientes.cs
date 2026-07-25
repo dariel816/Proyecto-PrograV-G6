@@ -48,18 +48,31 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtNombre.Text))
-                {
-                    MessageBox.Show("El nombre del cliente es requerido", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Validar que todos los campos estén completos y con formato correcto
+                if (!ValidarCampos())
                     return;
-                }
 
                 Cliente cliente = new Cliente
                 {
-                    Nombre = txtNombre.Text,
-                    Telefono = txtTelefono.Text,
-                    Correo = txtCorreo.Text
+                    Nombre = txtNombre.Text.Trim(),
+                    Telefono = txtTelefono.Text.Trim(),
+                    Correo = txtCorreo.Text.Trim()
                 };
+
+                // Verificar unicidad de correo y teléfono
+                if (clienteNegocio.ObtenerClientes().Exists(c => string.Equals(c.Correo?.Trim(), cliente.Correo, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El correo electrónico ya está registrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCorreo.Focus();
+                    return;
+                }
+
+                if (clienteNegocio.ObtenerClientes().Exists(c => string.Equals(c.Telefono?.Trim(), cliente.Telefono, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El teléfono ya está registrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTelefono.Focus();
+                    return;
+                }
 
                 bool resultado = clienteNegocio.InsertarCliente(cliente);
 
@@ -84,25 +97,44 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
+                // Validar campos antes de editar
                 if (string.IsNullOrWhiteSpace(txtId.Text))
                 {
                     MessageBox.Show("Seleccione un cliente para actualizar", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(txtNombre.Text))
+                if (!ValidarCampos())
+                    return;
+
+                if (!int.TryParse(txtId.Text.Trim(), out int id))
                 {
-                    MessageBox.Show("El nombre del cliente es requerido", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("ID de cliente inválido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 Cliente cliente = new Cliente
                 {
-                    Id = Convert.ToInt32(txtId.Text),
-                    Nombre = txtNombre.Text,
-                    Telefono = txtTelefono.Text,
-                    Correo = txtCorreo.Text
+                    Id = id,
+                    Nombre = txtNombre.Text.Trim(),
+                    Telefono = txtTelefono.Text.Trim(),
+                    Correo = txtCorreo.Text.Trim()
                 };
+
+                // Verificar unicidad de correo y teléfono excluyendo el propio registro
+                if (clienteNegocio.ObtenerClientes().Exists(c => c.Id != id && string.Equals(c.Correo?.Trim(), cliente.Correo, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El correo electrónico ya está registrado por otro cliente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCorreo.Focus();
+                    return;
+                }
+
+                if (clienteNegocio.ObtenerClientes().Exists(c => c.Id != id && string.Equals(c.Telefono?.Trim(), cliente.Telefono, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El teléfono ya está registrado por otro cliente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtTelefono.Focus();
+                    return;
+                }
 
                 bool resultado = clienteNegocio.EditarCliente(cliente);
 
@@ -172,6 +204,60 @@ namespace SistemadeVentas.Presentacion.Forms
                 txtCorreo.Text = row.Cells["Correo"].Value?.ToString() ?? "";
                 txtTelefono.Text = row.Cells["Telefono"].Value?.ToString() ?? "";
             }
+        }
+
+        // Valida que todos los campos del formulario de clientes estén completos y sean válidos
+        private bool ValidarCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El campo Nombre es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtTelefono.Text))
+            {
+                MessageBox.Show("El campo Teléfono es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelefono.Focus();
+                return false;
+            }
+
+            // Validar formato de teléfono: al menos 7 dígitos y caracteres permitidos
+            string digitsOnly = new string(txtTelefono.Text.Where(char.IsDigit).ToArray());
+            if (digitsOnly.Length < 7)
+            {
+                MessageBox.Show("Ingrese un teléfono válido (al menos 7 dígitos).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTelefono.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtCorreo.Text))
+            {
+                MessageBox.Show("El campo Correo es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtCorreo.Focus();
+                return false;
+            }
+
+            // Validar formato de correo básico
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(txtCorreo.Text.Trim());
+                if (addr.Address != txtCorreo.Text.Trim())
+                {
+                    MessageBox.Show("Ingrese un correo electrónico válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCorreo.Focus();
+                    return false;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Ingrese un correo electrónico válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtCorreo.Focus();
+                return false;
+            }
+
+            return true;
         }
     }
 }

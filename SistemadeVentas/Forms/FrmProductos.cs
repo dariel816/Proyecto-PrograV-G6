@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SistemaVentas.Datos.DAO;//Importación del espacio de nombres que contiene la clase ProductoDAO para acceder a los métodos de datos relacionados con productos
 using SistemaVentas.Entidades.Modelos;//Importación del espacio de nombres que contiene la clase Producto para trabajar con los objetos de tipo Producto
+using SistemaVentas.Negocio;
 
 
 
@@ -18,7 +19,7 @@ namespace SistemadeVentas.Presentacion.Forms
 {
     public partial class FrmProductos : Form
     {
-        ProductoDAO productoDAO = new ProductoDAO();//Instancia de ProductoDAO para acceder a los métodos de datos relacionados con productos
+        ProductoNegocio productoNegocio = new ProductoNegocio();//Instancia de la capa de negocio para productos
 
         public FrmProductos()
         {
@@ -28,7 +29,7 @@ namespace SistemadeVentas.Presentacion.Forms
 
         private void CargarProductos()
         {
-            dgvProductos.DataSource = productoDAO.ObtenerProductos();
+            dgvProductos.DataSource = productoNegocio.ObtenerProductos();
         }
 
         private void limpiarCampos() //Método para limpiar los campos de entrada después de agregar o actualizar un producto
@@ -42,19 +43,95 @@ namespace SistemadeVentas.Presentacion.Forms
             txtCodigo.Focus();  // Establecer el foco en el campo de código para facilitar la entrada de datos
         }
 
+        // Valida que todos los campos requeridos estén llenos y tienen formato correcto
+        private bool ValidarCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtCodigo.Text))
+            {
+                MessageBox.Show("El campo Código es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtCodigo.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El campo Nombre es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtNombre.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtDescripcion.Text))
+            {
+                MessageBox.Show("El campo Descripción es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtDescripcion.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtPrecio.Text))
+            {
+                MessageBox.Show("El campo Precio es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPrecio.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtStock.Text))
+            {
+                MessageBox.Show("El campo Stock es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtStock.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
+                // Validar que todos los campos estén completos antes de intentar guardar
+                if (!ValidarCampos())
+                {
+                    return;
+                }
                 Producto producto = new Producto();
+                producto.Codigo = txtCodigo.Text.Trim();
+                producto.Nombre = txtNombre.Text.Trim();
+                producto.Descripcion = txtDescripcion.Text.Trim();
 
-                producto.Codigo = txtCodigo.Text;
-                producto.Nombre = txtNombre.Text;
-                producto.Descripcion = txtDescripcion.Text;
-                producto.Precio = decimal.Parse(txtPrecio.Text);
-                producto.Stock = int.Parse(txtStock.Text);
+                // Usar TryParse para evitar excepciones si el usuario ingresa valores no válidos
+                if (!decimal.TryParse(txtPrecio.Text.Trim(), out decimal precio))
+                {
+                    MessageBox.Show("Ingrese un precio válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtPrecio.Focus();
+                    return;
+                }
 
-                bool resultado = productoDAO.InsertarProducto(producto);
+                if (!int.TryParse(txtStock.Text.Trim(), out int stock))
+                {
+                    MessageBox.Show("Ingrese un stock válido (número entero).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtStock.Focus();
+                    return;
+                }
+
+                producto.Precio = precio;
+                producto.Stock = stock;
+
+                // Verificar unicidad en UI antes de persistir
+                if (productoNegocio.ObtenerProductos().Exists(p => string.Equals(p.Codigo?.Trim(), producto.Codigo, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El código ya está registrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCodigo.Focus();
+                    return;
+                }
+
+                if (productoNegocio.ObtenerProductos().Exists(p => string.Equals(p.Nombre?.Trim(), producto.Nombre, StringComparison.OrdinalIgnoreCase)))
+                {
+                    MessageBox.Show("El nombre del producto ya está registrado.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtNombre.Focus();
+                    return;
+                }
+
+                bool resultado = productoNegocio.InsertarProducto(producto);
 
                 if (resultado)
                 {
@@ -103,16 +180,47 @@ namespace SistemadeVentas.Presentacion.Forms
 
             {
 
+                // Validar campos antes de editar
+                if (!ValidarCampos())
+                    return;
+
+                if (string.IsNullOrWhiteSpace(txtID.Text))
+                {
+                    MessageBox.Show("Seleccione un producto válido para editar.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 Producto producto = new Producto();
 
-                producto.Id = Convert.ToInt32(txtID.Text); // Convertir el valor del ID del producto a entero para su uso en la actualización
-                producto.Codigo = txtCodigo.Text;
-                producto.Nombre = txtNombre.Text;
-                producto.Descripcion = txtDescripcion.Text;
-                producto.Precio = Convert.ToDecimal(txtPrecio.Text);
-                producto.Stock = Convert.ToInt32(txtStock.Text);
+                if (!int.TryParse(txtID.Text.Trim(), out int id))
+                {
+                    MessageBox.Show("ID de producto inválido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                bool resultado = productoDAO.EditarProducto(producto); // Llamar al método para actualizar el producto en la base de datos
+                producto.Id = id; // Convertir el valor del ID del producto a entero para su uso en la actualización
+                producto.Codigo = txtCodigo.Text.Trim();
+                producto.Nombre = txtNombre.Text.Trim();
+                producto.Descripcion = txtDescripcion.Text.Trim();
+
+                if (!decimal.TryParse(txtPrecio.Text.Trim(), out decimal precio))
+                {
+                    MessageBox.Show("Ingrese un precio válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtPrecio.Focus();
+                    return;
+                }
+
+                if (!int.TryParse(txtStock.Text.Trim(), out int stock))
+                {
+                    MessageBox.Show("Ingrese un stock válido (número entero).", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtStock.Focus();
+                    return;
+                }
+
+                producto.Precio = precio;
+                producto.Stock = stock;
+
+                bool resultado = productoNegocio.EditarProducto(producto);
 
                 if (resultado)
                 {
@@ -154,7 +262,7 @@ namespace SistemadeVentas.Presentacion.Forms
                 if (resultadoPregunta == DialogResult.Yes)
                 {
                     int id = Convert.ToInt32(txtID.Text); // Convertir el valor del ID del producto a entero para su uso en la eliminación
-                    bool resultado = productoDAO.EliminarProducto(id); // Llamar al método para eliminar el producto de la base de datos
+                    bool resultado = productoNegocio.EliminarProducto(id); // Llamar al método para eliminar el producto de la base de datos
                     if (resultado)
                     {
                         MessageBox.Show("Producto eliminado exitosamente.");

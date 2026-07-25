@@ -50,6 +50,8 @@ namespace SistemadeVentas.Presentacion.Forms
             gbVentas.TabIndex = 0;
             gbVentas.TabStop = false;
             gbVentas.Text = "Ventas";
+            // allow horizontal resize
+            gbVentas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             // 
             // dgvVentas
             // 
@@ -77,6 +79,8 @@ namespace SistemadeVentas.Presentacion.Forms
             gbDetalles.TabIndex = 1;
             gbDetalles.TabStop = false;
             gbDetalles.Text = "Detalles de la Venta";
+            // allow horizontal resize and adjust when form height changes
+            gbDetalles.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             // 
             // dgvDetalles
             // 
@@ -109,6 +113,8 @@ namespace SistemadeVentas.Presentacion.Forms
             gbNuevaVenta.TabIndex = 2;
             gbNuevaVenta.TabStop = false;
             gbNuevaVenta.Text = "Nueva Venta";
+            // anchor to bottom so it stays visible when form is resized vertically
+            gbNuevaVenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             // 
             // lblCantidad
             // 
@@ -235,7 +241,8 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             AutoScaleDimensions = new SizeF(11F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(966, 553);
+            // increase default client size to accommodate controls and allow expanding
+            ClientSize = new Size(1460, 1000);
             Controls.Add(txtTotal);
             Controls.Add(lblTotal);
             Controls.Add(btnNueva);
@@ -245,9 +252,10 @@ namespace SistemadeVentas.Presentacion.Forms
             Controls.Add(gbDetalles);
             Controls.Add(gbVentas);
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            // allow resizing
+            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(6, 7, 6, 7);
-            MaximizeBox = false;
+            MaximizeBox = true;
             Name = "FrmVentas";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Sistema de Ventas";

@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using SistemaVentas.Datos.Conexion;
 using SistemaVentas.Entidades.Modelos;
@@ -17,37 +14,29 @@ namespace SistemaVentas.Datos.DAO
         {
             List<Producto> lista = new List<Producto>();
 
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-
-            string query = "SELECT * FROM productos";
-
-            try
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
             {
                 conexion.Open();
+                string query = "SELECT * FROM productos";
 
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-
-                MySqlDataReader reader = comando.ExecuteReader();
-
-                while (reader.Read())
+                using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                using (MySqlDataReader reader = comando.ExecuteReader())
                 {
-                    Producto producto = new Producto();
+                    while (reader.Read())
+                    {
+                        Producto producto = new Producto
+                        {
+                            Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]),
+                            Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo")),
+                            Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre")),
+                            Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion")),
+                            Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]),
+                            Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]) 
+                        };
 
-                    producto.Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]);
-                    producto.Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo"));
-                    producto.Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre"));
-                    producto.Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion"));
-                    producto.Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]);
-                    producto.Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]);
-
-                    lista.Add(producto);
+                        lista.Add(producto);
+                    }
                 }
-
-                conexion.Close();
-            }
-            catch
-            {
-                conexion.Close();
             }
 
             return lista;
@@ -56,148 +45,218 @@ namespace SistemaVentas.Datos.DAO
         public Producto? ObtenerProductoPorId(int id)
         {
             Producto? producto = null;
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = "SELECT * FROM productos WHERE id = @id";
 
-            try
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
             {
                 conexion.Open();
-                MySqlCommand comando = new MySqlCommand(query, conexion);
-                comando.Parameters.AddWithValue("@id", id);
-                MySqlDataReader reader = comando.ExecuteReader();
+                string query = "SELECT * FROM productos WHERE id = @id";
 
-                if (reader.Read())
+                using (MySqlCommand comando = new MySqlCommand(query, conexion))
                 {
-                    producto = new Producto();
-                    producto.Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]);
-                    producto.Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo"));
-                    producto.Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre"));
-                    producto.Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion"));
-                    producto.Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]);
-                    producto.Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]);
+                    comando.Parameters.AddWithValue("@id", id);
+
+                    using (MySqlDataReader reader = comando.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            producto = new Producto
+                            {
+                                Id = reader.IsDBNull(reader.GetOrdinal("id")) ? 0 : Convert.ToInt32(reader["id"]),
+                                Codigo = reader.IsDBNull(reader.GetOrdinal("codigo")) ? string.Empty : reader.GetString(reader.GetOrdinal("codigo")),
+                                Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre")),
+                                Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion")),
+                                Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]),
+                                Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]) 
+                            };
+                        }
+                    }
                 }
-                conexion.Close();
             }
-            catch
-            {
-                conexion.Close();
-            }
+
             return producto;
         }
 
         public bool InsertarProducto(Producto producto)
-        {  // Método para insertar un nuevo producto en la base de datos
-
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-
-            string query = @"INSERT INTO productos (codigo, nombre, descripcion, precio, stock) values (@codigo, @nombre, @descripcion, @precio , @stock)"; // Consulta SQL para insertar un nuevo producto utilizando parámetros para evitar inyección SQL
-            try
+        {
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
             {
-                conexion.Open(); // Abrir la conexión a la base de datos
+                string query = @"INSERT INTO productos (codigo, nombre, descripcion, precio, stock) values (@codigo, @nombre, @descripcion, @precio , @stock)";
 
-                MySqlCommand comando = new MySqlCommand(query, conexion); // Crear un comando SQL con la consulta y la conexión
-                comando.Parameters.AddWithValue("@codigo", producto.Codigo); // Agregar los valores de los parámetros al comando utilizando las propiedades del objeto producto
-                comando.Parameters.AddWithValue("@nombre", producto.Nombre); // Agregar el valor del parámetro @nombre con el valor de producto.Nombre
-                comando.Parameters.AddWithValue("@descripcion", producto.Descripcion); // Agregar el valor del parámetro @descripcion con el valor de producto.Descripcion
-                comando.Parameters.AddWithValue("@precio", producto.Precio);  // Agregar el valor del parámetro @precio con el valor de producto.Precio
-                comando.Parameters.AddWithValue("@stock", producto.Stock); // Agregar el valor del parámetro @stock con el valor de producto.Stock
+                try
+                {
+                    conexion.Open();
 
-                comando.ExecuteNonQuery(); // Ejecutar el comando SQL para insertar el nuevo producto en la base de datos
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@codigo", producto.Codigo ?? string.Empty);
+                        comando.Parameters.AddWithValue("@nombre", producto.Nombre ?? string.Empty);
+                        comando.Parameters.AddWithValue("@descripcion", producto.Descripcion ?? string.Empty);
+                        comando.Parameters.AddWithValue("@precio", producto.Precio);
+                        comando.Parameters.AddWithValue("@stock", producto.Stock);
 
-                conexion.Close(); // Cerrar la conexión a la base de datos
-
-                return true;  // Retornar true si la inserción fue exitosa
+                        return comando.ExecuteNonQuery() > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            catch
-            {
-                conexion.Close(); // Cerrar la conexión a la base de datos en caso de error
-                return false;  // Retornar false si ocurrió un error durante la inserción del producto
-
-            }
-
-
-
-
         }
 
         public bool EditarProducto(Producto producto)
         {
-
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-
-            string query = @"UPDATE productos
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                string query = @"UPDATE productos
                             SET codigo = @codigo,
                                 nombre = @nombre,   
                                 descripcion = @descripcion,
                                 precio = @precio,
                                 stock = @stock
-                            WHERE id = @id"; // Consulta SQL para actualizar un producto existente utilizando parámetros para evitar inyección SQL
-            try
-            {
-                conexion.Open(); // Abrir la conexión a la base de datos
-                MySqlCommand comando = new MySqlCommand(query, conexion); // Crear un comando SQL con la consulta y la conexión
+                            WHERE id = @id";
 
-                comando.Parameters.AddWithValue("@id", producto.Id);
-                comando.Parameters.AddWithValue("@codigo", producto.Codigo); // Agregar los valores de los parámetros al comando utilizando las propiedades del objeto producto
-                comando.Parameters.AddWithValue("@nombre", producto.Nombre); // Agregar el valor del parámetro @nombre con el valor de producto.Nombre
-                comando.Parameters.AddWithValue("@descripcion", producto.Descripcion); // Agregar el valor del parámetro @descripcion con el valor de producto.Descripcion
-                comando.Parameters.AddWithValue("@precio", producto.Precio);  // Agregar el valor del parámetro @precio con el valor de producto.Precio
-                comando.Parameters.AddWithValue("@stock", producto.Stock); // Agregar el valor del parámetro @stock con el valor de producto.Stock
+                try
+                {
+                    conexion.Open();
 
-                comando.ExecuteNonQuery(); // Ejecutar el comando SQL para actualizar el producto en la base de datos
-                conexion.Close(); // Cerrar la conexión a la base de datos
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@id", producto.Id);
+                        comando.Parameters.AddWithValue("@codigo", producto.Codigo ?? string.Empty);
+                        comando.Parameters.AddWithValue("@nombre", producto.Nombre ?? string.Empty);
+                        comando.Parameters.AddWithValue("@descripcion", producto.Descripcion ?? string.Empty);
+                        comando.Parameters.AddWithValue("@precio", producto.Precio);
+                        comando.Parameters.AddWithValue("@stock", producto.Stock);
 
-                return true;  // Retornar true si la actualización fue exitosa
-
-            }
-            catch
-            {
-                conexion.Close();
-                return false; // Retornar false si ocurrió un error durante la actualización del producto
+                        return comando.ExecuteNonQuery() > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
         public bool EliminarProducto(int id)
         {
-            MySqlConnection conexion = conexionDB.ObtenerConexion();
-            string query = @"DELETE FROM productos WHERE id = @id"; // Consulta SQL para eliminar un producto utilizando un parámetro para evitar inyección SQL
-            try
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
             {
-                conexion.Open(); // Abrir la conexión a la base de datos
-                MySqlCommand comando = new MySqlCommand(query, conexion); // Crear un comando SQL con la consulta y la conexión
-                comando.Parameters.AddWithValue("@id", id); // Agregar el valor del parámetro @id con el valor del ID del producto a eliminar
-                comando.ExecuteNonQuery(); // Ejecutar el comando SQL para eliminar el producto de la base de datos
-                conexion.Close(); // Cerrar la conexión a la base de datos
-                return true;  // Retornar true si la eliminación fue exitosa
-            }
-            catch
-            {
-                conexion.Close();
-                return false; // Retornar false si ocurrió un error durante la eliminación del producto
+                string query = "DELETE FROM productos WHERE id = @id";
+
+                try
+                {
+                    conexion.Open();
+
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@id", id);
+                        return comando.ExecuteNonQuery() > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
-
-        public bool ActualizarStock(
-    int productoId,
-    int nuevoStock,
-    MySqlConnection conexion,
-    MySqlTransaction transaccion)
+        public bool ActualizarStock(int id, int nuevoStock)
         {
-            string query =
-                @"UPDATE productos
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                string query = "UPDATE productos SET stock = @stock WHERE id = @id";
+                try
+                {
+                    conexion.Open();
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@stock", nuevoStock);
+                        comando.Parameters.AddWithValue("@id", id);
+                        return comando.ExecuteNonQuery() > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Overload útil cuando hay transacción abierta
+        public bool ActualizarStock(int productoId, int nuevoStock, MySqlConnection conexion, MySqlTransaction transaccion)
+        {
+            string query = @"UPDATE productos
           SET stock = @stock
           WHERE id = @id";
 
-            MySqlCommand comando =
-                new MySqlCommand(query, conexion, transaccion);
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@stock", nuevoStock);
+                comando.Parameters.AddWithValue("@id", productoId);
+                return comando.ExecuteNonQuery() > 0;
+            }
+        }
 
-            comando.Parameters.AddWithValue("@stock", nuevoStock);
-            comando.Parameters.AddWithValue("@id", productoId);
+        // Verifica si ya existe un código en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        public bool ExisteCodigo(string codigo, int? excludeId = null)
+        {
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                string query = excludeId.HasValue
+                    ? "SELECT COUNT(1) FROM productos WHERE codigo = @codigo AND id <> @id"
+                    : "SELECT COUNT(1) FROM productos WHERE codigo = @codigo";
 
-            int resultado = comando.ExecuteNonQuery();
+                try
+                {
+                    conexion.Open();
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@codigo", codigo ?? string.Empty);
+                        if (excludeId.HasValue)
+                            comando.Parameters.AddWithValue("@id", excludeId.Value);
 
-            return resultado > 0;
+                        object result = comando.ExecuteScalar();
+                        int count = Convert.ToInt32(result);
+                        return count > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Verifica si ya existe un nombre en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        public bool ExisteNombre(string nombre, int? excludeId = null)
+        {
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                string query = excludeId.HasValue
+                    ? "SELECT COUNT(1) FROM productos WHERE nombre = @nombre AND id <> @id"
+                    : "SELECT COUNT(1) FROM productos WHERE nombre = @nombre";
+
+                try
+                {
+                    conexion.Open();
+                    using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@nombre", nombre ?? string.Empty);
+                        if (excludeId.HasValue)
+                            comando.Parameters.AddWithValue("@id", excludeId.Value);
+
+                        object result = comando.ExecuteScalar();
+                        int count = Convert.ToInt32(result);
+                        return count > 0;
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
     }
 }

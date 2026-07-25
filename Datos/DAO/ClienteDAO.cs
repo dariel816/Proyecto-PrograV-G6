@@ -127,5 +127,51 @@ namespace SistemaVentas.Datos.DAO
                 }
             }
         }
+
+        // Verifica si ya existe un correo en la tabla Clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        public bool ExisteCorreo(string correo, int? excludeId = null)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = excludeId.HasValue
+                    ? "SELECT COUNT(1) FROM Clientes WHERE Correo = @correo AND Id <> @id"
+                    : "SELECT COUNT(1) FROM Clientes WHERE Correo = @correo";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@correo", correo ?? string.Empty);
+                    if (excludeId.HasValue)
+                        command.Parameters.AddWithValue("@id", excludeId.Value);
+
+                    object result = command.ExecuteScalar();
+                    int count = Convert.ToInt32(result);
+                    return count > 0;
+                }
+            }
+        }
+
+        // Verifica si ya existe un teléfono en la tabla Clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        public bool ExisteTelefono(string telefono, int? excludeId = null)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = excludeId.HasValue
+                    ? "SELECT COUNT(1) FROM Clientes WHERE Telefono = @telefono AND Id <> @id"
+                    : "SELECT COUNT(1) FROM Clientes WHERE Telefono = @telefono";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@telefono", telefono ?? string.Empty);
+                    if (excludeId.HasValue)
+                        command.Parameters.AddWithValue("@id", excludeId.Value);
+
+                    object result = command.ExecuteScalar();
+                    int count = Convert.ToInt32(result);
+                    return count > 0;
+                }
+            }
+        }
     }
 }
