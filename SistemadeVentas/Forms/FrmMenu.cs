@@ -41,11 +41,5 @@ namespace SistemadeVentas.Presentacion.Forms
             FrmReportes frmReportes = new FrmReportes(); // Creación de una instancia del formulario de reportes
             frmReportes.ShowDialog();
         }
-
-        private void btnProductosNuevo_Click(object sender, EventArgs e)
-        {
-            FrmProductos frmProductos = new FrmProductos(); // Creación de una instancia del formulario de productos
-            frmProductos.ShowDialog(); // Mostrar el formulario de productos
-        }
     }
 }
