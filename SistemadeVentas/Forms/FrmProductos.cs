@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SistemaVentas.Datos.DAO;//Importación del espacio de nombres que contiene la clase ProductoDAO para acceder a los métodos de datos relacionados con productos
-using SistemaVentas.Entidades.Modelos;//Importación del espacio de nombres que contiene la clase Producto para trabajar con los objetos de tipo Producto
+using SistemaVentas.Entidades.DTOs;//Importación del espacio de nombres que contiene los DTO para trabajar con los datos de productos en la capa de presentación
 using SistemaVentas.Negocio;
 
 
@@ -93,7 +92,7 @@ namespace SistemadeVentas.Presentacion.Forms
                 {
                     return;
                 }
-                Producto producto = new Producto();
+                ProductoDTO producto = new ProductoDTO();
                 producto.Codigo = txtCodigo.Text.Trim();
                 producto.Nombre = txtNombre.Text.Trim();
                 producto.Descripcion = txtDescripcion.Text.Trim();
@@ -190,7 +189,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-                Producto producto = new Producto();
+                ProductoDTO producto = new ProductoDTO();
 
                 if (!int.TryParse(txtID.Text.Trim(), out int id))
                 {

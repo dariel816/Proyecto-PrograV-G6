@@ -3,80 +3,97 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SistemaVentas.Datos.DAO;
+using SistemaVentas.Datos.Fabricas;
+using SistemaVentas.Datos.Repositorios;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos;
 
 namespace SistemaVentas.Negocio
 {
     public class DetalleVentaNegocio
     {
-        DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
-        ProductoDAO productoDAO = new ProductoDAO();
+        private readonly IDetalleVentaRepositorio detalleVentaRepositorio;
+        private readonly IProductoRepositorio productoRepositorio;
 
-        public List<DetalleVenta> ObtenerDetallesPorVenta(int ventaId)
+        public DetalleVentaNegocio()
         {
-            List<DetalleVenta> detalles = detalleVentaDAO.ObtenerDetallesPorVenta(ventaId);
-
-            foreach (var detalle in detalles)
-            {
-                var producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
-                if (producto == null)
-                    throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
-
-                detalle.Producto = producto;
-            }
-
-            return detalles;
+            detalleVentaRepositorio = RepositorioFactory.CrearDetalleVentaRepositorio();
+            productoRepositorio = RepositorioFactory.CrearProductoRepositorio();
         }
 
-        public DetalleVenta? ObtenerDetallePorId(int id)
+        public List<DetalleVentaDTO> ObtenerDetallesPorVenta(int ventaId)
         {
-            DetalleVenta? detalle = detalleVentaDAO.ObtenerDetallePorId(id);
-
-            if (detalle != null)
-            {
-                var producto = productoDAO.ObtenerProductoPorId(detalle.ProductoId);
-                if (producto == null)
-                    throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
-
-                detalle.Producto = producto;
-            }
-
-            return detalle;
+            List<DetalleVenta> detalles = detalleVentaRepositorio.ObtenerDetallesPorVenta(ventaId);
+            return detalles.Select(ADto).ToList();
         }
 
-        public bool AgregarDetalle(DetalleVenta detalle)
+        public DetalleVentaDTO? ObtenerDetallePorId(int id)
         {
-            if (detalle.ProductoId <= 0)
+            DetalleVenta? detalle = detalleVentaRepositorio.ObtenerDetallePorId(id);
+            return detalle == null ? null : ADto(detalle);
+        }
+
+        public bool AgregarDetalle(DetalleVentaDTO detalleDto)
+        {
+            if (detalleDto.ProductoId <= 0)
                 throw new Exception("El producto es requerido.");
 
-            if (detalle.Cantidad <= 0)
+            if (detalleDto.Cantidad <= 0)
                 throw new Exception("La cantidad debe ser mayor a 0.");
 
-            if (detalle.PrecioUnitario <= 0)
+            if (detalleDto.PrecioUnitario <= 0)
                 throw new Exception("El precio debe ser mayor a 0.");
 
-            detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
+            detalleDto.Subtotal = detalleDto.Cantidad * detalleDto.PrecioUnitario;
 
-            return detalleVentaDAO.InsertarDetalleVenta(detalle);
+            return detalleVentaRepositorio.InsertarDetalleVenta(AEntidad(detalleDto));
         }
 
-        public bool EditarDetalle(DetalleVenta detalle)
+        public bool EditarDetalle(DetalleVentaDTO detalleDto)
         {
-            if (detalle.Cantidad <= 0)
+            if (detalleDto.Cantidad <= 0)
                 throw new Exception("La cantidad debe ser mayor a 0.");
 
-            if (detalle.PrecioUnitario <= 0)
+            if (detalleDto.PrecioUnitario <= 0)
                 throw new Exception("El precio debe ser mayor a 0.");
 
-            detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
+            detalleDto.Subtotal = detalleDto.Cantidad * detalleDto.PrecioUnitario;
 
-            return detalleVentaDAO.EditarDetalleVenta(detalle);
+            return detalleVentaRepositorio.EditarDetalleVenta(AEntidad(detalleDto));
         }
 
         public bool EliminarDetalle(int id)
         {
-            return detalleVentaDAO.EliminarDetalleVenta(id);
+            return detalleVentaRepositorio.EliminarDetalleVenta(id);
+        }
+
+        private DetalleVentaDTO ADto(DetalleVenta detalle)
+        {
+            var producto = productoRepositorio.ObtenerProductoPorId(detalle.ProductoId);
+
+            return new DetalleVentaDTO
+            {
+                Id = detalle.Id,
+                VentaId = detalle.VentaId,
+                ProductoId = detalle.ProductoId,
+                ProductoNombre = producto?.Nombre ?? string.Empty,
+                Cantidad = detalle.Cantidad,
+                PrecioUnitario = detalle.PrecioUnitario,
+                Subtotal = detalle.Subtotal
+            };
+        }
+
+        private static DetalleVenta AEntidad(DetalleVentaDTO detalleDto)
+        {
+            return new DetalleVenta
+            {
+                Id = detalleDto.Id,
+                VentaId = detalleDto.VentaId,
+                ProductoId = detalleDto.ProductoId,
+                Cantidad = detalleDto.Cantidad,
+                PrecioUnitario = detalleDto.PrecioUnitario,
+                Subtotal = detalleDto.Subtotal
+            };
         }
     }
 }

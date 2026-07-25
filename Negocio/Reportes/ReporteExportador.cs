@@ -7,7 +7,7 @@ using ClosedXML.Excel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos.Reportes;
 
 namespace SistemaVentas.Negocio.Reportes
@@ -19,7 +19,7 @@ namespace SistemaVentas.Negocio.Reportes
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        public void GenerarPdfVentas(List<Venta> ventas, string rutaArchivo)
+        public void GenerarPdfVentas(List<VentaDTO> ventas, string rutaArchivo)
         {
             Document.Create(documento =>
             {
@@ -46,7 +46,7 @@ namespace SistemaVentas.Negocio.Reportes
                         foreach (var venta in ventas)
                         {
                             tabla.Cell().Text(venta.Fecha.ToString("dd/MM/yyyy"));
-                            tabla.Cell().Text(venta.Cliente != null ? venta.Cliente.Nombre : "N/A");
+                            tabla.Cell().Text(venta.ClienteNombre ?? "N/A");
                             tabla.Cell().Text(venta.Total.ToString("C2"));
                         }
                     });
@@ -55,7 +55,7 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
-        public void GenerarPdfProductos( List<Producto> productos, List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
+        public void GenerarPdfProductos( List<ProductoDTO> productos, List<ProductoDTO> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             Document.Create(documento =>
             {
@@ -190,7 +190,7 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
-        public void GenerarExcelVentas(List<Venta> ventas, string rutaArchivo)
+        public void GenerarExcelVentas(List<VentaDTO> ventas, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())
             {
@@ -204,7 +204,7 @@ namespace SistemaVentas.Negocio.Reportes
                 foreach (var venta in ventas)
                 {
                     hoja.Cell(fila, 1).Value = venta.Fecha;
-                    hoja.Cell(fila, 2).Value = venta.Cliente != null ? venta.Cliente.Nombre : "N/A";
+                    hoja.Cell(fila, 2).Value = venta.ClienteNombre ?? "N/A";
                     hoja.Cell(fila, 3).Value = venta.Total;
                     fila++;
                 }
@@ -214,7 +214,7 @@ namespace SistemaVentas.Negocio.Reportes
             }
         }
 
-        public void GenerarExcelProductos( List<Producto> productos, List<Producto> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
+        public void GenerarExcelProductos( List<ProductoDTO> productos, List<ProductoDTO> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())
             {

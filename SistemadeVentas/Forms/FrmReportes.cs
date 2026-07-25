@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos.Reportes;
 using SistemaVentas.Negocio.Reportes;
 
@@ -17,11 +17,11 @@ namespace SistemadeVentas.Presentacion.Forms
         private const string TipoProductos = "Productos";
         private const string TipoClientes = "Clientes";
 
-        private List<Venta> ventasActuales = new List<Venta>();
+        private List<VentaDTO> ventasActuales = new List<VentaDTO>();
         private List<ProductoVendido> productosMasVendidosActuales = new List<ProductoVendido>();
-        private List<Producto> productosBajoStockActuales = new List<Producto>();
+        private List<ProductoDTO> productosBajoStockActuales = new List<ProductoDTO>();
         private List<ClienteCompra> clientesActuales = new List<ClienteCompra>(); // Lista para almacenar los clientes actuales
-        private List<Producto> productosActuales = new List<Producto>(); // Lista para almacenar los productos actuales
+        private List<ProductoDTO> productosActuales = new List<ProductoDTO>(); // Lista para almacenar los productos actuales
 
         public FrmReportes()
         {

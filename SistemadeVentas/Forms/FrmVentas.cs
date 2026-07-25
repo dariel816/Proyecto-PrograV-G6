@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
 namespace SistemadeVentas.Presentacion.Forms
@@ -12,7 +12,7 @@ namespace SistemadeVentas.Presentacion.Forms
         private DetalleVentaNegocio detalleNegocio = new DetalleVentaNegocio();
         private ClienteNegocio clienteNegocio = new ClienteNegocio();
         private ProductoNegocio productoNegocio = new ProductoNegocio();
-        private List<DetalleVenta> detallesTemp = new List<DetalleVenta>();
+        private List<DetalleVentaDTO> detallesTemp = new List<DetalleVentaDTO>();
         private int ventaSeleccionada = 0;
 
         public FrmVentas()
@@ -64,8 +64,8 @@ namespace SistemadeVentas.Presentacion.Forms
 
                 if (dgvVentas.Columns.Contains("Detalles"))
                     dgvVentas.Columns["Detalles"].Visible = false;
-                if (dgvVentas.Columns.Contains("Cliente"))
-                    dgvVentas.Columns["Cliente"].Visible = false;
+                if (dgvVentas.Columns.Contains("ClienteId"))
+                    dgvVentas.Columns["ClienteId"].Visible = false;
             }
             catch (Exception ex)
             {
@@ -90,8 +90,8 @@ namespace SistemadeVentas.Presentacion.Forms
                 if (venta != null)
                 {
                     dgvDetalles.DataSource = venta.Detalles;
-                    if (dgvDetalles.Columns.Contains("Venta"))
-                        dgvDetalles.Columns["Venta"].Visible = false;
+                    if (dgvDetalles.Columns.Contains("VentaId"))
+                        dgvDetalles.Columns["VentaId"].Visible = false;
                     txtTotal.Text = venta.Total.ToString("C2");
                 }
             }
@@ -117,12 +117,12 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-                var producto = (Producto)cmbProducto.SelectedItem;
+                var producto = (ProductoDTO)cmbProducto.SelectedItem;
 
-                var detalle = new DetalleVenta
+                var detalle = new DetalleVentaDTO
                 {
                     ProductoId = producto.Id,
-                    Producto = producto,
+                    ProductoNombre = producto.Nombre,
                     Cantidad = cantidad,
                     PrecioUnitario = producto.Precio,
                     Subtotal = cantidad * producto.Precio
@@ -142,9 +142,9 @@ namespace SistemadeVentas.Presentacion.Forms
         private void ActualizarGridDetalles()
         {
             dgvDetalles.DataSource = null;
-            dgvDetalles.DataSource = new List<DetalleVenta>(detallesTemp);
-            if (dgvDetalles.Columns.Contains("Venta"))
-                dgvDetalles.Columns["Venta"].Visible = false;
+            dgvDetalles.DataSource = new List<DetalleVentaDTO>(detallesTemp);
+            if (dgvDetalles.Columns.Contains("VentaId"))
+                dgvDetalles.Columns["VentaId"].Visible = false;
         }
 
         private void ActualizarTotal()
@@ -173,7 +173,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-                var venta = new Venta
+                var venta = new VentaDTO
                 {
                     ClienteId = (int)cmbCliente.SelectedValue,
                     Fecha = DateTime.Now,

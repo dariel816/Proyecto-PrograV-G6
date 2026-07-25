@@ -1,5 +1,5 @@
 using System;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
 namespace SistemaVentas.Pruebas
@@ -12,7 +12,7 @@ namespace SistemaVentas.Pruebas
         [TestMethod]
         public void InsertarCliente_NombreVacio_LanzaExcepcion()
         {
-            var cliente = new Cliente { Nombre = "", Correo = "test@correo.com", Telefono = "00000000" };
+            var cliente = new ClienteDTO { Nombre = "", Correo = "test@correo.com", Telefono = "00000000" };
 
             Assert.ThrowsExactly<Exception>(() => clienteNegocio.InsertarCliente(cliente));
         }
@@ -20,7 +20,7 @@ namespace SistemaVentas.Pruebas
         [TestMethod]
         public void InsertarCliente_NombreConEspacios_LanzaExcepcion()
         {
-            var cliente = new Cliente { Nombre = "   ", Correo = "test2@correo.com", Telefono = "00000001" };
+            var cliente = new ClienteDTO { Nombre = "   ", Correo = "test2@correo.com", Telefono = "00000001" };
 
             Assert.ThrowsExactly<Exception>(() => clienteNegocio.InsertarCliente(cliente));
         }
@@ -29,7 +29,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarCliente_Valido_PermiteConsultarloYQuedaDisponibleParaEliminar()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var cliente = new Cliente
+            var cliente = new ClienteDTO
             {
                 Nombre = "Cliente Prueba " + sufijo,
                 Correo = "prueba" + sufijo + "@test.com",
@@ -52,7 +52,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarCliente_CorreoDuplicado_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var original = new Cliente
+            var original = new ClienteDTO
             {
                 Nombre = "Cliente Original " + sufijo,
                 Correo = "duplicado" + sufijo + "@test.com",
@@ -65,7 +65,7 @@ namespace SistemaVentas.Pruebas
 
             try
             {
-                var duplicado = new Cliente
+                var duplicado = new ClienteDTO
                 {
                     Nombre = "Cliente Duplicado " + sufijo,
                     Correo = original.Correo,
