@@ -13,6 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Entidades\SistemaVentas.Entidades.csproj" />
+    <ProjectReference Include="..\Datos\SistemaVentas.Datos.csproj" />
+    <ProjectReference Include="..\Negocio\SistemaVentas.Negocio.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
