@@ -209,8 +209,7 @@ namespace SistemadeVentas.Presentacion.Forms
             //
             // FrmReportes
             //
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(896, 670);
             Controls.Add(btnExportarExcel);
