@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SistemaVentas.Negocio;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
@@ -52,7 +52,7 @@ namespace SistemadeVentas.Presentacion.Forms
                 if (!ValidarCampos())
                     return;
 
-                Cliente cliente = new Cliente
+                ClienteDTO cliente = new ClienteDTO
                 {
                     Nombre = txtNombre.Text.Trim(),
                     Telefono = txtTelefono.Text.Trim(),
@@ -113,7 +113,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-                Cliente cliente = new Cliente
+                ClienteDTO cliente = new ClienteDTO
                 {
                     Id = id,
                     Nombre = txtNombre.Text.Trim(),

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
 namespace SistemaVentas.Pruebas
@@ -15,24 +15,24 @@ namespace SistemaVentas.Pruebas
         [TestMethod]
         public void CrearVenta_VentaNula_LanzaExcepcion()
         {
-            Assert.ThrowsExactly<ArgumentNullException>(() => ventaNegocio.CrearVenta(null!, new List<DetalleVenta>()));
+            Assert.ThrowsExactly<ArgumentNullException>(() => ventaNegocio.CrearVenta(null!, new List<DetalleVentaDTO>()));
         }
 
         [TestMethod]
         public void CrearVenta_SinDetalles_LanzaExcepcion()
         {
-            var venta = new Venta { ClienteId = 1 };
+            var venta = new VentaDTO { ClienteId = 1 };
 
-            Assert.ThrowsExactly<Exception>(() => ventaNegocio.CrearVenta(venta, new List<DetalleVenta>()));
+            Assert.ThrowsExactly<Exception>(() => ventaNegocio.CrearVenta(venta, new List<DetalleVentaDTO>()));
         }
 
         [TestMethod]
         public void CrearVenta_CantidadCero_LanzaExcepcion()
         {
-            var venta = new Venta { ClienteId = 1 };
-            var detalles = new List<DetalleVenta>
+            var venta = new VentaDTO { ClienteId = 1 };
+            var detalles = new List<DetalleVentaDTO>
             {
-                new DetalleVenta { ProductoId = 1, Cantidad = 0 }
+                new DetalleVentaDTO { ProductoId = 1, Cantidad = 0 }
             };
 
             Assert.ThrowsExactly<Exception>(() => ventaNegocio.CrearVenta(venta, detalles));
@@ -41,10 +41,10 @@ namespace SistemaVentas.Pruebas
         [TestMethod]
         public void CrearVenta_ProductoInexistente_LanzaExcepcion()
         {
-            var venta = new Venta { ClienteId = 1 };
-            var detalles = new List<DetalleVenta>
+            var venta = new VentaDTO { ClienteId = 1 };
+            var detalles = new List<DetalleVentaDTO>
             {
-                new DetalleVenta { ProductoId = -999, Cantidad = 1 }
+                new DetalleVentaDTO { ProductoId = -999, Cantidad = 1 }
             };
 
             Assert.ThrowsExactly<Exception>(() => ventaNegocio.CrearVenta(venta, detalles));
@@ -54,20 +54,20 @@ namespace SistemaVentas.Pruebas
         public void CrearVenta_StockInsuficiente_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var cliente = new Cliente { Nombre = "Cliente Venta " + sufijo, Correo = "venta" + sufijo + "@test.com", Telefono = "8" + sufijo.Substring(0, 7) };
+            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta" + sufijo + "@test.com", Telefono = "8" + sufijo.Substring(0, 7) };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo)!.Id;
 
-            var producto = new Producto { Codigo = "P-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 1 };
+            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 1 };
             productoNegocio.InsertarProducto(producto);
             int idProducto = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo)!.Id;
 
             try
             {
-                var venta = new Venta { ClienteId = idCliente };
-                var detalles = new List<DetalleVenta>
+                var venta = new VentaDTO { ClienteId = idCliente };
+                var detalles = new List<DetalleVentaDTO>
                 {
-                    new DetalleVenta { ProductoId = idProducto, Cantidad = 5 }
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 5 }
                 };
 
                 Assert.ThrowsExactly<Exception>(() => ventaNegocio.CrearVenta(venta, detalles));
@@ -83,11 +83,11 @@ namespace SistemaVentas.Pruebas
         public void CrearVenta_StockSuficiente_RegistraLaVentaYDescuentaElStock()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var cliente = new Cliente { Nombre = "Cliente Venta " + sufijo, Correo = "venta2" + sufijo + "@test.com", Telefono = "7" + sufijo.Substring(0, 7) };
+            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta2" + sufijo + "@test.com", Telefono = "7" + sufijo.Substring(0, 7) };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo)!.Id;
 
-            var producto = new Producto { Codigo = "PV-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 10 };
+            var producto = new ProductoDTO { Codigo = "PV-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 10 };
             productoNegocio.InsertarProducto(producto);
             int idProducto = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo)!.Id;
 
@@ -95,10 +95,10 @@ namespace SistemaVentas.Pruebas
 
             try
             {
-                var venta = new Venta { ClienteId = idCliente };
-                var detalles = new List<DetalleVenta>
+                var venta = new VentaDTO { ClienteId = idCliente };
+                var detalles = new List<DetalleVentaDTO>
                 {
-                    new DetalleVenta { ProductoId = idProducto, Cantidad = 3 }
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 3 }
                 };
 
                 bool resultado = ventaNegocio.CrearVenta(venta, detalles);

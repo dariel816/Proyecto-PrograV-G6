@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos.Reportes;
 
 namespace SistemaVentas.Negocio.Reportes
@@ -14,7 +14,7 @@ namespace SistemaVentas.Negocio.Reportes
         ProductoNegocio productoNegocio = new ProductoNegocio();
         ClienteNegocio clienteNegocio = new ClienteNegocio();
 
-        public List<Venta> ObtenerVentasPorRango(DateTime desde, DateTime hasta)
+        public List<VentaDTO> ObtenerVentasPorRango(DateTime desde, DateTime hasta)
         {
             return ventaNegocio.ObtenerVentas()
                 .Where(v => v.Fecha.Date >= desde.Date && v.Fecha.Date <= hasta.Date)
@@ -35,7 +35,7 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
-        public List<Producto> ObtenerTodosLosProductos()
+        public List<ProductoDTO> ObtenerTodosLosProductos()
         {
             return productoNegocio.ObtenerProductos()
                 .OrderBy(p => p.Nombre)
@@ -46,12 +46,11 @@ namespace SistemaVentas.Negocio.Reportes
         {
             return ventaNegocio.ObtenerVentas()
                 .SelectMany(v => v.Detalles)
-                .Where(d => d.Producto != null)
-                .GroupBy(d => new { d.ProductoId, d.Producto.Nombre })
+                .GroupBy(d => new { d.ProductoId, d.ProductoNombre })
                 .Select(g => new ProductoVendido
                 {
                     ProductoId = g.Key.ProductoId,
-                    Nombre = g.Key.Nombre,
+                    Nombre = g.Key.ProductoNombre,
                     CantidadVendida = g.Sum(d => d.Cantidad),
                     TotalVendido = g.Sum(d => d.Subtotal)
                 })
@@ -60,7 +59,7 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
-        public List<Producto> ObtenerProductosBajoStock(int umbral = 5)
+        public List<ProductoDTO> ObtenerProductosBajoStock(int umbral = 5)
         {
             return productoNegocio.ObtenerProductos()
                 .Where(p => p.Stock <= umbral)
@@ -71,12 +70,11 @@ namespace SistemaVentas.Negocio.Reportes
         public List<ClienteCompra> ObtenerClientesConMasCompras(int top = 5)
         {
             return ventaNegocio.ObtenerVentas()
-                .Where(v => v.Cliente != null)
-                .GroupBy(v => new { v.ClienteId, v.Cliente.Nombre })
+                .GroupBy(v => new { v.ClienteId, v.ClienteNombre })
                 .Select(g => new ClienteCompra
                 {
                     ClienteId = g.Key.ClienteId,
-                    Nombre = g.Key.Nombre,
+                    Nombre = g.Key.ClienteNombre,
                     CantidadVentas = g.Count(),
                     TotalComprado = g.Sum(v => v.Total)
                 })

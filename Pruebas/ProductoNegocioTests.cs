@@ -1,5 +1,5 @@
 using System;
-using SistemaVentas.Entidades.Modelos;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
 namespace SistemaVentas.Pruebas
@@ -12,7 +12,7 @@ namespace SistemaVentas.Pruebas
         [TestMethod]
         public void InsertarProducto_NombreVacio_LanzaExcepcion()
         {
-            var producto = new Producto { Codigo = "P-000", Nombre = "", Precio = 10, Stock = 5 };
+            var producto = new ProductoDTO { Codigo = "P-000", Nombre = "", Precio = 10, Stock = 5 };
 
             Assert.ThrowsExactly<Exception>(() => productoNegocio.InsertarProducto(producto));
         }
@@ -21,7 +21,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_PrecioCero_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var producto = new Producto { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = 0, Stock = 5 };
+            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = 0, Stock = 5 };
 
             Assert.ThrowsExactly<Exception>(() => productoNegocio.InsertarProducto(producto));
         }
@@ -30,7 +30,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_PrecioNegativo_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var producto = new Producto { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = -5, Stock = 5 };
+            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = -5, Stock = 5 };
 
             Assert.ThrowsExactly<Exception>(() => productoNegocio.InsertarProducto(producto));
         }
@@ -39,7 +39,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_Valido_PermiteConsultarloYQuedaDisponibleParaEliminar()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var producto = new Producto
+            var producto = new ProductoDTO
             {
                 Codigo = "P-" + sufijo,
                 Nombre = "Producto Prueba " + sufijo,
@@ -65,7 +65,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_CodigoDuplicado_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var original = new Producto
+            var original = new ProductoDTO
             {
                 Codigo = "P-" + sufijo,
                 Nombre = "Producto Original " + sufijo,
@@ -79,7 +79,7 @@ namespace SistemaVentas.Pruebas
 
             try
             {
-                var duplicado = new Producto
+                var duplicado = new ProductoDTO
                 {
                     Codigo = original.Codigo,
                     Nombre = "Producto Duplicado " + sufijo,

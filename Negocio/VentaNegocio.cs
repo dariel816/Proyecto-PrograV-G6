@@ -3,74 +3,79 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SistemaVentas.Datos.DAO;
-using SistemaVentas.Entidades.Modelos;
 using MySql.Data.MySqlClient;
 using SistemaVentas.Datos.Conexion;
+using SistemaVentas.Datos.Fabricas;
+using SistemaVentas.Datos.Repositorios;
+using SistemaVentas.Entidades.DTOs;
+using SistemaVentas.Entidades.Modelos;
 
 namespace SistemaVentas.Negocio
 {
     public class VentaNegocio
     {
-        VentaDAO ventaDAO = new VentaDAO();
-        DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
-        ClienteNegocio clienteNegocio = new ClienteNegocio();
-        ProductoNegocio productoNegocio = new ProductoNegocio();
-        ProductoDAO productoDAO = new ProductoDAO();
+        private readonly IVentaRepositorio ventaRepositorio;
+        private readonly IDetalleVentaRepositorio detalleVentaRepositorio;
+        private readonly ClienteNegocio clienteNegocio = new ClienteNegocio();
+        private readonly ProductoNegocio productoNegocio = new ProductoNegocio();
 
-        public List<Venta> ObtenerVentas()
+        public VentaNegocio()
         {
-            List<Venta> ventas = ventaDAO.ObtenerVentas();
-
-            foreach (var venta in ventas)
-            {
-                var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
-                if (cliente == null)
-                    throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
-                venta.Cliente = cliente;
-
-                venta.Detalles = detalleVentaDAO.ObtenerDetallesPorVenta(venta.Id);
-
-                foreach (var detalle in venta.Detalles)
-                {
-                    var producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
-                    if (producto == null)
-                        throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
-
-                    detalle.Producto = producto;
-                }
-            }
-
-            return ventas;
+            ventaRepositorio = RepositorioFactory.CrearVentaRepositorio();
+            detalleVentaRepositorio = RepositorioFactory.CrearDetalleVentaRepositorio();
         }
 
-        public Venta? ObtenerVentaPorId(int id)
+        public List<VentaDTO> ObtenerVentas()
         {
-            Venta? venta = ventaDAO.ObtenerVentaPorId(id);
-
-            if (venta != null)
-            {
-                var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
-                if (cliente == null)
-                    throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
-                venta.Cliente = cliente;
-
-                venta.Detalles = detalleVentaDAO.ObtenerDetallesPorVenta(venta.Id);
-
-                foreach (var detalle in venta.Detalles)
-                {
-                    var producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
-                    if (producto == null)
-                        throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
-
-                    detalle.Producto = producto;
-                }
-            }
-
-            return venta;
+            List<Venta> ventas = ventaRepositorio.ObtenerVentas();
+            return ventas.Select(MapearVentaADto).ToList();
         }
 
-        public bool CrearVenta(Venta venta, List<DetalleVenta> detalles)
+        public VentaDTO? ObtenerVentaPorId(int id)
+        {
+            Venta? venta = ventaRepositorio.ObtenerVentaPorId(id);
+            return venta == null ? null : MapearVentaADto(venta);
+        }
+
+        private VentaDTO MapearVentaADto(Venta venta)
+        {
+            var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
+            if (cliente == null)
+                throw new Exception($"Cliente no encontrado (Id={venta.ClienteId}).");
+
+            List<DetalleVenta> detallesEntidad = detalleVentaRepositorio.ObtenerDetallesPorVenta(venta.Id);
+            List<DetalleVentaDTO> detalles = new List<DetalleVentaDTO>();
+
+            foreach (var detalle in detallesEntidad)
+            {
+                var producto = productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
+                if (producto == null)
+                    throw new Exception($"Producto no encontrado (Id={detalle.ProductoId}).");
+
+                detalles.Add(new DetalleVentaDTO
+                {
+                    Id = detalle.Id,
+                    VentaId = detalle.VentaId,
+                    ProductoId = detalle.ProductoId,
+                    ProductoNombre = producto.Nombre,
+                    Cantidad = detalle.Cantidad,
+                    PrecioUnitario = detalle.PrecioUnitario,
+                    Subtotal = detalle.Subtotal
+                });
+            }
+
+            return new VentaDTO
+            {
+                Id = venta.Id,
+                Fecha = venta.Fecha,
+                ClienteId = venta.ClienteId,
+                ClienteNombre = cliente.Nombre,
+                Total = venta.Total,
+                Detalles = detalles
+            };
+        }
+
+        public bool CrearVenta(VentaDTO venta, List<DetalleVentaDTO> detalles)
         {
             if (venta == null)
             {
@@ -85,7 +90,7 @@ namespace SistemaVentas.Negocio
             decimal totalVenta = 0;
 
             // Validar productos, cantidades, precios y stock
-            foreach (DetalleVenta detalle in detalles)
+            foreach (DetalleVentaDTO detalle in detalles)
             {
                 if (detalle.ProductoId <= 0)
                 {
@@ -97,7 +102,7 @@ namespace SistemaVentas.Negocio
                     throw new Exception("La cantidad debe ser mayor que cero.");
                 }
 
-                Producto producto =
+                ProductoDTO? producto =
                     productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
 
                 if (producto == null)
@@ -118,6 +123,7 @@ namespace SistemaVentas.Negocio
                     venta.Fecha = DateTime.Now;
                 }
 
+                detalle.ProductoNombre = producto.Nombre;
                 detalle.PrecioUnitario = producto.Precio;
                 detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
 
@@ -125,6 +131,13 @@ namespace SistemaVentas.Negocio
             }
 
             venta.Total = totalVenta;
+
+            Venta ventaEntidad = new Venta
+            {
+                ClienteId = venta.ClienteId,
+                Fecha = venta.Fecha,
+                Total = venta.Total
+            };
 
             ConexionDB conexionDB = new ConexionDB();
 
@@ -137,8 +150,8 @@ namespace SistemaVentas.Negocio
                     try
                     {
                         int ventaId =
-                            ventaDAO.InsertarVenta(
-                                venta,
+                            ventaRepositorio.InsertarVenta(
+                                ventaEntidad,
                                 conexion,
                                 transaccion);
 
@@ -147,13 +160,24 @@ namespace SistemaVentas.Negocio
                             throw new Exception("No fue posible guardar la venta.");
                         }
 
-                        foreach (DetalleVenta detalle in detalles)
+                        venta.Id = ventaId;
+
+                        foreach (DetalleVentaDTO detalle in detalles)
                         {
                             detalle.VentaId = ventaId;
 
+                            DetalleVenta detalleEntidad = new DetalleVenta
+                            {
+                                VentaId = ventaId,
+                                ProductoId = detalle.ProductoId,
+                                Cantidad = detalle.Cantidad,
+                                PrecioUnitario = detalle.PrecioUnitario,
+                                Subtotal = detalle.Subtotal
+                            };
+
                             bool detalleGuardado =
-                                detalleVentaDAO.InsertarDetalleVenta(
-                                    detalle,
+                                detalleVentaRepositorio.InsertarDetalleVenta(
+                                    detalleEntidad,
                                     conexion,
                                     transaccion);
 
@@ -164,7 +188,7 @@ namespace SistemaVentas.Negocio
                                     $"Id={detalle.ProductoId}.");
                             }
 
-                            Producto producto =
+                            ProductoDTO? producto =
                                 productoNegocio.ObtenerProductoPorId(
                                     detalle.ProductoId);
 
@@ -179,7 +203,7 @@ namespace SistemaVentas.Negocio
                                 producto.Stock - detalle.Cantidad;
 
                             bool stockActualizado =
-                                productoDAO.ActualizarStock(
+                                productoNegocio.ActualizarStock(
                                     detalle.ProductoId,
                                     nuevoStock,
                                     conexion,
@@ -206,7 +230,7 @@ namespace SistemaVentas.Negocio
             }
         }
 
-        public bool EditarVenta(Venta venta)
+        public bool EditarVenta(VentaDTO venta)
         {
             if (venta.ClienteId <= 0)
                 throw new Exception("El cliente es requerido.");
@@ -220,13 +244,21 @@ namespace SistemaVentas.Negocio
 
             venta.Total = total;
 
-            return ventaDAO.EditarVenta(venta);
+            Venta ventaEntidad = new Venta
+            {
+                Id = venta.Id,
+                ClienteId = venta.ClienteId,
+                Fecha = venta.Fecha,
+                Total = venta.Total
+            };
+
+            return ventaRepositorio.EditarVenta(ventaEntidad);
         }
 
         public bool EliminarVenta(int id)
         {
-            detalleVentaDAO.EliminarDetallesPorVenta(id);
-            return ventaDAO.EliminarVenta(id);
+            detalleVentaRepositorio.EliminarDetallesPorVenta(id);
+            return ventaRepositorio.EliminarVenta(id);
         }
     }
 }
