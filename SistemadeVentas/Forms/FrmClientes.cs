@@ -222,6 +222,54 @@ namespace SistemadeVentas.Presentacion.Forms
         }
 
         /// <summary>
+        /// Exporta el listado completo de clientes a un archivo JSON elegido por el usuario.
+        /// </summary>
+        private void btnExportarJson_Click(object sender, EventArgs e)
+        {
+            using (var dialogo = new SaveFileDialog { Filter = "Archivo JSON (*.json)|*.json", FileName = "Clientes.json" })
+            {
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    clienteNegocio.ExportarClientesJson(dialogo.FileName);
+                    MessageBox.Show("Clientes exportados exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al exportar los clientes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Importa clientes desde un archivo JSON elegido por el usuario, omitiendo los que
+        /// ya tengan el correo o el teléfono registrado.
+        /// </summary>
+        private void btnImportarJson_Click(object sender, EventArgs e)
+        {
+            using (var dialogo = new OpenFileDialog { Filter = "Archivo JSON (*.json)|*.json" })
+            {
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    var resultado = clienteNegocio.ImportarClientesJson(dialogo.FileName);
+                    CargarClientes();
+                    MessageBox.Show(
+                        $"Importación completa: {resultado.Importados} cliente(s) importado(s), {resultado.Omitidos} omitido(s).",
+                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al importar los clientes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        /// <summary>
         /// Carga los datos del cliente seleccionado en el <c>DataGridView</c> hacia los
         /// campos de texto del formulario.
         /// </summary>

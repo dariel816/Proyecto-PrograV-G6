@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using SistemaVentas.Datos.Fabricas;
 using SistemaVentas.Datos.Repositorios;
@@ -100,6 +102,55 @@ namespace SistemaVentas.Negocio
         public bool EliminarCliente(int id)
         {
             return clienteRepositorio.Eliminar(id);
+        }
+
+        /// <summary>
+        /// Exporta el listado completo de clientes a un archivo JSON.
+        /// </summary>
+        /// <param name="rutaArchivo">Ruta del archivo .json de destino.</param>
+        public void ExportarClientesJson(string rutaArchivo)
+        {
+            List<ClienteDTO> clientes = ObtenerClientes();
+
+            string json = JsonSerializer.Serialize(clientes, new JsonSerializerOptions { WriteIndented = true });
+
+            File.WriteAllText(rutaArchivo, json);
+        }
+
+        /// <summary>
+        /// Importa clientes desde un archivo JSON, insertando cada uno mediante
+        /// <see cref="InsertarCliente"/>. Los clientes cuyo correo o teléfono ya estén
+        /// registrados se omiten en vez de interrumpir la importación completa.
+        /// </summary>
+        /// <param name="rutaArchivo">Ruta del archivo .json de origen.</param>
+        /// <returns>Cantidad de clientes importados y cantidad de clientes omitidos.</returns>
+        public (int Importados, int Omitidos) ImportarClientesJson(string rutaArchivo)
+        {
+            string json = File.ReadAllText(rutaArchivo);
+
+            List<ClienteDTO>? clientes = JsonSerializer.Deserialize<List<ClienteDTO>>(json);
+
+            int importados = 0;
+            int omitidos = 0;
+
+            if (clientes != null)
+            {
+                foreach (ClienteDTO cliente in clientes)
+                {
+                    try
+                    {
+                        cliente.Id = 0;
+                        InsertarCliente(cliente);
+                        importados++;
+                    }
+                    catch
+                    {
+                        omitidos++;
+                    }
+                }
+            }
+
+            return (importados, omitidos);
         }
 
         /// <summary>
