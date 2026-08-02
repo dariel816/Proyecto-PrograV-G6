@@ -39,6 +39,8 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEditar = new FontAwesome.Sharp.IconButton();
             btnEliminar = new FontAwesome.Sharp.IconButton();
             btnLimpiar = new FontAwesome.Sharp.IconButton();
+            btnExportarJson = new FontAwesome.Sharp.IconButton();
+            btnImportarJson = new FontAwesome.Sharp.IconButton();
             dgvClientes = new DataGridView();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
@@ -203,11 +205,51 @@ namespace SistemadeVentas.Presentacion.Forms
             btnLimpiar.UseVisualStyleBackColor = false;
             btnLimpiar.Click += btnLimpiar_Click;
             //
+            // btnExportarJson
+            //
+            btnExportarJson.BackColor = Color.FromArgb(230, 240, 250);
+            btnExportarJson.Cursor = Cursors.Hand;
+            btnExportarJson.FlatAppearance.BorderSize = 0;
+            btnExportarJson.FlatStyle = FlatStyle.Flat;
+            btnExportarJson.ForeColor = Color.SteelBlue;
+            btnExportarJson.IconChar = FontAwesome.Sharp.IconChar.FileExport;
+            btnExportarJson.IconColor = Color.SteelBlue;
+            btnExportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnExportarJson.IconSize = 18;
+            btnExportarJson.Location = new Point(140, 266);
+            btnExportarJson.Name = "btnExportarJson";
+            btnExportarJson.Size = new Size(160, 30);
+            btnExportarJson.TabIndex = 8;
+            btnExportarJson.Text = "Exportar JSON";
+            btnExportarJson.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnExportarJson.UseVisualStyleBackColor = false;
+            btnExportarJson.Click += btnExportarJson_Click;
+            //
+            // btnImportarJson
+            //
+            btnImportarJson.BackColor = Color.FromArgb(250, 242, 225);
+            btnImportarJson.Cursor = Cursors.Hand;
+            btnImportarJson.FlatAppearance.BorderSize = 0;
+            btnImportarJson.FlatStyle = FlatStyle.Flat;
+            btnImportarJson.ForeColor = Color.DarkOrange;
+            btnImportarJson.IconChar = FontAwesome.Sharp.IconChar.FileImport;
+            btnImportarJson.IconColor = Color.DarkOrange;
+            btnImportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnImportarJson.IconSize = 18;
+            btnImportarJson.Location = new Point(310, 266);
+            btnImportarJson.Name = "btnImportarJson";
+            btnImportarJson.Size = new Size(160, 30);
+            btnImportarJson.TabIndex = 9;
+            btnImportarJson.Text = "Importar JSON";
+            btnImportarJson.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnImportarJson.UseVisualStyleBackColor = false;
+            btnImportarJson.Click += btnImportarJson_Click;
+            //
             // dgvClientes
             //
             dgvClientes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvClientes.Location = new Point(30, 280);
+            dgvClientes.Location = new Point(30, 306);
             dgvClientes.Name = "dgvClientes";
             dgvClientes.Size = new Size(840, 290);
             dgvClientes.TabIndex = 8;
@@ -217,8 +259,10 @@ namespace SistemadeVentas.Presentacion.Forms
             //
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(900, 600);
+            ClientSize = new Size(900, 630);
             Controls.Add(dgvClientes);
+            Controls.Add(btnImportarJson);
+            Controls.Add(btnExportarJson);
             Controls.Add(btnLimpiar);
             Controls.Add(btnEliminar);
             Controls.Add(btnEditar);
@@ -258,6 +302,8 @@ namespace SistemadeVentas.Presentacion.Forms
         private FontAwesome.Sharp.IconButton btnEditar;
         private FontAwesome.Sharp.IconButton btnEliminar;
         private FontAwesome.Sharp.IconButton btnLimpiar;
+        private FontAwesome.Sharp.IconButton btnExportarJson;
+        private FontAwesome.Sharp.IconButton btnImportarJson;
         private DataGridView dgvClientes;
         private Panel pnlEncabezado;
         private Label lblTituloForm;

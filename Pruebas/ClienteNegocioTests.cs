@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
@@ -77,6 +78,47 @@ namespace SistemaVentas.Pruebas
             finally
             {
                 clienteNegocio.EliminarCliente(idCreado);
+            }
+        }
+
+        [TestMethod]
+        public void ExportarEImportarClientesJson_RecuperaElClienteEliminado()
+        {
+            string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
+            var cliente = new ClienteDTO
+            {
+                Nombre = "Cliente JSON " + sufijo,
+                Correo = "json" + sufijo + "@test.com",
+                Telefono = "9" + sufijo.Substring(0, 7)
+            };
+
+            clienteNegocio.InsertarCliente(cliente);
+            int idOriginal = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo)!.Id;
+
+            string rutaTemp = Path.Combine(Path.GetTempPath(), "clientes_prueba_" + sufijo + ".json");
+
+            try
+            {
+                clienteNegocio.ExportarClientesJson(rutaTemp);
+                Assert.IsTrue(File.Exists(rutaTemp));
+
+                // Se elimina el cliente para simular la perdida de datos que el import debe recuperar
+                clienteNegocio.EliminarCliente(idOriginal);
+
+                var resultado = clienteNegocio.ImportarClientesJson(rutaTemp);
+                Assert.IsTrue(resultado.Importados >= 1);
+
+                var reimportado = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo);
+                Assert.IsNotNull(reimportado);
+                Assert.AreEqual(cliente.Nombre, reimportado.Nombre);
+                Assert.AreEqual(cliente.Telefono, reimportado.Telefono);
+
+                clienteNegocio.EliminarCliente(reimportado.Id);
+            }
+            finally
+            {
+                if (File.Exists(rutaTemp))
+                    File.Delete(rutaTemp);
             }
         }
     }
