@@ -8,6 +8,10 @@ using SistemaVentas.Negocio.Reportes;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
+    /// <summary>
+    /// Formulario de reportes: genera reportes de ventas, productos y clientes (con gráfico y
+    /// grilla) y permite exportarlos a PDF o Excel.
+    /// </summary>
     public partial class FrmReportes : Form
     {
         private readonly ReporteNegocio reporteNegocio = new ReporteNegocio();
@@ -23,11 +27,18 @@ namespace SistemadeVentas.Presentacion.Forms
         private List<ClienteCompra> clientesActuales = new List<ClienteCompra>(); // Lista para almacenar los clientes actuales
         private List<ProductoDTO> productosActuales = new List<ProductoDTO>(); // Lista para almacenar los productos actuales
 
+        /// <summary>
+        /// Inicializa el formulario de reportes.
+        /// </summary>
         public FrmReportes()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Configura el combo de tipos de reporte, establece el rango de fechas por defecto
+        /// (último mes) y ajusta el estado habilitado/deshabilitado de los selectores de fecha.
+        /// </summary>
         private void FrmReportes_Load(object sender, EventArgs e)
         {
             cmbTipoReporte.Items.AddRange(new object[] { TipoVentas, TipoProductos, TipoClientes });
@@ -39,11 +50,19 @@ namespace SistemadeVentas.Presentacion.Forms
             ActualizarEstadoFechas();
         }
 
+        /// <summary>
+        /// Actualiza el estado habilitado de los selectores de fecha cuando cambia el tipo
+        /// de reporte seleccionado.
+        /// </summary>
         private void cmbTipoReporte_SelectedIndexChanged(object sender, EventArgs e)
         {
             ActualizarEstadoFechas();
         }
 
+        /// <summary>
+        /// Habilita los selectores de fecha únicamente cuando el tipo de reporte seleccionado
+        /// es "Ventas", ya que los reportes de productos y clientes no filtran por rango de fechas.
+        /// </summary>
         private void ActualizarEstadoFechas()
         {
             bool esVentas = cmbTipoReporte.SelectedItem?.ToString() == TipoVentas;
@@ -51,6 +70,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dtpHasta.Enabled = esVentas;
         }
 
+        /// <summary>
+        /// Genera el reporte correspondiente al tipo seleccionado en el combo (Ventas,
+        /// Productos o Clientes), actualizando la grilla y el gráfico del formulario.
+        /// </summary>
         private void btnGenerar_Click(object sender, EventArgs e)
         {
             try
@@ -74,6 +97,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Obtiene las ventas dentro del rango de fechas seleccionado y las muestra en la grilla,
+        /// además de graficar el total vendido por mes.
+        /// </summary>
         private void GenerarReporteVentas()
         {
             ventasActuales = reporteNegocio.ObtenerVentasPorRango(dtpDesde.Value, dtpHasta.Value);
@@ -99,6 +126,11 @@ namespace SistemadeVentas.Presentacion.Forms
             chartReporte.ChartAreas["ChartArea1"].AxisY.Title = "Total vendido";
         }
 
+        /// <summary>
+        /// Obtiene el listado completo de productos, los productos más vendidos y los de bajo
+        /// stock, mostrando el listado en la grilla y graficando la cantidad vendida de los
+        /// productos más vendidos.
+        /// </summary>
         private void GenerarReporteProductos()
         {
             productosActuales = reporteNegocio.ObtenerTodosLosProductos();
@@ -133,6 +165,10 @@ namespace SistemadeVentas.Presentacion.Forms
                 "Cantidad vendida";
         }
 
+        /// <summary>
+        /// Obtiene los clientes con más compras y los muestra en la grilla, graficando
+        /// el total comprado por cada uno.
+        /// </summary>
         private void GenerarReporteClientes()
         {
             clientesActuales = reporteNegocio.ObtenerClientesConMasCompras(5);
@@ -151,6 +187,10 @@ namespace SistemadeVentas.Presentacion.Forms
             chartReporte.ChartAreas["ChartArea1"].AxisY.Title = "Total comprado";
         }
 
+        /// <summary>
+        /// Solicita al usuario una ruta de archivo y exporta a PDF el reporte actualmente
+        /// generado (Ventas, Productos o Clientes), según el tipo seleccionado.
+        /// </summary>
         private void btnExportarPdf_Click(object sender, EventArgs e)
         {
             using (var dialogo = new SaveFileDialog { Filter = "Archivo PDF (*.pdf)|*.pdf", FileName = "Reporte.pdf" })
@@ -182,6 +222,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Solicita al usuario una ruta de archivo y exporta a Excel el reporte actualmente
+        /// generado (Ventas, Productos o Clientes), según el tipo seleccionado.
+        /// </summary>
         private void btnExportarExcel_Click(object sender, EventArgs e)
         {
             using (var dialogo = new SaveFileDialog { Filter = "Archivo Excel (*.xlsx)|*.xlsx", FileName = "Reporte.xlsx" })

@@ -12,16 +12,25 @@ using SistemaVentas.Entidades.DTOs;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
+    /// <summary>
+    /// Formulario de gestión de clientes: alta, edición, eliminación y listado.
+    /// </summary>
     public partial class FrmClientes : Form
     {
         private ClienteNegocio clienteNegocio = new ClienteNegocio();
 
+        /// <summary>
+        /// Inicializa el formulario de clientes y carga el listado inicial de clientes.
+        /// </summary>
         public FrmClientes()
         {
             InitializeComponent();
             CargarClientes();
         }
 
+        /// <summary>
+        /// Carga (o recarga) el listado de clientes en el <c>DataGridView</c> del formulario.
+        /// </summary>
         private void CargarClientes()
         {
             try
@@ -35,6 +44,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Limpia los campos del formulario (Id, Nombre, Correo, Teléfono) y regresa el foco
+        /// al campo Nombre.
+        /// </summary>
         private void LimpiarCampos()
         {
             txtId.Clear();
@@ -44,6 +57,10 @@ namespace SistemadeVentas.Presentacion.Forms
             txtNombre.Focus();
         }
 
+        /// <summary>
+        /// Valida los campos y guarda un nuevo cliente, verificando previamente que el correo
+        /// y el teléfono no estén ya registrados por otro cliente.
+        /// </summary>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -93,6 +110,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Valida los campos y actualiza el cliente seleccionado, verificando previamente que
+        /// el correo y el teléfono no estén registrados por otro cliente.
+        /// </summary>
         private void btnEditar_Click(object sender, EventArgs e)
         {
             try
@@ -155,6 +176,9 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Solicita confirmación y elimina el cliente seleccionado.
+        /// </summary>
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             try
@@ -189,11 +213,18 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Limpia los campos del formulario al presionar el botón Limpiar.
+        /// </summary>
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
         }
 
+        /// <summary>
+        /// Carga los datos del cliente seleccionado en el <c>DataGridView</c> hacia los
+        /// campos de texto del formulario.
+        /// </summary>
         private void dgvClientes_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvClientes.SelectedRows.Count > 0)
@@ -206,6 +237,11 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Valida que todos los campos del formulario de clientes estén completos y sean válidos
+        /// (nombre requerido, teléfono con al menos 7 dígitos, correo con formato válido).
+        /// </summary>
+        /// <returns><c>true</c> si todos los campos son válidos; de lo contrario <c>false</c>.</returns>
         // Valida que todos los campos del formulario de clientes estén completos y sean válidos
         private bool ValidarCampos()
         {

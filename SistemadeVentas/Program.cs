@@ -2,10 +2,14 @@ using SistemadeVentas.Presentacion.Forms;
 
 namespace SistemadeVentas.Presentacion
 {
+    /// <summary>
+    /// Clase de arranque de la aplicación de escritorio "Sistema de Ventas".
+    /// </summary>
     internal static class Program
     {
-        // 
-        ///  The main entry point for the application.
+        /// <summary>
+        /// Punto de entrada principal de la aplicación: inicializa la configuración de la
+        /// aplicación (DPI alto, fuente predeterminada) y ejecuta el formulario <see cref="FrmMenu"/>.
         /// </summary>
         [STAThread]
         static void Main()

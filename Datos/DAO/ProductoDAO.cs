@@ -6,10 +6,18 @@ using SistemaVentas.Entidades.Modelos;
 
 namespace SistemaVentas.Datos.DAO
 {
+    /// <summary>
+    /// Acceso a datos de la tabla <c>productos</c> en MySQL mediante ADO.NET
+    /// (MySql.Data.MySqlClient).
+    /// </summary>
     public class ProductoDAO
     {
         ConexionDB conexionDB = new ConexionDB();
 
+        /// <summary>
+        /// Obtiene todos los productos registrados en la tabla <c>productos</c>.
+        /// </summary>
+        /// <returns>Lista de todos los productos encontrados (puede estar vacía).</returns>
         public List<Producto> ObtenerProductos()
         {
             List<Producto> lista = new List<Producto>();
@@ -42,6 +50,11 @@ namespace SistemaVentas.Datos.DAO
             return lista;
         }
 
+        /// <summary>
+        /// Busca un producto por su identificador.
+        /// </summary>
+        /// <param name="id">Id del producto a buscar.</param>
+        /// <returns>El producto encontrado, o <c>null</c> si no existe.</returns>
         public Producto? ObtenerProductoPorId(int id)
         {
             Producto? producto = null;
@@ -76,6 +89,11 @@ namespace SistemaVentas.Datos.DAO
             return producto;
         }
 
+        /// <summary>
+        /// Inserta un nuevo producto en la base de datos.
+        /// </summary>
+        /// <param name="producto">Datos del producto a insertar.</param>
+        /// <returns><c>true</c> si se insertó al menos una fila; <c>false</c> si ocurrió un error o no se insertó ninguna fila.</returns>
         public bool InsertarProducto(Producto producto)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
@@ -104,6 +122,11 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un producto existente, identificado por su Id.
+        /// </summary>
+        /// <param name="producto">Producto con los datos actualizados (incluye el Id).</param>
+        /// <returns><c>true</c> si se actualizó al menos una fila; <c>false</c> si ocurrió un error o no se actualizó ninguna fila.</returns>
         public bool EditarProducto(Producto producto)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
@@ -139,6 +162,11 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Elimina un producto de la base de datos por su Id.
+        /// </summary>
+        /// <param name="id">Id del producto a eliminar.</param>
+        /// <returns><c>true</c> si se eliminó al menos una fila; <c>false</c> si ocurrió un error o no se eliminó ninguna fila.</returns>
         public bool EliminarProducto(int id)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
@@ -162,6 +190,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Actualiza el stock de un producto.
+        /// </summary>
+        /// <param name="id">Id del producto.</param>
+        /// <param name="nuevoStock">Nueva cantidad de stock a asignar.</param>
+        /// <returns><c>true</c> si se actualizó al menos una fila; <c>false</c> si ocurrió un error o no se actualizó ninguna fila.</returns>
         public bool ActualizarStock(int id, int nuevoStock)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
@@ -185,6 +219,16 @@ namespace SistemaVentas.Datos.DAO
         }
 
         // Overload útil cuando hay transacción abierta
+        /// <summary>
+        /// Variante transaccional de <see cref="ActualizarStock(int, int)"/>, para usarse
+        /// dentro de una transacción ya existente (por ejemplo, la de <c>VentaNegocio.CrearVenta</c>),
+        /// reutilizando la misma conexión y transacción en lugar de abrir una nueva.
+        /// </summary>
+        /// <param name="productoId">Id del producto.</param>
+        /// <param name="nuevoStock">Nueva cantidad de stock a asignar.</param>
+        /// <param name="conexion">Conexión MySQL abierta de la transacción en curso.</param>
+        /// <param name="transaccion">Transacción MySQL en curso.</param>
+        /// <returns><c>true</c> si se actualizó al menos una fila.</returns>
         public bool ActualizarStock(int productoId, int nuevoStock, MySqlConnection conexion, MySqlTransaction transaccion)
         {
             string query = @"UPDATE productos
@@ -199,7 +243,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
-        // Verifica si ya existe un código en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// <summary>
+        /// Verifica si ya existe un código en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// </summary>
+        /// <param name="codigo">Código a verificar.</param>
+        /// <param name="excludeId">Id de producto a excluir de la búsqueda (opcional, útil al actualizar).</param>
+        /// <returns><c>true</c> si ya existe un producto con ese código; <c>false</c> si no existe o si ocurrió un error.</returns>
         public bool ExisteCodigo(string codigo, int? excludeId = null)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
@@ -229,7 +278,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
-        // Verifica si ya existe un nombre en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// <summary>
+        /// Verifica si ya existe un nombre en la tabla productos. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// </summary>
+        /// <param name="nombre">Nombre a verificar.</param>
+        /// <param name="excludeId">Id de producto a excluir de la búsqueda (opcional, útil al actualizar).</param>
+        /// <returns><c>true</c> si ya existe un producto con ese nombre; <c>false</c> si no existe o si ocurrió un error.</returns>
         public bool ExisteNombre(string nombre, int? excludeId = null)
         {
             using (MySqlConnection conexion = conexionDB.ObtenerConexion())
