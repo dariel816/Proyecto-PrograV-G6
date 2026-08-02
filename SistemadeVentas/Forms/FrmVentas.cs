@@ -6,6 +6,10 @@ using SistemaVentas.Negocio;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
+    /// <summary>
+    /// Formulario de gestión de ventas: registro de una venta con sus detalles (líneas de
+    /// producto), listado, y eliminación de ventas existentes.
+    /// </summary>
     public partial class FrmVentas : Form
     {
         private VentaNegocio ventaNegocio = new VentaNegocio();
@@ -15,11 +19,17 @@ namespace SistemadeVentas.Presentacion.Forms
         private List<DetalleVentaDTO> detallesTemp = new List<DetalleVentaDTO>();
         private int ventaSeleccionada = 0;
 
+        /// <summary>
+        /// Inicializa el formulario de ventas.
+        /// </summary>
         public FrmVentas()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Carga los combos de clientes y productos y el listado de ventas al mostrarse el formulario.
+        /// </summary>
         private void FrmVentas_Load(object sender, EventArgs e)
         {
             CargarClientes();
@@ -27,6 +37,9 @@ namespace SistemadeVentas.Presentacion.Forms
             CargarVentas();
         }
 
+        /// <summary>
+        /// Carga la lista de clientes en el combo de selección de clientes.
+        /// </summary>
         private void CargarClientes()
         {
             try
@@ -41,6 +54,9 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Carga la lista de productos en el combo de selección de productos.
+        /// </summary>
         private void CargarProductos()
         {
             try
@@ -55,6 +71,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Carga (o recarga) el listado de ventas en el <c>DataGridView</c> principal, ocultando
+        /// las columnas internas "Detalles" y "ClienteId".
+        /// </summary>
         private void CargarVentas()
         {
             try
@@ -73,6 +93,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Al seleccionar una venta en el listado, guarda su Id como venta seleccionada
+        /// y carga sus detalles.
+        /// </summary>
         private void dgvVentas_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvVentas.SelectedRows.Count > 0)
@@ -82,6 +106,11 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Carga los detalles de la venta indicada en el <c>DataGridView</c> de detalles
+        /// y actualiza el campo de total.
+        /// </summary>
+        /// <param name="ventaId">Identificador de la venta cuyos detalles se van a mostrar.</param>
         private void CargarDetalles(int ventaId)
         {
             try
@@ -101,6 +130,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Valida el producto y la cantidad seleccionados y agrega un nuevo detalle temporal
+        /// a la venta en construcción, actualizando la grilla de detalles y el total.
+        /// </summary>
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
@@ -139,6 +172,10 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Refresca el <c>DataGridView</c> de detalles con la lista temporal de detalles
+        /// de la venta en construcción, ocultando la columna interna "VentaId".
+        /// </summary>
         private void ActualizarGridDetalles()
         {
             dgvDetalles.DataSource = null;
@@ -147,6 +184,10 @@ namespace SistemadeVentas.Presentacion.Forms
                 dgvDetalles.Columns["VentaId"].Visible = false;
         }
 
+        /// <summary>
+        /// Recalcula y muestra en pantalla el total de la venta en construcción, sumando
+        /// los subtotales de todos los detalles temporales.
+        /// </summary>
         private void ActualizarTotal()
         {
             decimal total = 0;
@@ -157,6 +198,11 @@ namespace SistemadeVentas.Presentacion.Forms
             txtTotal.Text = total.ToString("C2");
         }
 
+        /// <summary>
+        /// Valida que haya un cliente seleccionado y al menos un detalle agregado, y guarda la
+        /// venta junto con sus detalles mediante <see cref="VentaNegocio.CrearVenta"/> (operación
+        /// transaccional que también descuenta el stock de los productos vendidos).
+        /// </summary>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -210,6 +256,9 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Solicita confirmación y elimina la venta actualmente seleccionada.
+        /// </summary>
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             try
@@ -242,11 +291,18 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Limpia el formulario para iniciar el registro de una nueva venta.
+        /// </summary>
         private void btnNueva_Click(object sender, EventArgs e)
         {
             LimpiarFormulario();
         }
 
+        /// <summary>
+        /// Restablece los controles del formulario (cliente, producto, cantidad, total y
+        /// detalles temporales) a su estado inicial.
+        /// </summary>
         private void LimpiarFormulario()
         {
             cmbCliente.SelectedIndex = 0;

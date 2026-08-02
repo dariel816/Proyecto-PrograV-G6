@@ -12,13 +12,27 @@ using SistemaVentas.Entidades.Modelos.Reportes;
 
 namespace SistemaVentas.Negocio.Reportes
 {
+    /// <summary>
+    /// Genera los archivos de salida de los reportes del sistema, exportando a PDF mediante
+    /// QuestPDF y a Excel mediante ClosedXML, a partir de los datos ya calculados por
+    /// <see cref="ReporteNegocio"/>.
+    /// </summary>
     public class ReporteExportador
     {
+        /// <summary>
+        /// Configura la licencia de la comunidad de QuestPDF antes de generar cualquier documento.
+        /// </summary>
         static ReporteExportador()
         {
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
+        /// <summary>
+        /// Genera un reporte en PDF con el listado de ventas (fecha, cliente y total) y un
+        /// pie con la cantidad de ventas y el monto total.
+        /// </summary>
+        /// <param name="ventas">Lista de ventas a incluir en el reporte.</param>
+        /// <param name="rutaArchivo">Ruta del archivo PDF de destino.</param>
         public void GenerarPdfVentas(List<VentaDTO> ventas, string rutaArchivo)
         {
             Document.Create(documento =>
@@ -55,6 +69,14 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
+        /// <summary>
+        /// Genera un reporte en PDF con tres secciones: el listado completo de productos,
+        /// los productos más vendidos y los productos con bajo stock.
+        /// </summary>
+        /// <param name="productos">Listado completo de productos.</param>
+        /// <param name="productosBajoStock">Productos cuyo stock está por debajo del umbral definido.</param>
+        /// <param name="masVendidos">Productos más vendidos con su cantidad y total vendido.</param>
+        /// <param name="rutaArchivo">Ruta del archivo PDF de destino.</param>
         public void GenerarPdfProductos( List<ProductoDTO> productos, List<ProductoDTO> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             Document.Create(documento =>
@@ -155,6 +177,12 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
+        /// <summary>
+        /// Genera un reporte en PDF con el listado de clientes, su cantidad de ventas y el
+        /// total comprado por cada uno.
+        /// </summary>
+        /// <param name="clientes">Lista de clientes con sus estadísticas de compra.</param>
+        /// <param name="rutaArchivo">Ruta del archivo PDF de destino.</param>
         public void GenerarPdfClientes(List<ClienteCompra> clientes, string rutaArchivo)
         {
             Document.Create(documento =>
@@ -190,6 +218,12 @@ namespace SistemaVentas.Negocio.Reportes
             }).GeneratePdf(rutaArchivo);
         }
 
+        /// <summary>
+        /// Genera un libro de Excel con una hoja "Ventas" que contiene el listado de ventas
+        /// (fecha, cliente y total), con las columnas ajustadas al contenido.
+        /// </summary>
+        /// <param name="ventas">Lista de ventas a incluir en el reporte.</param>
+        /// <param name="rutaArchivo">Ruta del archivo Excel de destino.</param>
         public void GenerarExcelVentas(List<VentaDTO> ventas, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())
@@ -214,6 +248,14 @@ namespace SistemaVentas.Negocio.Reportes
             }
         }
 
+        /// <summary>
+        /// Genera un libro de Excel con tres hojas: el listado completo de productos, los
+        /// productos más vendidos y los productos con bajo stock.
+        /// </summary>
+        /// <param name="productos">Listado completo de productos.</param>
+        /// <param name="productosBajoStock">Productos cuyo stock está por debajo del umbral definido.</param>
+        /// <param name="masVendidos">Productos más vendidos con su cantidad y total vendido.</param>
+        /// <param name="rutaArchivo">Ruta del archivo Excel de destino.</param>
         public void GenerarExcelProductos( List<ProductoDTO> productos, List<ProductoDTO> productosBajoStock, List<ProductoVendido> masVendidos, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())
@@ -281,6 +323,12 @@ namespace SistemaVentas.Negocio.Reportes
             }
         }
 
+        /// <summary>
+        /// Genera un libro de Excel con una hoja "Clientes" que contiene el listado de clientes,
+        /// su cantidad de ventas y el total comprado por cada uno.
+        /// </summary>
+        /// <param name="clientes">Lista de clientes con sus estadísticas de compra.</param>
+        /// <param name="rutaArchivo">Ruta del archivo Excel de destino.</param>
         public void GenerarExcelClientes(List<ClienteCompra> clientes, string rutaArchivo)
         {
             using (var libro = new XLWorkbook())

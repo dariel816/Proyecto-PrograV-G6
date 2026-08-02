@@ -8,12 +8,26 @@ using SistemaVentas.Entidades.Modelos.Reportes;
 
 namespace SistemaVentas.Negocio.Reportes
 {
+    /// <summary>
+    /// Genera las agregaciones (mediante LINQ) usadas por los reportes del sistema:
+    /// ventas por rango de fechas, ventas por mes, productos más vendidos, productos con
+    /// bajo stock y clientes con más compras. No accede directamente a la base de datos,
+    /// sino que reutiliza <see cref="VentaNegocio"/>, <see cref="ProductoNegocio"/> y
+    /// <see cref="ClienteNegocio"/>.
+    /// </summary>
     public class ReporteNegocio
     {
         VentaNegocio ventaNegocio = new VentaNegocio();
         ProductoNegocio productoNegocio = new ProductoNegocio();
         ClienteNegocio clienteNegocio = new ClienteNegocio();
 
+        /// <summary>
+        /// Obtiene las ventas cuya fecha está dentro del rango indicado (inclusive), ordenadas
+        /// por fecha ascendente.
+        /// </summary>
+        /// <param name="desde">Fecha inicial del rango (inclusive).</param>
+        /// <param name="hasta">Fecha final del rango (inclusive).</param>
+        /// <returns>Lista de ventas dentro del rango de fechas.</returns>
         public List<VentaDTO> ObtenerVentasPorRango(DateTime desde, DateTime hasta)
         {
             return ventaNegocio.ObtenerVentas()
@@ -22,6 +36,10 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        /// <summary>
+        /// Agrupa el total de ventas por periodo (año-mes) para armar el reporte de ventas mensuales.
+        /// </summary>
+        /// <returns>Lista de totales agrupados por periodo ("yyyy-MM"), ordenada cronológicamente.</returns>
         public List<VentaPorPeriodo> ObtenerVentasPorMes()
         {
             return ventaNegocio.ObtenerVentas()
@@ -35,6 +53,10 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene todos los productos registrados, ordenados alfabéticamente por nombre.
+        /// </summary>
+        /// <returns>Lista completa de productos.</returns>
         public List<ProductoDTO> ObtenerTodosLosProductos()
         {
             return productoNegocio.ObtenerProductos()
@@ -42,6 +64,12 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        /// <summary>
+        /// Calcula los productos más vendidos agrupando y sumando las cantidades vendidas
+        /// en todos los detalles de todas las ventas.
+        /// </summary>
+        /// <param name="top">Cantidad máxima de productos a incluir en el resultado (por defecto 5).</param>
+        /// <returns>Lista de los productos más vendidos, ordenada por cantidad vendida descendente.</returns>
         public List<ProductoVendido> ObtenerProductosMasVendidos(int top = 5)
         {
             return ventaNegocio.ObtenerVentas()
@@ -59,6 +87,11 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        /// <summary>
+        /// Obtiene los productos cuyo stock está por debajo (o igual) del umbral indicado.
+        /// </summary>
+        /// <param name="umbral">Cantidad de stock límite para considerar un producto con bajo stock (por defecto 5).</param>
+        /// <returns>Lista de productos con bajo stock, ordenada por stock ascendente.</returns>
         public List<ProductoDTO> ObtenerProductosBajoStock(int umbral = 5)
         {
             return productoNegocio.ObtenerProductos()
@@ -67,6 +100,12 @@ namespace SistemaVentas.Negocio.Reportes
                 .ToList();
         }
 
+        /// <summary>
+        /// Calcula los clientes con más compras, agrupando las ventas por cliente y sumando
+        /// la cantidad de ventas y el monto total comprado.
+        /// </summary>
+        /// <param name="top">Cantidad máxima de clientes a incluir en el resultado (por defecto 5).</param>
+        /// <returns>Lista de los clientes con más compras, ordenada por total comprado descendente.</returns>
         public List<ClienteCompra> ObtenerClientesConMasCompras(int top = 5)
         {
             return ventaNegocio.ObtenerVentas()

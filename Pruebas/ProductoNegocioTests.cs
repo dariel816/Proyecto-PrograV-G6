@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
@@ -92,6 +93,49 @@ namespace SistemaVentas.Pruebas
             finally
             {
                 productoNegocio.EliminarProducto(idCreado);
+            }
+        }
+
+        [TestMethod]
+        public void ExportarEImportarCatalogoJson_RecuperaElProductoEliminado()
+        {
+            string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
+            var producto = new ProductoDTO
+            {
+                Codigo = "PJ-" + sufijo,
+                Nombre = "Producto JSON " + sufijo,
+                Descripcion = "Prueba de exportacion e importacion JSON",
+                Precio = 12.5m,
+                Stock = 8
+            };
+
+            productoNegocio.InsertarProducto(producto);
+            int idOriginal = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo)!.Id;
+
+            string rutaTemp = Path.Combine(Path.GetTempPath(), "catalogo_prueba_" + sufijo + ".json");
+
+            try
+            {
+                productoNegocio.ExportarCatalogoJson(rutaTemp);
+                Assert.IsTrue(File.Exists(rutaTemp));
+
+                // Se elimina el producto para simular la perdida de datos que el import debe recuperar
+                productoNegocio.EliminarProducto(idOriginal);
+
+                var resultado = productoNegocio.ImportarCatalogoJson(rutaTemp);
+                Assert.IsTrue(resultado.Importados >= 1);
+
+                var reimportado = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo);
+                Assert.IsNotNull(reimportado);
+                Assert.AreEqual(producto.Nombre, reimportado.Nombre);
+                Assert.AreEqual(producto.Stock, reimportado.Stock);
+
+                productoNegocio.EliminarProducto(reimportado.Id);
+            }
+            finally
+            {
+                if (File.Exists(rutaTemp))
+                    File.Delete(rutaTemp);
             }
         }
     }

@@ -12,6 +12,12 @@ using SistemaVentas.Entidades.Modelos;
 
 namespace SistemaVentas.Negocio
 {
+    /// <summary>
+    /// Reglas de negocio y validaciones para la gestión de ventas, incluyendo la creación
+    /// transaccional de una venta junto con sus detalles y la actualización del stock de
+    /// los productos involucrados. Trabaja con <see cref="VentaDTO"/> y <see cref="DetalleVentaDTO"/>,
+    /// delegando el acceso a datos en los repositorios obtenidos mediante <see cref="RepositorioFactory"/>.
+    /// </summary>
     public class VentaNegocio
     {
         private readonly IVentaRepositorio ventaRepositorio;
@@ -19,24 +25,46 @@ namespace SistemaVentas.Negocio
         private readonly ClienteNegocio clienteNegocio = new ClienteNegocio();
         private readonly ProductoNegocio productoNegocio = new ProductoNegocio();
 
+        /// <summary>
+        /// Crea una nueva instancia de <see cref="VentaNegocio"/> y obtiene los repositorios
+        /// de ventas y detalles de venta a través de la fábrica de repositorios.
+        /// </summary>
         public VentaNegocio()
         {
             ventaRepositorio = RepositorioFactory.CrearVentaRepositorio();
             detalleVentaRepositorio = RepositorioFactory.CrearDetalleVentaRepositorio();
         }
 
+        /// <summary>
+        /// Obtiene la lista completa de ventas registradas, con sus detalles y datos de cliente
+        /// resueltos.
+        /// </summary>
+        /// <returns>Lista de ventas en formato <see cref="VentaDTO"/>.</returns>
         public List<VentaDTO> ObtenerVentas()
         {
             List<Venta> ventas = ventaRepositorio.ObtenerVentas();
             return ventas.Select(MapearVentaADto).ToList();
         }
 
+        /// <summary>
+        /// Busca una venta por su identificador.
+        /// </summary>
+        /// <param name="id">Identificador de la venta.</param>
+        /// <returns>El <see cref="VentaDTO"/> encontrado, o <c>null</c> si no existe.</returns>
         public VentaDTO? ObtenerVentaPorId(int id)
         {
             Venta? venta = ventaRepositorio.ObtenerVentaPorId(id);
             return venta == null ? null : MapearVentaADto(venta);
         }
 
+        /// <summary>
+        /// Función de mapeo: convierte una entidad <see cref="Venta"/> en su <see cref="VentaDTO"/>
+        /// correspondiente, resolviendo el cliente y los detalles (incluyendo el nombre de cada
+        /// producto) asociados a la venta.
+        /// </summary>
+        /// <param name="venta">Entidad de venta proveniente del repositorio.</param>
+        /// <returns>El <see cref="VentaDTO"/> equivalente, con cliente y detalles completos.</returns>
+        /// <exception cref="Exception">Se lanza si el cliente o algún producto referenciado no existe.</exception>
         private VentaDTO MapearVentaADto(Venta venta)
         {
             var cliente = clienteNegocio.ObtenerClientePorId(venta.ClienteId);
@@ -75,6 +103,34 @@ namespace SistemaVentas.Negocio
             };
         }
 
+        /// <summary>
+        /// Crea una nueva venta junto con todos sus detalles dentro de una única transacción MySQL.
+        /// <para>
+        /// Validaciones que realiza antes de tocar la base de datos: que la venta y la lista de
+        /// detalles no sean nulas y que existan detalles; que cada detalle tenga un producto válido
+        /// y una cantidad mayor a cero; que el producto exista y que su stock actual sea suficiente
+        /// para cubrir la cantidad solicitada. También completa la fecha de la venta si no fue
+        /// indicada, recalcula el precio unitario y el subtotal de cada detalle a partir del precio
+        /// vigente del producto, y calcula el total de la venta.
+        /// </para>
+        /// <para>
+        /// Garantías de la transacción: la inserción de la venta, la inserción de cada uno de sus
+        /// detalles y el descuento del stock de cada producto se ejecutan sobre la misma
+        /// <see cref="MySqlConnection"/> y <see cref="MySqlTransaction"/>. Si cualquier paso falla
+        /// (la venta, un detalle o una actualización de stock), se hace <c>Rollback</c> de toda la
+        /// transacción y se relanza la excepción, de modo que nunca queda una venta guardada sin
+        /// sus detalles, ni un detalle guardado sin el descuento correspondiente de stock. Solo se
+        /// hace <c>Commit</c> si absolutamente todo el proceso se completó con éxito.
+        /// </para>
+        /// </summary>
+        /// <param name="venta">Datos generales de la venta (cliente, fecha, total a calcular).</param>
+        /// <param name="detalles">Lista de detalles (líneas de producto) que componen la venta.</param>
+        /// <returns><c>true</c> si la venta y todos sus detalles se guardaron correctamente.</returns>
+        /// <exception cref="ArgumentNullException">Se lanza si <paramref name="venta"/> es <c>null</c>.</exception>
+        /// <exception cref="Exception">
+        /// Se lanza cuando alguna validación de negocio falla o cuando ocurre un error al guardar
+        /// la venta, un detalle o al actualizar el stock (en cuyo caso se revierte la transacción).
+        /// </exception>
         public bool CrearVenta(VentaDTO venta, List<DetalleVentaDTO> detalles)
         {
             if (venta == null)
@@ -230,6 +286,13 @@ namespace SistemaVentas.Negocio
             }
         }
 
+        /// <summary>
+        /// Valida y actualiza los datos generales de una venta y recalcula los subtotales
+        /// y el total a partir de sus detalles. No modifica el stock de los productos.
+        /// </summary>
+        /// <param name="venta">Datos actualizados de la venta, incluyendo sus detalles.</param>
+        /// <returns><c>true</c> si la venta fue actualizada correctamente.</returns>
+        /// <exception cref="Exception">Se lanza cuando el cliente indicado no es válido.</exception>
         public bool EditarVenta(VentaDTO venta)
         {
             if (venta.ClienteId <= 0)
@@ -255,6 +318,11 @@ namespace SistemaVentas.Negocio
             return ventaRepositorio.EditarVenta(ventaEntidad);
         }
 
+        /// <summary>
+        /// Elimina una venta por su identificador, eliminando primero todos sus detalles asociados.
+        /// </summary>
+        /// <param name="id">Identificador de la venta a eliminar.</param>
+        /// <returns><c>true</c> si la venta fue eliminada correctamente.</returns>
         public bool EliminarVenta(int id)
         {
             detalleVentaRepositorio.EliminarDetallesPorVenta(id);

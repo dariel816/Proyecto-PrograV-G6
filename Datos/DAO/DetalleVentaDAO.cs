@@ -6,10 +6,20 @@ using SistemaVentas.Entidades.Modelos;
 
 namespace SistemaVentas.Datos.DAO
 {
+    /// <summary>
+    /// Acceso a datos de la tabla <c>detalle_ventas</c> en MySQL mediante ADO.NET
+    /// (MySql.Data.MySqlClient).
+    /// </summary>
     public class DetalleVentaDAO
     {
         private readonly ConexionDB conexionDB = new ConexionDB();
 
+        /// <summary>
+        /// Obtiene todos los detalles (líneas de producto) asociados a una venta.
+        /// </summary>
+        /// <param name="ventaId">Id de la venta cuyos detalles se desean obtener.</param>
+        /// <returns>Lista de detalles de la venta (puede estar vacía).</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al consultar la base de datos.</exception>
         public List<DetalleVenta> ObtenerDetallesPorVenta(int ventaId)
         {
             List<DetalleVenta> lista = new List<DetalleVenta>();
@@ -82,6 +92,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Busca un detalle de venta por su identificador.
+        /// </summary>
+        /// <param name="id">Id del detalle a buscar.</param>
+        /// <returns>El detalle encontrado, o <c>null</c> si no existe.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al consultar la base de datos.</exception>
         public DetalleVenta? ObtenerDetallePorId(int id)
         {
             string query =
@@ -165,6 +181,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Inserta un nuevo detalle de venta en la base de datos, abriendo su propia conexión.
+        /// </summary>
+        /// <param name="detalle">Datos del detalle de venta a insertar.</param>
+        /// <returns><c>true</c> si se insertó al menos una fila.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al insertar en la base de datos.</exception>
         public bool InsertarDetalleVenta(DetalleVenta detalle)
         {
             string query =
@@ -222,6 +244,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Actualiza los datos de un detalle de venta existente, identificado por su Id.
+        /// </summary>
+        /// <param name="detalle">Detalle con los datos actualizados (incluye el Id).</param>
+        /// <returns><c>true</c> si se actualizó al menos una fila.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al actualizar la base de datos.</exception>
         public bool EditarDetalleVenta(DetalleVenta detalle)
         {
             string query =
@@ -277,6 +305,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Elimina un detalle de venta de la base de datos por su Id.
+        /// </summary>
+        /// <param name="id">Id del detalle a eliminar.</param>
+        /// <returns><c>true</c> si se eliminó al menos una fila.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al eliminar en la base de datos.</exception>
         public bool EliminarDetalleVenta(int id)
         {
             string query =
@@ -311,6 +345,12 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Elimina todos los detalles asociados a una venta (por ejemplo, al eliminar la venta completa).
+        /// </summary>
+        /// <param name="ventaId">Id de la venta cuyos detalles se desean eliminar.</param>
+        /// <returns><c>true</c> si se eliminó al menos una fila.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al eliminar en la base de datos.</exception>
         public bool EliminarDetallesPorVenta(int ventaId)
         {
             string query =
@@ -346,6 +386,17 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        /// <summary>
+        /// Variante transaccional de <see cref="InsertarDetalleVenta(DetalleVenta)"/>, para
+        /// usarse dentro de una transacción ya existente (por ejemplo, la de
+        /// <c>VentaNegocio.CrearVenta</c>), reutilizando la misma conexión y transacción
+        /// en lugar de abrir una nueva.
+        /// </summary>
+        /// <param name="detalle">Datos del detalle de venta a insertar.</param>
+        /// <param name="conexion">Conexión MySQL abierta de la transacción en curso.</param>
+        /// <param name="transaccion">Transacción MySQL en curso.</param>
+        /// <returns><c>true</c> si se insertó al menos una fila.</returns>
+        /// <exception cref="Exception">Se relanza si ocurre un error al insertar en la base de datos.</exception>
         public bool InsertarDetalleVenta(
             DetalleVenta detalle,
             MySqlConnection conexion,

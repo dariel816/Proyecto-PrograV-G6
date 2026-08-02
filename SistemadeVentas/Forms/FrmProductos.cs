@@ -16,21 +16,35 @@ namespace SistemadeVentas.Presentacion.Forms
 
 
 {
+    /// <summary>
+    /// Formulario de gestión de productos: alta, edición, eliminación, listado y
+    /// exportación/importación del catálogo en formato JSON.
+    /// </summary>
     public partial class FrmProductos : Form
     {
         ProductoNegocio productoNegocio = new ProductoNegocio();//Instancia de la capa de negocio para productos
 
+        /// <summary>
+        /// Inicializa el formulario de productos y carga el listado inicial de productos.
+        /// </summary>
         public FrmProductos()
         {
             InitializeComponent();
             CargarProductos();//Llamada al método para cargar los productos en el DataGridView al iniciar el formulario
         }
 
+        /// <summary>
+        /// Carga (o recarga) el listado de productos en el <c>DataGridView</c> del formulario.
+        /// </summary>
         private void CargarProductos()
         {
             dgvProductos.DataSource = productoNegocio.ObtenerProductos();
         }
 
+        /// <summary>
+        /// Limpia los campos de entrada (ID, código, nombre, descripción, precio, stock) después
+        /// de agregar, actualizar o eliminar un producto.
+        /// </summary>
         private void limpiarCampos() //Método para limpiar los campos de entrada después de agregar o actualizar un producto
         {
             txtID.Clear(); // Limpiar el campo de ID (aunque generalmente no se debería mostrar ni editar el ID directamente)
@@ -42,6 +56,11 @@ namespace SistemadeVentas.Presentacion.Forms
             txtCodigo.Focus();  // Establecer el foco en el campo de código para facilitar la entrada de datos
         }
 
+        /// <summary>
+        /// Valida que todos los campos requeridos (código, nombre, descripción, precio y stock)
+        /// estén llenos.
+        /// </summary>
+        /// <returns><c>true</c> si todos los campos requeridos están completos; de lo contrario <c>false</c>.</returns>
         // Valida que todos los campos requeridos estén llenos y tienen formato correcto
         private bool ValidarCampos()
         {
@@ -83,6 +102,10 @@ namespace SistemadeVentas.Presentacion.Forms
             return true;
         }
 
+        /// <summary>
+        /// Valida los campos y guarda un nuevo producto, verificando previamente que el código
+        /// y el nombre no estén ya registrados.
+        /// </summary>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
@@ -151,11 +174,19 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Manejador reservado para el evento de clic en el contenido de una celda del
+        /// <c>DataGridView</c> de productos. Actualmente no realiza ninguna acción.
+        /// </summary>
         private void dgvProductos_CellContentClick(object sender, DataGridViewCellEventArgs e) //Evento para manejar el clic en una celda del DataGridView, se utiliza para cargar los datos del producto seleccionado en los campos de entrada para su edición
         {
 
         }
 
+        /// <summary>
+        /// Carga los datos del producto de la fila seleccionada en el <c>DataGridView</c>
+        /// hacia los campos de texto del formulario, para su edición o eliminación.
+        /// </summary>
         private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e) //Evento para manejar el clic en una celda del DataGridView, se utiliza para cargar los datos del producto seleccionado en los campos de entrada para su edición
         {
             if (e.RowIndex >= 0) // Verificar que se haya seleccionado una fila válida
@@ -173,6 +204,9 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Valida los campos y actualiza el producto seleccionado.
+        /// </summary>
         private void btnEditar_Click(object sender, EventArgs e)
         {
             try
@@ -241,6 +275,9 @@ namespace SistemadeVentas.Presentacion.Forms
             }
         }
 
+        /// <summary>
+        /// Solicita confirmación y elimina el producto seleccionado.
+        /// </summary>
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             try
@@ -285,9 +322,62 @@ namespace SistemadeVentas.Presentacion.Forms
 
         }
 
+        /// <summary>
+        /// Limpia los campos de entrada al presionar el botón Limpiar.
+        /// </summary>
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             limpiarCampos(); // Llamada al método para limpiar los campos de entrada cuando se hace clic en el botón "Limpiar"
+        }
+
+        /// <summary>
+        /// Solicita al usuario una ruta de archivo y exporta el catálogo completo de productos
+        /// a un archivo JSON mediante <see cref="ProductoNegocio.ExportarCatalogoJson"/>.
+        /// </summary>
+        private void btnExportarJson_Click(object sender, EventArgs e)
+        {
+            using (var dialogo = new SaveFileDialog { Filter = "Archivo JSON (*.json)|*.json", FileName = "CatalogoProductos.json" })
+            {
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    productoNegocio.ExportarCatalogoJson(dialogo.FileName);
+                    MessageBox.Show("Catálogo exportado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al exportar el catálogo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Solicita al usuario un archivo JSON y lo importa al catálogo de productos mediante
+        /// <see cref="ProductoNegocio.ImportarCatalogoJson"/>, informando cuántos productos
+        /// fueron importados y cuántos omitidos.
+        /// </summary>
+        private void btnImportarJson_Click(object sender, EventArgs e)
+        {
+            using (var dialogo = new OpenFileDialog { Filter = "Archivo JSON (*.json)|*.json" })
+            {
+                if (dialogo.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    var resultado = productoNegocio.ImportarCatalogoJson(dialogo.FileName);
+                    CargarProductos();
+                    MessageBox.Show(
+                        $"Importación completa: {resultado.Importados} producto(s) importado(s), {resultado.Omitidos} omitido(s).",
+                        "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al importar el catálogo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }
