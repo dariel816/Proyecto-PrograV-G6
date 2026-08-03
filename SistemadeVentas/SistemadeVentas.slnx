@@ -1,6 +1,10 @@
 <Solution>
   <Folder Name="/Documentacion/">
     <File Path="DiagramaEntidades.puml" />
+    <File Path="DiagramaCapas.puml" />
+  </Folder>
+  <Folder Name="/SQL/">
+    <File Path="../SQL/usuarios.sql" />
   </Folder>
   <Project Path="../Datos/SistemaVentas.Datos.csproj" />
   <Project Path="../Entidades/SistemaVentas.Entidades.csproj" />
