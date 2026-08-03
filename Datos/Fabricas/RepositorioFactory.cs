@@ -35,5 +35,11 @@ namespace SistemaVentas.Datos.Fabricas
         /// </summary>
         /// <returns>Una nueva instancia de <see cref="DetalleVentaRepositorio"/>.</returns>
         public static IDetalleVentaRepositorio CrearDetalleVentaRepositorio() => new DetalleVentaRepositorio();
+
+        /// <summary>
+        /// Crea una instancia de <see cref="IUsuarioRepositorio"/> lista para usar.
+        /// </summary>
+        /// <returns>Una nueva instancia de <see cref="UsuarioRepositorio"/>.</returns>
+        public static IUsuarioRepositorio CrearUsuarioRepositorio() => new UsuarioRepositorio(CadenaConexion);
     }
 }

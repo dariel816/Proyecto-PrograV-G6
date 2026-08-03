@@ -18,11 +18,36 @@ namespace SistemadeVentas.Presentacion.Forms
     public partial class FrmMenu : Form
     {
         /// <summary>
-        /// Inicializa una nueva instancia del formulario de menú principal.
+        /// Inicializa una nueva instancia del formulario de menú principal. Si hay una sesión
+        /// activa (<see cref="Utilidades.SesionActual"/>), muestra el usuario y su rol en el
+        /// título de la ventana, y aplica un efecto hover a los botones de cada módulo.
         /// </summary>
         public FrmMenu()
         {
             InitializeComponent();
+
+            if (Utilidades.SesionActual.Usuario != null)
+            {
+                Text = $"Sistema de Ventas - {Utilidades.SesionActual.Usuario.NombreUsuario} ({Utilidades.SesionActual.Usuario.Rol})";
+            }
+
+            AplicarHoverModulo(btnProductos);
+            AplicarHoverModulo(btnClientes);
+            AplicarHoverModulo(btnVentas);
+            AplicarHoverModulo(btnReportes);
+        }
+
+        /// <summary>
+        /// Resalta la tarjeta del módulo con un fondo azul muy suave al pasar el mouse,
+        /// para reforzar que los botones del menú son interactivos.
+        /// </summary>
+        /// <param name="boton">Botón de módulo al que se le aplica el efecto hover.</param>
+        private static void AplicarHoverModulo(FontAwesome.Sharp.IconButton boton)
+        {
+            Color colorNormal = boton.BackColor;
+            Color colorHover = Color.FromArgb(230, 238, 250);
+            boton.MouseEnter += (s, e) => boton.BackColor = colorHover;
+            boton.MouseLeave += (s, e) => boton.BackColor = colorNormal;
         }
 
         /// <summary>

@@ -1,0 +1,108 @@
+@startuml
+title Sistema de Ventas - Diagrama de Arquitectura en Capas
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "Presentación (WinForms)" {
+    [FrmLogin]
+    [FrmMenu]
+    [FrmProductos]
+    [FrmClientes]
+    [FrmVentas]
+    [FrmReportes]
+}
+
+package "Negocio" {
+    [ProductoNegocio]
+    [ClienteNegocio]
+    [VentaNegocio]
+    [DetalleVentaNegocio]
+    [ReporteNegocio]
+    [ReporteExportador]
+    [UsuarioNegocio]
+    package "Seguridad" {
+        [PasswordHasher]
+    }
+}
+
+package "Datos" {
+    package "Repositorios" {
+        [ProductoRepositorio]
+        [ClienteRepositorio]
+        [VentaRepositorio]
+        [DetalleVentaRepositorio]
+        [UsuarioRepositorio]
+    }
+    package "DAO" {
+        [ProductoDAO]
+        [ClienteDAO]
+        [VentaDAO]
+        [DetalleVentaDAO]
+        [UsuarioDAO]
+    }
+    package "Fábricas" {
+        [RepositorioFactory]
+    }
+    [ConexionDB]
+}
+
+package "Entidades" {
+    [Modelos]
+    [DTOs]
+}
+
+database "MySQL\n(sistema_ventas)" as BD
+
+' Presentación consume Negocio
+FrmLogin --> UsuarioNegocio
+FrmProductos --> ProductoNegocio
+FrmClientes --> ClienteNegocio
+FrmVentas --> VentaNegocio
+FrmVentas --> DetalleVentaNegocio
+FrmReportes --> ReporteNegocio
+FrmReportes --> ReporteExportador
+
+' Negocio consume Repositorios a través de la fábrica (patrón Factory)
+ProductoNegocio --> RepositorioFactory
+ClienteNegocio --> RepositorioFactory
+VentaNegocio --> RepositorioFactory
+DetalleVentaNegocio --> RepositorioFactory
+UsuarioNegocio --> RepositorioFactory
+UsuarioNegocio --> PasswordHasher
+RepositorioFactory --> ProductoRepositorio
+RepositorioFactory --> ClienteRepositorio
+RepositorioFactory --> VentaRepositorio
+RepositorioFactory --> DetalleVentaRepositorio
+RepositorioFactory --> UsuarioRepositorio
+
+' Repositorios usan DAO (patrón Repositorio sobre DAO)
+ProductoRepositorio --> ProductoDAO
+ClienteRepositorio --> ClienteDAO
+VentaRepositorio --> VentaDAO
+DetalleVentaRepositorio --> DetalleVentaDAO
+UsuarioRepositorio --> UsuarioDAO
+
+' DAO accede a la base de datos mediante la conexión centralizada
+ProductoDAO --> ConexionDB
+ClienteDAO --> ConexionDB
+VentaDAO --> ConexionDB
+DetalleVentaDAO --> ConexionDB
+UsuarioDAO --> ConexionDB
+ConexionDB --> BD
+
+' Todas las capas usan Entidades (Modelos y DTOs) para transportar datos
+Presentación .down.> Entidades : usa DTOs
+Negocio .down.> Entidades : usa DTOs / Modelos
+Datos .down.> Entidades : usa Modelos
+
+note bottom of Datos
+  Patrón DAO: acceso directo a MySQL con
+  consultas parametrizadas (previene SQL Injection).
+  Patrón Repositorio: expone operaciones de negocio
+  sobre los DAO (ObtenerTodos, InsertarProducto, etc).
+  Patrón Factory: RepositorioFactory centraliza la
+  creación de instancias de cada repositorio.
+end note
+
+@enduml
