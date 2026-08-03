@@ -18,9 +18,16 @@ namespace SistemadeVentas.Presentacion.Forms
     public partial class FrmMenu : Form
     {
         /// <summary>
+        /// Rol con permiso para ver el módulo de Reportes. Cualquier otro rol
+        /// (por ejemplo, "Empleado" o "Vendedor") no ve el botón de Reportes.
+        /// </summary>
+        private const string RolConAccesoAReportes = "Administrador";
+
+        /// <summary>
         /// Inicializa una nueva instancia del formulario de menú principal. Si hay una sesión
         /// activa (<see cref="Utilidades.SesionActual"/>), muestra el usuario y su rol en el
-        /// título de la ventana, y aplica un efecto hover a los botones de cada módulo.
+        /// título de la ventana, oculta el módulo de Reportes a quien no sea Administrador,
+        /// y aplica un efecto hover a los botones de cada módulo.
         /// </summary>
         public FrmMenu()
         {
@@ -31,10 +38,21 @@ namespace SistemadeVentas.Presentacion.Forms
                 Text = $"Sistema de Ventas - {Utilidades.SesionActual.Usuario.NombreUsuario} ({Utilidades.SesionActual.Usuario.Rol})";
             }
 
+            bool tieneAccesoAReportes = string.Equals(
+                Utilidades.SesionActual.Usuario?.Rol,
+                RolConAccesoAReportes,
+                StringComparison.OrdinalIgnoreCase);
+
+            btnReportes.Visible = tieneAccesoAReportes;
+
             AplicarHoverModulo(btnProductos);
             AplicarHoverModulo(btnClientes);
             AplicarHoverModulo(btnVentas);
-            AplicarHoverModulo(btnReportes);
+
+            if (tieneAccesoAReportes)
+            {
+                AplicarHoverModulo(btnReportes);
+            }
         }
 
         /// <summary>
