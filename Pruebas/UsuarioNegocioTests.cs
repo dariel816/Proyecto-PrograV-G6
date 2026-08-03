@@ -19,6 +19,16 @@ namespace SistemaVentas.Pruebas
         }
 
         [TestMethod]
+        public void ValidarLogin_UsuarioConRolVendedor_RetornaElRolCorrecto()
+        {
+            UsuarioDTO? usuario = usuarioNegocio.ValidarLogin("vendedor", "vendedor123");
+
+            Assert.IsNotNull(usuario);
+            Assert.AreEqual("vendedor", usuario.NombreUsuario);
+            Assert.AreEqual("Vendedor", usuario.Rol);
+        }
+
+        [TestMethod]
         public void ValidarLogin_ContraseñaIncorrecta_RetornaNull()
         {
             UsuarioDTO? usuario = usuarioNegocio.ValidarLogin("admin", "contraseñaIncorrecta");
