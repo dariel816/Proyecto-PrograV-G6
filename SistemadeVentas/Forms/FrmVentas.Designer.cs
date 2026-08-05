@@ -34,6 +34,7 @@ namespace SistemadeVentas.Presentacion.Forms
             txtTotal = new TextBox();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
+            btnVolver = new Button();
             gbVentas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvVentas).BeginInit();
             gbDetalles.SuspendLayout();
@@ -276,7 +277,7 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             txtTotal.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTotal.ForeColor = Color.RoyalBlue;
-            txtTotal.Location = new Point(101, 695);
+            txtTotal.Location = new Point(98, 695);
             txtTotal.Margin = new Padding(6, 7, 6, 7);
             txtTotal.Name = "txtTotal";
             txtTotal.ReadOnly = true;
@@ -304,11 +305,28 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTituloForm.TabIndex = 0;
             lblTituloForm.Text = "Gestión de Ventas";
             // 
+            // btnVolver
+            // 
+            btnVolver.Cursor = Cursors.Hand;
+            btnVolver.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnVolver.FlatAppearance.MouseOverBackColor = Color.AliceBlue;
+            btnVolver.FlatStyle = FlatStyle.Flat;
+            btnVolver.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnVolver.ForeColor = Color.RoyalBlue;
+            btnVolver.Location = new Point(20, 744);
+            btnVolver.Name = "btnVolver";
+            btnVolver.Size = new Size(217, 34);
+            btnVolver.TabIndex = 12;
+            btnVolver.Text = "← Volver al menú";
+            btnVolver.UseVisualStyleBackColor = true;
+            btnVolver.Click += btnVolver_Click;
+            // 
             // FrmVentas
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(1460, 790);
+            Controls.Add(btnVolver);
             Controls.Add(txtTotal);
             Controls.Add(lblTotal);
             Controls.Add(btnNueva);
@@ -356,5 +374,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private System.Windows.Forms.TextBox txtTotal;
         private Panel pnlEncabezado;
         private Label lblTituloForm;
+        private Button btnVolver;
     }
 }

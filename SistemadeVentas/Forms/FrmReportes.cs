@@ -256,5 +256,10 @@ namespace SistemadeVentas.Presentacion.Forms
                 }
             }
         }
+
+        private void btnVolver_Click(object sender, EventArgs e)
+        {
+            Close();// Cierra el formulario actual
+        }
     }
 }

@@ -44,6 +44,7 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvClientes = new DataGridView();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
+            btnVolver = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
@@ -244,7 +245,7 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado.Dock = DockStyle.Top;
             pnlEncabezado.Location = new Point(0, 0);
             pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(900, 70);
+            pnlEncabezado.Size = new Size(929, 70);
             pnlEncabezado.TabIndex = 0;
             // 
             // lblTituloForm
@@ -258,11 +259,28 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTituloForm.TabIndex = 0;
             lblTituloForm.Text = "Gestión de Clientes";
             // 
+            // btnVolver
+            // 
+            btnVolver.Cursor = Cursors.Hand;
+            btnVolver.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnVolver.FlatAppearance.MouseOverBackColor = Color.AliceBlue;
+            btnVolver.FlatStyle = FlatStyle.Flat;
+            btnVolver.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnVolver.ForeColor = Color.RoyalBlue;
+            btnVolver.Location = new Point(30, 634);
+            btnVolver.Name = "btnVolver";
+            btnVolver.Size = new Size(217, 34);
+            btnVolver.TabIndex = 11;
+            btnVolver.Text = "← Volver al menú";
+            btnVolver.UseVisualStyleBackColor = true;
+            btnVolver.Click += btnVolver_Click;
+            // 
             // FrmClientes
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(900, 630);
+            ClientSize = new Size(929, 680);
+            Controls.Add(btnVolver);
             Controls.Add(dgvClientes);
             Controls.Add(btnImportarJson);
             Controls.Add(btnExportarJson);
@@ -308,5 +326,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private DataGridView dgvClientes;
         private Panel pnlEncabezado;
         private Label lblTituloForm;
+        private Button btnVolver;
     }
 }

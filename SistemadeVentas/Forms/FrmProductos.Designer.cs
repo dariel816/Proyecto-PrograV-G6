@@ -48,6 +48,7 @@ namespace SistemadeVentas.Presentacion.Forms
             txtID = new TextBox();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
+            btnVolver = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
@@ -58,10 +59,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProductos.BackgroundColor = Color.White;
             dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvProductos.Location = new Point(30, 306);
+            dgvProductos.Location = new Point(30, 282);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.RowHeadersWidth = 62;
-            dgvProductos.Size = new Size(840, 290);
+            dgvProductos.Size = new Size(905, 357);
             dgvProductos.TabIndex = 0;
             dgvProductos.CellClick += dgvProductos_CellClick;
             dgvProductos.CellContentClick += dgvProductos_CellContentClick;
@@ -192,7 +193,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarJson.IconColor = Color.SteelBlue;
             btnExportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarJson.IconSize = 18;
-            btnExportarJson.Location = new Point(728, 247);
+            btnExportarJson.Location = new Point(793, 234);
             btnExportarJson.Name = "btnExportarJson";
             btnExportarJson.Size = new Size(160, 42);
             btnExportarJson.TabIndex = 16;
@@ -212,7 +213,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnImportarJson.IconColor = Color.DarkOrange;
             btnImportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnImportarJson.IconSize = 18;
-            btnImportarJson.Location = new Point(728, 192);
+            btnImportarJson.Location = new Point(793, 169);
             btnImportarJson.Name = "btnImportarJson";
             btnImportarJson.Size = new Size(160, 39);
             btnImportarJson.TabIndex = 17;
@@ -281,7 +282,7 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado.Dock = DockStyle.Top;
             pnlEncabezado.Location = new Point(0, 0);
             pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(900, 70);
+            pnlEncabezado.Size = new Size(965, 70);
             pnlEncabezado.TabIndex = 0;
             // 
             // lblTituloForm
@@ -295,11 +296,28 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTituloForm.TabIndex = 0;
             lblTituloForm.Text = "Gestión de Productos";
             // 
+            // btnVolver
+            // 
+            btnVolver.Cursor = Cursors.Hand;
+            btnVolver.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnVolver.FlatAppearance.MouseOverBackColor = Color.AliceBlue;
+            btnVolver.FlatStyle = FlatStyle.Flat;
+            btnVolver.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnVolver.ForeColor = Color.RoyalBlue;
+            btnVolver.Location = new Point(20, 651);
+            btnVolver.Name = "btnVolver";
+            btnVolver.Size = new Size(217, 34);
+            btnVolver.TabIndex = 18;
+            btnVolver.Text = "← Volver al menú";
+            btnVolver.UseVisualStyleBackColor = true;
+            btnVolver.Click += btnVolver_Click;
+            // 
             // FrmProductos
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(900, 630);
+            ClientSize = new Size(965, 697);
+            Controls.Add(btnVolver);
             Controls.Add(txtID);
             Controls.Add(lblStock);
             Controls.Add(lblPrecio);
@@ -353,5 +371,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private TextBox txtID;
         private Panel pnlEncabezado;
         private Label lblTituloForm;
+        private Button btnVolver;
     }
 }

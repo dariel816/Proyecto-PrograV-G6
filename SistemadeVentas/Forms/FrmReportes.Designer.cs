@@ -43,6 +43,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarExcel = new FontAwesome.Sharp.IconButton();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
+            btnVolver = new Button();
             ((System.ComponentModel.ISupportInitialize)chartReporte).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvReporte).BeginInit();
             pnlEncabezado.SuspendLayout();
@@ -130,7 +131,7 @@ namespace SistemadeVentas.Presentacion.Forms
             series1.ChartArea = "ChartArea1";
             series1.Name = "Series1";
             chartReporte.Series.Add(series1);
-            chartReporte.Size = new Size(925, 220);
+            chartReporte.Size = new Size(978, 220);
             chartReporte.TabIndex = 7;
             chartReporte.Text = "chartReporte";
             // 
@@ -140,10 +141,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvReporte.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvReporte.BackgroundColor = Color.White;
             dgvReporte.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvReporte.Location = new Point(12, 346);
+            dgvReporte.Location = new Point(12, 336);
             dgvReporte.Name = "dgvReporte";
             dgvReporte.RowHeadersWidth = 62;
-            dgvReporte.Size = new Size(925, 246);
+            dgvReporte.Size = new Size(978, 300);
             dgvReporte.TabIndex = 8;
             // 
             // btnExportarPdf
@@ -158,9 +159,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarPdf.IconColor = Color.Firebrick;
             btnExportarPdf.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarPdf.IconSize = 18;
-            btnExportarPdf.Location = new Point(12, 598);
+            btnExportarPdf.Location = new Point(568, 670);
             btnExportarPdf.Name = "btnExportarPdf";
-            btnExportarPdf.Size = new Size(120, 30);
+            btnExportarPdf.Size = new Size(140, 42);
             btnExportarPdf.TabIndex = 9;
             btnExportarPdf.Text = "Exportar PDF";
             btnExportarPdf.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -179,9 +180,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarExcel.IconColor = Color.ForestGreen;
             btnExportarExcel.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarExcel.IconSize = 18;
-            btnExportarExcel.Location = new Point(171, 598);
+            btnExportarExcel.Location = new Point(411, 670);
             btnExportarExcel.Name = "btnExportarExcel";
-            btnExportarExcel.Size = new Size(120, 30);
+            btnExportarExcel.Size = new Size(128, 42);
             btnExportarExcel.TabIndex = 10;
             btnExportarExcel.Text = "Exportar Excel";
             btnExportarExcel.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -195,7 +196,7 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado.Dock = DockStyle.Top;
             pnlEncabezado.Location = new Point(0, 0);
             pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(961, 70);
+            pnlEncabezado.Size = new Size(1014, 70);
             pnlEncabezado.TabIndex = 11;
             // 
             // lblTituloForm
@@ -209,11 +210,28 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTituloForm.TabIndex = 0;
             lblTituloForm.Text = "Reportes";
             // 
+            // btnVolver
+            // 
+            btnVolver.Cursor = Cursors.Hand;
+            btnVolver.FlatAppearance.BorderColor = Color.RoyalBlue;
+            btnVolver.FlatAppearance.MouseOverBackColor = Color.AliceBlue;
+            btnVolver.FlatStyle = FlatStyle.Flat;
+            btnVolver.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnVolver.ForeColor = Color.RoyalBlue;
+            btnVolver.Location = new Point(20, 666);
+            btnVolver.Name = "btnVolver";
+            btnVolver.Size = new Size(217, 34);
+            btnVolver.TabIndex = 12;
+            btnVolver.Text = "← Volver al menú";
+            btnVolver.UseVisualStyleBackColor = true;
+            btnVolver.Click += btnVolver_Click;
+            // 
             // FrmReportes
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(961, 670);
+            ClientSize = new Size(1014, 724);
+            Controls.Add(btnVolver);
             Controls.Add(btnExportarExcel);
             Controls.Add(btnExportarPdf);
             Controls.Add(dgvReporte);
@@ -254,5 +272,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private FontAwesome.Sharp.IconButton btnExportarExcel;
         private Panel pnlEncabezado;
         private Label lblTituloForm;
+        private Button btnVolver;
     }
 }

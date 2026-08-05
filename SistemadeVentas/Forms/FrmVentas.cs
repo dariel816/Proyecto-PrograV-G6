@@ -313,5 +313,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvDetalles.DataSource = null;
             ventaSeleccionada = 0;
         }
+
+        private void btnVolver_Click(object sender, EventArgs e)
+        {
+            Close();// Cierra el formulario actual y vuelve al formulario principal
+        }
     }
 }
