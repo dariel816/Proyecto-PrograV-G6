@@ -14,25 +14,41 @@ namespace SistemadeVentas.Presentacion
         /// <see cref="FrmLogin"/> y, si el login es exitoso, ejecuta el formulario <see cref="FrmMenu"/>.
         /// </summary>
         [STAThread]
+      
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            // Antes de mostrar el menú principal, se exige iniciar sesión.
-            // Si el usuario cierra el login o cancela, la aplicación termina sin abrir el menú.
-            using (FrmLogin frmLogin = new FrmLogin())
+            while (true)
             {
-                if (frmLogin.ShowDialog() != DialogResult.OK || frmLogin.UsuarioAutenticado == null)
+                // Mostrar el formulario de inicio de sesión.
+                using (FrmLogin frmLogin = new FrmLogin())
                 {
-                    return;
+                    if (frmLogin.ShowDialog() != DialogResult.OK ||
+                        frmLogin.UsuarioAutenticado == null)
+                    {
+                        // Si se cancela o se cierra el login, termina la aplicación.
+                        return;
+                    }
+
+                    SesionActual.Usuario = frmLogin.UsuarioAutenticado;
                 }
 
-                SesionActual.Usuario = frmLogin.UsuarioAutenticado;
-            }
+                // Mostrar el menú principal.
+                using (FrmMenu frmMenu = new FrmMenu())
+                {
+                    DialogResult resultadoMenu = frmMenu.ShowDialog();
 
-            Application.Run(new FrmMenu());//Incia el formulario FrmMenu al iniciar la aplicación
+                    // Retry significa que se presionó "Cerrar sesión".
+                    if (resultadoMenu != DialogResult.Retry)
+                    {
+                        return;
+                    }
+                }
+
+                // Limpiar la sesión antes de volver al login.
+                SesionActual.Usuario = null;
+            }
         }
     }
 }

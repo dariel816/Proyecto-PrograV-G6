@@ -51,65 +51,58 @@ namespace SistemadeVentas.Presentacion.Forms
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
-            //
-            // pnlEncabezado
-            //
-            pnlEncabezado.BackColor = Color.RoyalBlue;
-            pnlEncabezado.Controls.Add(lblTituloForm);
-            pnlEncabezado.Dock = DockStyle.Top;
-            pnlEncabezado.Location = new Point(0, 0);
-            pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(900, 70);
-            pnlEncabezado.TabIndex = 0;
-            //
-            // lblTituloForm
-            //
-            lblTituloForm.AutoSize = true;
-            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTituloForm.ForeColor = Color.White;
-            lblTituloForm.Location = new Point(20, 18);
-            lblTituloForm.Name = "lblTituloForm";
-            lblTituloForm.Size = new Size(280, 30);
-            lblTituloForm.TabIndex = 0;
-            lblTituloForm.Text = "Gestión de Productos";
-            //
+            // 
+            // dgvProductos
+            // 
+            dgvProductos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvProductos.BackgroundColor = Color.White;
+            dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvProductos.Location = new Point(30, 306);
+            dgvProductos.Name = "dgvProductos";
+            dgvProductos.RowHeadersWidth = 62;
+            dgvProductos.Size = new Size(840, 290);
+            dgvProductos.TabIndex = 0;
+            dgvProductos.CellClick += dgvProductos_CellClick;
+            dgvProductos.CellContentClick += dgvProductos_CellContentClick;
+            // 
             // txtCodigo
-            //
+            // 
             txtCodigo.Location = new Point(140, 97);
             txtCodigo.Name = "txtCodigo";
-            txtCodigo.Size = new Size(250, 23);
+            txtCodigo.Size = new Size(250, 33);
             txtCodigo.TabIndex = 1;
-            //
+            // 
             // txtNombre
-            //
+            // 
             txtNombre.Location = new Point(140, 137);
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(250, 23);
+            txtNombre.Size = new Size(250, 33);
             txtNombre.TabIndex = 2;
-            //
+            // 
             // txtDescripcion
-            //
+            // 
             txtDescripcion.Location = new Point(140, 177);
             txtDescripcion.Name = "txtDescripcion";
-            txtDescripcion.Size = new Size(250, 23);
+            txtDescripcion.Size = new Size(250, 33);
             txtDescripcion.TabIndex = 3;
-            //
+            // 
             // txtPrecio
-            //
+            // 
             txtPrecio.Location = new Point(540, 97);
             txtPrecio.Name = "txtPrecio";
-            txtPrecio.Size = new Size(150, 23);
+            txtPrecio.Size = new Size(150, 33);
             txtPrecio.TabIndex = 4;
-            //
+            // 
             // txtStock
-            //
+            // 
             txtStock.Location = new Point(540, 137);
             txtStock.Name = "txtStock";
-            txtStock.Size = new Size(150, 23);
+            txtStock.Size = new Size(150, 33);
             txtStock.TabIndex = 5;
-            //
+            // 
             // btnGuardar
-            //
+            // 
             btnGuardar.BackColor = Color.RoyalBlue;
             btnGuardar.Cursor = Cursors.Hand;
             btnGuardar.FlatAppearance.BorderSize = 0;
@@ -119,7 +112,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.IconColor = Color.White;
             btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnGuardar.IconSize = 20;
-            btnGuardar.Location = new Point(140, 225);
+            btnGuardar.Location = new Point(46, 225);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(120, 36);
             btnGuardar.TabIndex = 6;
@@ -127,19 +120,19 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnGuardar.UseVisualStyleBackColor = false;
             btnGuardar.Click += btnGuardar_Click;
-            //
+            // 
             // btnEditar
-            //
+            // 
             btnEditar.BackColor = Color.FromArgb(230, 238, 250);
             btnEditar.Cursor = Cursors.Hand;
             btnEditar.FlatAppearance.BorderSize = 0;
             btnEditar.FlatStyle = FlatStyle.Flat;
             btnEditar.ForeColor = Color.RoyalBlue;
-            btnEditar.IconChar = FontAwesome.Sharp.IconChar.PenToSquare;
+            btnEditar.IconChar = FontAwesome.Sharp.IconChar.Edit;
             btnEditar.IconColor = Color.RoyalBlue;
             btnEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEditar.IconSize = 20;
-            btnEditar.Location = new Point(270, 225);
+            btnEditar.Location = new Point(196, 225);
             btnEditar.Name = "btnEditar";
             btnEditar.Size = new Size(120, 36);
             btnEditar.TabIndex = 7;
@@ -147,19 +140,19 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEditar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnEditar.UseVisualStyleBackColor = false;
             btnEditar.Click += btnEditar_Click;
-            //
+            // 
             // btnEliminar
-            //
+            // 
             btnEliminar.BackColor = Color.IndianRed;
             btnEliminar.Cursor = Cursors.Hand;
             btnEliminar.FlatAppearance.BorderSize = 0;
             btnEliminar.FlatStyle = FlatStyle.Flat;
             btnEliminar.ForeColor = Color.White;
-            btnEliminar.IconChar = FontAwesome.Sharp.IconChar.TrashCan;
+            btnEliminar.IconChar = FontAwesome.Sharp.IconChar.TrashAlt;
             btnEliminar.IconColor = Color.White;
             btnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEliminar.IconSize = 20;
-            btnEliminar.Location = new Point(400, 225);
+            btnEliminar.Location = new Point(333, 225);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(120, 36);
             btnEliminar.TabIndex = 8;
@@ -167,9 +160,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnEliminar.UseVisualStyleBackColor = false;
             btnEliminar.Click += btnEliminar_Click;
-            //
+            // 
             // btnLimpiar
-            //
+            // 
             btnLimpiar.BackColor = Color.FromArgb(235, 235, 235);
             btnLimpiar.Cursor = Cursors.Hand;
             btnLimpiar.FlatAppearance.BorderSize = 0;
@@ -179,7 +172,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnLimpiar.IconColor = Color.DimGray;
             btnLimpiar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnLimpiar.IconSize = 20;
-            btnLimpiar.Location = new Point(530, 225);
+            btnLimpiar.Location = new Point(476, 225);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(120, 36);
             btnLimpiar.TabIndex = 9;
@@ -187,113 +180,123 @@ namespace SistemadeVentas.Presentacion.Forms
             btnLimpiar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnLimpiar.UseVisualStyleBackColor = false;
             btnLimpiar.Click += btnLimpiar_Click;
-            //
+            // 
             // btnExportarJson
-            //
+            // 
             btnExportarJson.BackColor = Color.FromArgb(230, 240, 250);
             btnExportarJson.Cursor = Cursors.Hand;
             btnExportarJson.FlatAppearance.BorderSize = 0;
             btnExportarJson.FlatStyle = FlatStyle.Flat;
             btnExportarJson.ForeColor = Color.SteelBlue;
-            btnExportarJson.IconChar = FontAwesome.Sharp.IconChar.FileExport;
+            btnExportarJson.IconChar = FontAwesome.Sharp.IconChar.ArrowRightFromFile;
             btnExportarJson.IconColor = Color.SteelBlue;
             btnExportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarJson.IconSize = 18;
-            btnExportarJson.Location = new Point(140, 266);
+            btnExportarJson.Location = new Point(728, 247);
             btnExportarJson.Name = "btnExportarJson";
-            btnExportarJson.Size = new Size(160, 30);
+            btnExportarJson.Size = new Size(160, 42);
             btnExportarJson.TabIndex = 16;
             btnExportarJson.Text = "Exportar JSON";
             btnExportarJson.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnExportarJson.UseVisualStyleBackColor = false;
             btnExportarJson.Click += btnExportarJson_Click;
-            //
+            // 
             // btnImportarJson
-            //
+            // 
             btnImportarJson.BackColor = Color.FromArgb(250, 242, 225);
             btnImportarJson.Cursor = Cursors.Hand;
             btnImportarJson.FlatAppearance.BorderSize = 0;
             btnImportarJson.FlatStyle = FlatStyle.Flat;
             btnImportarJson.ForeColor = Color.DarkOrange;
-            btnImportarJson.IconChar = FontAwesome.Sharp.IconChar.FileImport;
+            btnImportarJson.IconChar = FontAwesome.Sharp.IconChar.ArrowRightToFile;
             btnImportarJson.IconColor = Color.DarkOrange;
             btnImportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnImportarJson.IconSize = 18;
-            btnImportarJson.Location = new Point(310, 266);
+            btnImportarJson.Location = new Point(728, 192);
             btnImportarJson.Name = "btnImportarJson";
-            btnImportarJson.Size = new Size(160, 30);
+            btnImportarJson.Size = new Size(160, 39);
             btnImportarJson.TabIndex = 17;
             btnImportarJson.Text = "Importar JSON";
             btnImportarJson.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnImportarJson.UseVisualStyleBackColor = false;
             btnImportarJson.Click += btnImportarJson_Click;
-            //
+            // 
             // lblCodigo
-            //
+            // 
             lblCodigo.AutoSize = true;
             lblCodigo.Location = new Point(30, 100);
             lblCodigo.Name = "lblCodigo";
-            lblCodigo.Size = new Size(49, 15);
+            lblCodigo.Size = new Size(81, 28);
             lblCodigo.TabIndex = 10;
             lblCodigo.Text = "Codigo:";
-            //
+            // 
             // lblNombre
-            //
+            // 
             lblNombre.AutoSize = true;
             lblNombre.Location = new Point(30, 140);
             lblNombre.Name = "lblNombre";
-            lblNombre.Size = new Size(54, 15);
+            lblNombre.Size = new Size(89, 28);
             lblNombre.TabIndex = 11;
             lblNombre.Text = "Nombre:";
-            //
+            // 
             // lblDescripcion
-            //
+            // 
             lblDescripcion.AutoSize = true;
             lblDescripcion.Location = new Point(30, 180);
             lblDescripcion.Name = "lblDescripcion";
-            lblDescripcion.Size = new Size(72, 15);
+            lblDescripcion.Size = new Size(118, 28);
             lblDescripcion.TabIndex = 12;
             lblDescripcion.Text = "Descripción:";
-            //
+            // 
             // lblPrecio
-            //
+            // 
             lblPrecio.AutoSize = true;
             lblPrecio.Location = new Point(430, 100);
             lblPrecio.Name = "lblPrecio";
-            lblPrecio.Size = new Size(43, 15);
+            lblPrecio.Size = new Size(70, 28);
             lblPrecio.TabIndex = 13;
             lblPrecio.Text = "Precio:";
-            //
+            // 
             // lblStock
-            //
+            // 
             lblStock.AutoSize = true;
             lblStock.Location = new Point(430, 140);
             lblStock.Name = "lblStock";
-            lblStock.Size = new Size(39, 15);
+            lblStock.Size = new Size(64, 28);
             lblStock.TabIndex = 14;
             lblStock.Text = "Stock:";
-            //
+            // 
             // txtID
-            //
+            // 
             txtID.Location = new Point(770, 97);
             txtID.Name = "txtID";
-            txtID.Size = new Size(100, 23);
+            txtID.Size = new Size(100, 33);
             txtID.TabIndex = 15;
             txtID.Visible = false;
-            //
-            // dgvProductos
-            //
-            dgvProductos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvProductos.Location = new Point(30, 306);
-            dgvProductos.Name = "dgvProductos";
-            dgvProductos.Size = new Size(840, 290);
-            dgvProductos.TabIndex = 0;
-            dgvProductos.CellClick += dgvProductos_CellClick;
-            dgvProductos.CellContentClick += dgvProductos_CellContentClick;
-            //
+            // 
+            // pnlEncabezado
+            // 
+            pnlEncabezado.BackColor = Color.RoyalBlue;
+            pnlEncabezado.Controls.Add(lblTituloForm);
+            pnlEncabezado.Dock = DockStyle.Top;
+            pnlEncabezado.Location = new Point(0, 0);
+            pnlEncabezado.Name = "pnlEncabezado";
+            pnlEncabezado.Size = new Size(900, 70);
+            pnlEncabezado.TabIndex = 0;
+            // 
+            // lblTituloForm
+            // 
+            lblTituloForm.AutoSize = true;
+            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTituloForm.ForeColor = Color.White;
+            lblTituloForm.Location = new Point(20, 18);
+            lblTituloForm.Name = "lblTituloForm";
+            lblTituloForm.Size = new Size(342, 45);
+            lblTituloForm.TabIndex = 0;
+            lblTituloForm.Text = "Gestión de Productos";
+            // 
             // FrmProductos
-            //
+            // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(900, 630);
@@ -317,8 +320,6 @@ namespace SistemadeVentas.Presentacion.Forms
             Controls.Add(dgvProductos);
             Controls.Add(pnlEncabezado);
             Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            FormBorderStyle = FormBorderStyle.Sizable;
-            MaximizeBox = true;
             MinimumSize = new Size(700, 450);
             Name = "FrmProductos";
             StartPosition = FormStartPosition.CenterScreen;

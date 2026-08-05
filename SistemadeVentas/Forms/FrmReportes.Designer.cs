@@ -47,82 +47,61 @@ namespace SistemadeVentas.Presentacion.Forms
             ((System.ComponentModel.ISupportInitialize)dgvReporte).BeginInit();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
-            //
-            // pnlEncabezado
-            //
-            pnlEncabezado.BackColor = Color.RoyalBlue;
-            pnlEncabezado.Controls.Add(lblTituloForm);
-            pnlEncabezado.Dock = DockStyle.Top;
-            pnlEncabezado.Location = new Point(0, 0);
-            pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(896, 70);
-            pnlEncabezado.TabIndex = 11;
-            //
-            // lblTituloForm
-            //
-            lblTituloForm.AutoSize = true;
-            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTituloForm.ForeColor = Color.White;
-            lblTituloForm.Location = new Point(20, 18);
-            lblTituloForm.Name = "lblTituloForm";
-            lblTituloForm.Size = new Size(150, 30);
-            lblTituloForm.TabIndex = 0;
-            lblTituloForm.Text = "Reportes";
-            //
+            // 
             // lblTipoReporte
-            //
+            // 
             lblTipoReporte.AutoSize = true;
-            lblTipoReporte.Location = new Point(12, 85);
+            lblTipoReporte.Location = new Point(12, 81);
             lblTipoReporte.Name = "lblTipoReporte";
-            lblTipoReporte.Size = new Size(94, 15);
+            lblTipoReporte.Size = new Size(143, 25);
             lblTipoReporte.TabIndex = 0;
             lblTipoReporte.Text = "Tipo de Reporte:";
-            //
+            // 
             // cmbTipoReporte
-            //
+            // 
             cmbTipoReporte.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbTipoReporte.Location = new Point(112, 82);
+            cmbTipoReporte.Location = new Point(171, 79);
             cmbTipoReporte.Name = "cmbTipoReporte";
-            cmbTipoReporte.Size = new Size(150, 23);
+            cmbTipoReporte.Size = new Size(150, 33);
             cmbTipoReporte.TabIndex = 1;
             cmbTipoReporte.SelectedIndexChanged += cmbTipoReporte_SelectedIndexChanged;
-            //
+            // 
             // lblDesde
-            //
+            // 
             lblDesde.AutoSize = true;
-            lblDesde.Location = new Point(280, 85);
+            lblDesde.Location = new Point(327, 82);
             lblDesde.Name = "lblDesde";
-            lblDesde.Size = new Size(41, 15);
+            lblDesde.Size = new Size(66, 25);
             lblDesde.TabIndex = 2;
             lblDesde.Text = "Desde:";
-            //
+            // 
             // dtpDesde
-            //
+            // 
             dtpDesde.Format = DateTimePickerFormat.Short;
-            dtpDesde.Location = new Point(327, 82);
+            dtpDesde.Location = new Point(411, 77);
             dtpDesde.Name = "dtpDesde";
-            dtpDesde.Size = new Size(110, 23);
+            dtpDesde.Size = new Size(128, 31);
             dtpDesde.TabIndex = 3;
-            //
+            // 
             // lblHasta
-            //
+            // 
             lblHasta.AutoSize = true;
-            lblHasta.Location = new Point(450, 85);
+            lblHasta.Location = new Point(557, 79);
             lblHasta.Name = "lblHasta";
-            lblHasta.Size = new Size(38, 15);
+            lblHasta.Size = new Size(61, 25);
             lblHasta.TabIndex = 4;
             lblHasta.Text = "Hasta:";
-            //
+            // 
             // dtpHasta
-            //
+            // 
             dtpHasta.Format = DateTimePickerFormat.Short;
-            dtpHasta.Location = new Point(494, 82);
+            dtpHasta.Location = new Point(634, 76);
             dtpHasta.Name = "dtpHasta";
-            dtpHasta.Size = new Size(110, 23);
+            dtpHasta.Size = new Size(136, 31);
             dtpHasta.TabIndex = 5;
-            //
+            // 
             // btnGenerar
-            //
+            // 
             btnGenerar.BackColor = Color.RoyalBlue;
             btnGenerar.Cursor = Cursors.Hand;
             btnGenerar.FlatAppearance.BorderSize = 0;
@@ -132,41 +111,44 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGenerar.IconColor = Color.White;
             btnGenerar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnGenerar.IconSize = 18;
-            btnGenerar.Location = new Point(650, 81);
+            btnGenerar.Location = new Point(804, 74);
             btnGenerar.Name = "btnGenerar";
-            btnGenerar.Size = new Size(90, 25);
+            btnGenerar.Size = new Size(133, 34);
             btnGenerar.TabIndex = 6;
             btnGenerar.Text = "Generar";
             btnGenerar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnGenerar.UseVisualStyleBackColor = false;
             btnGenerar.Click += btnGenerar_Click;
-            //
+            // 
             // chartReporte
-            //
+            // 
+            chartReporte.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartArea1.Name = "ChartArea1";
             chartReporte.ChartAreas.Add(chartArea1);
-            chartReporte.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             chartReporte.Location = new Point(12, 120);
             chartReporte.Name = "chartReporte";
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Column;
             series1.Name = "Series1";
             chartReporte.Series.Add(series1);
-            chartReporte.Size = new Size(860, 220);
+            chartReporte.Size = new Size(925, 220);
             chartReporte.TabIndex = 7;
             chartReporte.Text = "chartReporte";
-            //
+            // 
             // dgvReporte
-            //
+            // 
             dgvReporte.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvReporte.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvReporte.BackgroundColor = Color.White;
             dgvReporte.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvReporte.Location = new Point(12, 350);
+            dgvReporte.Location = new Point(12, 346);
             dgvReporte.Name = "dgvReporte";
-            dgvReporte.Size = new Size(860, 260);
+            dgvReporte.RowHeadersWidth = 62;
+            dgvReporte.Size = new Size(925, 246);
             dgvReporte.TabIndex = 8;
-            //
+            // 
             // btnExportarPdf
-            //
+            // 
+            btnExportarPdf.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnExportarPdf.BackColor = Color.FromArgb(250, 235, 235);
             btnExportarPdf.Cursor = Cursors.Hand;
             btnExportarPdf.FlatAppearance.BorderSize = 0;
@@ -176,18 +158,18 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarPdf.IconColor = Color.Firebrick;
             btnExportarPdf.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarPdf.IconSize = 18;
-            btnExportarPdf.Location = new Point(12, 620);
+            btnExportarPdf.Location = new Point(12, 598);
             btnExportarPdf.Name = "btnExportarPdf";
             btnExportarPdf.Size = new Size(120, 30);
             btnExportarPdf.TabIndex = 9;
             btnExportarPdf.Text = "Exportar PDF";
             btnExportarPdf.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnExportarPdf.UseVisualStyleBackColor = false;
-            btnExportarPdf.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnExportarPdf.Click += btnExportarPdf_Click;
-            //
+            // 
             // btnExportarExcel
-            //
+            // 
+            btnExportarExcel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnExportarExcel.BackColor = Color.FromArgb(230, 245, 230);
             btnExportarExcel.Cursor = Cursors.Hand;
             btnExportarExcel.FlatAppearance.BorderSize = 0;
@@ -197,21 +179,41 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarExcel.IconColor = Color.ForestGreen;
             btnExportarExcel.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarExcel.IconSize = 18;
-            btnExportarExcel.Location = new Point(140, 620);
+            btnExportarExcel.Location = new Point(171, 598);
             btnExportarExcel.Name = "btnExportarExcel";
             btnExportarExcel.Size = new Size(120, 30);
             btnExportarExcel.TabIndex = 10;
             btnExportarExcel.Text = "Exportar Excel";
             btnExportarExcel.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnExportarExcel.UseVisualStyleBackColor = false;
-            btnExportarExcel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnExportarExcel.Click += btnExportarExcel_Click;
-            //
+            // 
+            // pnlEncabezado
+            // 
+            pnlEncabezado.BackColor = Color.RoyalBlue;
+            pnlEncabezado.Controls.Add(lblTituloForm);
+            pnlEncabezado.Dock = DockStyle.Top;
+            pnlEncabezado.Location = new Point(0, 0);
+            pnlEncabezado.Name = "pnlEncabezado";
+            pnlEncabezado.Size = new Size(961, 70);
+            pnlEncabezado.TabIndex = 11;
+            // 
+            // lblTituloForm
+            // 
+            lblTituloForm.AutoSize = true;
+            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTituloForm.ForeColor = Color.White;
+            lblTituloForm.Location = new Point(20, 18);
+            lblTituloForm.Name = "lblTituloForm";
+            lblTituloForm.Size = new Size(154, 45);
+            lblTituloForm.TabIndex = 0;
+            lblTituloForm.Text = "Reportes";
+            // 
             // FrmReportes
-            //
+            // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(896, 670);
+            ClientSize = new Size(961, 670);
             Controls.Add(btnExportarExcel);
             Controls.Add(btnExportarPdf);
             Controls.Add(dgvReporte);
@@ -224,8 +226,6 @@ namespace SistemadeVentas.Presentacion.Forms
             Controls.Add(cmbTipoReporte);
             Controls.Add(lblTipoReporte);
             Controls.Add(pnlEncabezado);
-            FormBorderStyle = FormBorderStyle.Sizable;
-            MaximizeBox = true;
             MinimumSize = new Size(750, 500);
             Name = "FrmReportes";
             StartPosition = FormStartPosition.CenterScreen;

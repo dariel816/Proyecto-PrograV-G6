@@ -38,16 +38,17 @@ namespace SistemadeVentas.Presentacion.Forms
             lblBienvenida = new Label();
             lblInstruccion = new Label();
             label4 = new Label();
+            btnCerrarSesion = new Button();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
-            //
+            // 
             // btnProductos
-            //
+            // 
             btnProductos.Cursor = Cursors.Hand;
             btnProductos.FlatAppearance.BorderSize = 0;
             btnProductos.FlatStyle = FlatStyle.Flat;
             btnProductos.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnProductos.IconChar = FontAwesome.Sharp.IconChar.Boxes;
+            btnProductos.IconChar = FontAwesome.Sharp.IconChar.BoxesStacked;
             btnProductos.IconColor = Color.RoyalBlue;
             btnProductos.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnProductos.IconSize = 36;
@@ -60,9 +61,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnProductos.TextImageRelation = TextImageRelation.ImageAboveText;
             btnProductos.UseVisualStyleBackColor = true;
             btnProductos.Click += btnProductos_Click;
-            //
+            // 
             // btnClientes
-            //
+            // 
             btnClientes.Cursor = Cursors.Hand;
             btnClientes.FlatAppearance.BorderSize = 0;
             btnClientes.FlatStyle = FlatStyle.Flat;
@@ -80,9 +81,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnClientes.TextImageRelation = TextImageRelation.ImageAboveText;
             btnClientes.UseVisualStyleBackColor = true;
             btnClientes.Click += btnClientes_Click;
-            //
+            // 
             // btnVentas
-            //
+            // 
             btnVentas.Cursor = Cursors.Hand;
             btnVentas.FlatAppearance.BorderSize = 0;
             btnVentas.FlatStyle = FlatStyle.Flat;
@@ -100,14 +101,14 @@ namespace SistemadeVentas.Presentacion.Forms
             btnVentas.TextImageRelation = TextImageRelation.ImageAboveText;
             btnVentas.UseVisualStyleBackColor = true;
             btnVentas.Click += btnVentas_Click;
-            //
+            // 
             // btnReportes
-            //
+            // 
             btnReportes.Cursor = Cursors.Hand;
             btnReportes.FlatAppearance.BorderSize = 0;
             btnReportes.FlatStyle = FlatStyle.Flat;
             btnReportes.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnReportes.IconChar = FontAwesome.Sharp.IconChar.ChartPie;
+            btnReportes.IconChar = FontAwesome.Sharp.IconChar.PieChart;
             btnReportes.IconColor = Color.RoyalBlue;
             btnReportes.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnReportes.IconSize = 36;
@@ -120,9 +121,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnReportes.TextImageRelation = TextImageRelation.ImageAboveText;
             btnReportes.UseVisualStyleBackColor = true;
             btnReportes.Click += btnReportes_Click;
-            //
+            // 
             // pnlEncabezado
-            //
+            // 
             pnlEncabezado.BackColor = Color.RoyalBlue;
             pnlEncabezado.Controls.Add(lblSubtitulo);
             pnlEncabezado.Controls.Add(lblTitulo);
@@ -131,9 +132,9 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado.Name = "pnlEncabezado";
             pnlEncabezado.Size = new Size(1100, 100);
             pnlEncabezado.TabIndex = 4;
-            //
+            // 
             // lblSubtitulo
-            //
+            // 
             lblSubtitulo.AutoSize = true;
             lblSubtitulo.ForeColor = Color.WhiteSmoke;
             lblSubtitulo.Location = new Point(20, 65);
@@ -141,9 +142,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblSubtitulo.Size = new Size(498, 28);
             lblSubtitulo.TabIndex = 4;
             lblSubtitulo.Text = "Administración de productos, clientes, ventas y reportes";
-            //
+            // 
             // lblTitulo
-            //
+            // 
             lblTitulo.AutoSize = true;
             lblTitulo.Font = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitulo.ForeColor = Color.White;
@@ -152,9 +153,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTitulo.Size = new Size(456, 60);
             lblTitulo.TabIndex = 0;
             lblTitulo.Text = "SISTEMA DE VENTAS";
-            //
+            // 
             // lblBienvenida
-            //
+            // 
             lblBienvenida.AutoSize = true;
             lblBienvenida.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblBienvenida.ForeColor = Color.RoyalBlue;
@@ -163,9 +164,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblBienvenida.Size = new Size(273, 48);
             lblBienvenida.TabIndex = 5;
             lblBienvenida.Text = "Menú principal";
-            //
+            // 
             // lblInstruccion
-            //
+            // 
             lblInstruccion.AutoSize = true;
             lblInstruccion.ForeColor = Color.DimGray;
             lblInstruccion.Location = new Point(27, 190);
@@ -173,9 +174,10 @@ namespace SistemadeVentas.Presentacion.Forms
             lblInstruccion.Size = new Size(395, 28);
             lblInstruccion.TabIndex = 6;
             lblInstruccion.Text = "Seleccione el módulo que desea administrar";
-            //
+            // 
             // label4
-            //
+            // 
+            label4.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.DimGray;
@@ -184,13 +186,26 @@ namespace SistemadeVentas.Presentacion.Forms
             label4.Size = new Size(296, 25);
             label4.TabIndex = 7;
             label4.Text = "Sistema de Ventas | Programación 5";
-            label4.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            //
+            // 
+            // btnCerrarSesion
+            // 
+            btnCerrarSesion.Cursor = Cursors.Hand;
+            btnCerrarSesion.FlatStyle = FlatStyle.Flat;
+            btnCerrarSesion.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCerrarSesion.Location = new Point(730, 537);
+            btnCerrarSesion.Name = "btnCerrarSesion";
+            btnCerrarSesion.Size = new Size(252, 47);
+            btnCerrarSesion.TabIndex = 8;
+            btnCerrarSesion.Text = "Cerrar sesión";
+            btnCerrarSesion.UseVisualStyleBackColor = true;
+            btnCerrarSesion.Click += btnCerrarSesion_Click;
+            // 
             // FrmMenu
-            //
+            // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(1100, 700);
+            Controls.Add(btnCerrarSesion);
             Controls.Add(label4);
             Controls.Add(lblInstruccion);
             Controls.Add(lblBienvenida);
@@ -201,9 +216,7 @@ namespace SistemadeVentas.Presentacion.Forms
             Controls.Add(btnProductos);
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ForeColor = SystemColors.ActiveCaptionText;
-            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(4, 6, 4, 6);
-            MaximizeBox = true;
             MinimumSize = new Size(900, 600);
             Name = "FrmMenu";
             StartPosition = FormStartPosition.CenterScreen;
@@ -225,5 +238,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private Label lblBienvenida;
         private Label lblInstruccion;
         private Label label4;
+        private Button btnCerrarSesion;
     }
 }

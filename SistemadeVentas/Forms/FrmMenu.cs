@@ -103,5 +103,21 @@ namespace SistemadeVentas.Presentacion.Forms
             FrmReportes frmReportes = new FrmReportes(); // Creación de una instancia del formulario de reportes
             frmReportes.ShowDialog();
         }
+
+        private void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            DialogResult respuesta = MessageBox.Show(
+                "¿Desea cerrar la sesión actual?",
+                "Cerrar sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (respuesta == DialogResult.Yes)
+            {
+                DialogResult = DialogResult.Retry;
+                Close();
+            }
+        }
     }
 }

@@ -41,30 +41,10 @@ namespace SistemadeVentas.Presentacion.Forms
             gbNuevaVenta.SuspendLayout();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
-            //
-            // pnlEncabezado
-            //
-            pnlEncabezado.BackColor = Color.RoyalBlue;
-            pnlEncabezado.Controls.Add(lblTituloForm);
-            pnlEncabezado.Dock = DockStyle.Top;
-            pnlEncabezado.Location = new Point(0, 0);
-            pnlEncabezado.Name = "pnlEncabezado";
-            pnlEncabezado.Size = new Size(1460, 70);
-            pnlEncabezado.TabIndex = 3;
-            //
-            // lblTituloForm
-            //
-            lblTituloForm.AutoSize = true;
-            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTituloForm.ForeColor = Color.White;
-            lblTituloForm.Location = new Point(20, 18);
-            lblTituloForm.Name = "lblTituloForm";
-            lblTituloForm.Size = new Size(240, 30);
-            lblTituloForm.TabIndex = 0;
-            lblTituloForm.Text = "Gestión de Ventas";
-            //
+            // 
             // gbVentas
-            //
+            // 
+            gbVentas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             gbVentas.Controls.Add(dgvVentas);
             gbVentas.Location = new Point(22, 90);
             gbVentas.Margin = new Padding(6, 7, 6, 7);
@@ -74,13 +54,13 @@ namespace SistemadeVentas.Presentacion.Forms
             gbVentas.TabIndex = 0;
             gbVentas.TabStop = false;
             gbVentas.Text = "Ventas";
-            // allow horizontal resize
-            gbVentas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            //
+            // 
             // dgvVentas
-            //
+            // 
             dgvVentas.AllowUserToAddRows = false;
             dgvVentas.AllowUserToDeleteRows = false;
+            dgvVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvVentas.BackgroundColor = Color.White;
             dgvVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvVentas.Dock = DockStyle.Fill;
             dgvVentas.Location = new Point(6, 34);
@@ -91,9 +71,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvVentas.Size = new Size(1410, 219);
             dgvVentas.TabIndex = 0;
             dgvVentas.SelectionChanged += dgvVentas_SelectionChanged;
-            //
+            // 
             // gbDetalles
-            //
+            // 
+            gbDetalles.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             gbDetalles.Controls.Add(dgvDetalles);
             gbDetalles.Location = new Point(22, 365);
             gbDetalles.Margin = new Padding(6, 7, 6, 7);
@@ -103,13 +84,13 @@ namespace SistemadeVentas.Presentacion.Forms
             gbDetalles.TabIndex = 1;
             gbDetalles.TabStop = false;
             gbDetalles.Text = "Detalles de la Venta";
-            // allow horizontal resize and adjust when form height changes
-            gbDetalles.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            //
+            // 
             // dgvDetalles
-            //
+            // 
             dgvDetalles.AllowUserToAddRows = false;
             dgvDetalles.AllowUserToDeleteRows = false;
+            dgvDetalles.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDetalles.BackgroundColor = Color.White;
             dgvDetalles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDetalles.Dock = DockStyle.Fill;
             dgvDetalles.Location = new Point(6, 34);
@@ -119,9 +100,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvDetalles.RowHeadersWidth = 62;
             dgvDetalles.Size = new Size(1410, 149);
             dgvDetalles.TabIndex = 0;
-            //
+            // 
             // gbNuevaVenta
-            //
+            // 
+            gbNuevaVenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             gbNuevaVenta.Controls.Add(lblCantidad);
             gbNuevaVenta.Controls.Add(txtCantidad);
             gbNuevaVenta.Controls.Add(btnAgregar);
@@ -137,11 +119,9 @@ namespace SistemadeVentas.Presentacion.Forms
             gbNuevaVenta.TabIndex = 2;
             gbNuevaVenta.TabStop = false;
             gbNuevaVenta.Text = "Nueva Venta";
-            // anchor to bottom so it stays visible when form is resized vertically
-            gbNuevaVenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            //
+            // 
             // lblCantidad
-            //
+            // 
             lblCantidad.AutoSize = true;
             lblCantidad.Location = new Point(966, 47);
             lblCantidad.Margin = new Padding(6, 0, 6, 0);
@@ -149,23 +129,23 @@ namespace SistemadeVentas.Presentacion.Forms
             lblCantidad.Size = new Size(91, 28);
             lblCantidad.TabIndex = 4;
             lblCantidad.Text = "Cantidad";
-            //
+            // 
             // txtCantidad
-            //
+            // 
             txtCantidad.Location = new Point(1067, 41);
             txtCantidad.Margin = new Padding(6, 7, 6, 7);
             txtCantidad.Name = "txtCantidad";
             txtCantidad.Size = new Size(116, 34);
             txtCantidad.TabIndex = 5;
-            //
+            // 
             // btnAgregar
-            //
+            // 
             btnAgregar.BackColor = Color.RoyalBlue;
             btnAgregar.Cursor = Cursors.Hand;
             btnAgregar.FlatAppearance.BorderSize = 0;
             btnAgregar.FlatStyle = FlatStyle.Flat;
             btnAgregar.ForeColor = Color.White;
-            btnAgregar.IconChar = FontAwesome.Sharp.IconChar.PlusCircle;
+            btnAgregar.IconChar = FontAwesome.Sharp.IconChar.CirclePlus;
             btnAgregar.IconColor = Color.White;
             btnAgregar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnAgregar.IconSize = 24;
@@ -178,9 +158,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnAgregar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnAgregar.UseVisualStyleBackColor = false;
             btnAgregar.Click += btnAgregar_Click;
-            //
+            // 
             // lblProducto
-            //
+            // 
             lblProducto.AutoSize = true;
             lblProducto.Location = new Point(476, 47);
             lblProducto.Margin = new Padding(6, 0, 6, 0);
@@ -188,9 +168,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblProducto.Size = new Size(93, 28);
             lblProducto.TabIndex = 2;
             lblProducto.Text = "Producto";
-            //
+            // 
             // cmbProducto
-            //
+            // 
             cmbProducto.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbProducto.FormattingEnabled = true;
             cmbProducto.Location = new Point(580, 41);
@@ -198,9 +178,9 @@ namespace SistemadeVentas.Presentacion.Forms
             cmbProducto.Name = "cmbProducto";
             cmbProducto.Size = new Size(364, 36);
             cmbProducto.TabIndex = 3;
-            //
+            // 
             // lblCliente
-            //
+            // 
             lblCliente.AutoSize = true;
             lblCliente.Location = new Point(11, 47);
             lblCliente.Margin = new Padding(6, 0, 6, 0);
@@ -208,9 +188,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblCliente.Size = new Size(72, 28);
             lblCliente.TabIndex = 0;
             lblCliente.Text = "Cliente";
-            //
+            // 
             // cmbCliente
-            //
+            // 
             cmbCliente.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCliente.FormattingEnabled = true;
             cmbCliente.Location = new Point(94, 41);
@@ -218,9 +198,9 @@ namespace SistemadeVentas.Presentacion.Forms
             cmbCliente.Name = "cmbCliente";
             cmbCliente.Size = new Size(364, 36);
             cmbCliente.TabIndex = 1;
-            //
+            // 
             // btnGuardar
-            //
+            // 
             btnGuardar.BackColor = Color.RoyalBlue;
             btnGuardar.Cursor = Cursors.Hand;
             btnGuardar.FlatAppearance.BorderSize = 0;
@@ -239,15 +219,15 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnGuardar.UseVisualStyleBackColor = false;
             btnGuardar.Click += btnGuardar_Click;
-            //
+            // 
             // btnEliminar
-            //
+            // 
             btnEliminar.BackColor = Color.IndianRed;
             btnEliminar.Cursor = Cursors.Hand;
             btnEliminar.FlatAppearance.BorderSize = 0;
             btnEliminar.FlatStyle = FlatStyle.Flat;
             btnEliminar.ForeColor = Color.White;
-            btnEliminar.IconChar = FontAwesome.Sharp.IconChar.TrashCan;
+            btnEliminar.IconChar = FontAwesome.Sharp.IconChar.TrashAlt;
             btnEliminar.IconColor = Color.White;
             btnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEliminar.IconSize = 24;
@@ -260,9 +240,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnEliminar.UseVisualStyleBackColor = false;
             btnEliminar.Click += btnEliminar_Click;
-            //
+            // 
             // btnNueva
-            //
+            // 
             btnNueva.BackColor = Color.FromArgb(235, 235, 235);
             btnNueva.Cursor = Cursors.Hand;
             btnNueva.FlatAppearance.BorderSize = 0;
@@ -281,9 +261,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnNueva.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnNueva.UseVisualStyleBackColor = false;
             btnNueva.Click += btnNueva_Click;
-            //
+            // 
             // lblTotal
-            //
+            // 
             lblTotal.AutoSize = true;
             lblTotal.Location = new Point(28, 695);
             lblTotal.Margin = new Padding(6, 0, 6, 0);
@@ -291,23 +271,43 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTotal.Size = new Size(58, 28);
             lblTotal.TabIndex = 10;
             lblTotal.Text = "Total:";
-            //
+            // 
             // txtTotal
-            //
+            // 
             txtTotal.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             txtTotal.ForeColor = Color.RoyalBlue;
             txtTotal.Location = new Point(101, 695);
             txtTotal.Margin = new Padding(6, 7, 6, 7);
             txtTotal.Name = "txtTotal";
             txtTotal.ReadOnly = true;
-            txtTotal.Size = new Size(180, 34);
+            txtTotal.Size = new Size(180, 39);
             txtTotal.TabIndex = 11;
-            //
+            // 
+            // pnlEncabezado
+            // 
+            pnlEncabezado.BackColor = Color.RoyalBlue;
+            pnlEncabezado.Controls.Add(lblTituloForm);
+            pnlEncabezado.Dock = DockStyle.Top;
+            pnlEncabezado.Location = new Point(0, 0);
+            pnlEncabezado.Name = "pnlEncabezado";
+            pnlEncabezado.Size = new Size(1460, 70);
+            pnlEncabezado.TabIndex = 3;
+            // 
+            // lblTituloForm
+            // 
+            lblTituloForm.AutoSize = true;
+            lblTituloForm.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTituloForm.ForeColor = Color.White;
+            lblTituloForm.Location = new Point(20, 18);
+            lblTituloForm.Name = "lblTituloForm";
+            lblTituloForm.Size = new Size(287, 45);
+            lblTituloForm.TabIndex = 0;
+            lblTituloForm.Text = "Gestión de Ventas";
+            // 
             // FrmVentas
-            //
+            // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            // increase default client size to accommodate controls and allow expanding
             ClientSize = new Size(1460, 790);
             Controls.Add(txtTotal);
             Controls.Add(lblTotal);
@@ -319,10 +319,7 @@ namespace SistemadeVentas.Presentacion.Forms
             Controls.Add(gbVentas);
             Controls.Add(pnlEncabezado);
             Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            // allow resizing
-            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(6, 7, 6, 7);
-            MaximizeBox = true;
             MinimumSize = new Size(1000, 650);
             Name = "FrmVentas";
             StartPosition = FormStartPosition.CenterScreen;
