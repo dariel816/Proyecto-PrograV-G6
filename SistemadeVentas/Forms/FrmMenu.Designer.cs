@@ -52,7 +52,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnProductos.IconColor = Color.RoyalBlue;
             btnProductos.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnProductos.IconSize = 36;
-            btnProductos.Location = new Point(150, 250);
+            btnProductos.Location = new Point(181, 268);
             btnProductos.Margin = new Padding(4, 6, 4, 6);
             btnProductos.Name = "btnProductos";
             btnProductos.Size = new Size(220, 110);
@@ -72,7 +72,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnClientes.IconColor = Color.RoyalBlue;
             btnClientes.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnClientes.IconSize = 36;
-            btnClientes.Location = new Point(150, 390);
+            btnClientes.Location = new Point(181, 390);
             btnClientes.Margin = new Padding(4, 6, 4, 6);
             btnClientes.Name = "btnClientes";
             btnClientes.Size = new Size(220, 110);
@@ -92,7 +92,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnVentas.IconColor = Color.RoyalBlue;
             btnVentas.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnVentas.IconSize = 36;
-            btnVentas.Location = new Point(470, 250);
+            btnVentas.Location = new Point(472, 268);
             btnVentas.Margin = new Padding(4, 6, 4, 6);
             btnVentas.Name = "btnVentas";
             btnVentas.Size = new Size(220, 110);
@@ -112,7 +112,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnReportes.IconColor = Color.RoyalBlue;
             btnReportes.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnReportes.IconSize = 36;
-            btnReportes.Location = new Point(470, 390);
+            btnReportes.Location = new Point(472, 390);
             btnReportes.Margin = new Padding(4, 6, 4, 6);
             btnReportes.Name = "btnReportes";
             btnReportes.Size = new Size(220, 110);
@@ -189,13 +189,19 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             // btnCerrarSesion
             // 
+            btnCerrarSesion.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             btnCerrarSesion.Cursor = Cursors.Hand;
+            btnCerrarSesion.FlatAppearance.BorderColor = Color.Crimson;
+            btnCerrarSesion.FlatAppearance.MouseDownBackColor = Color.LightCoral;
+            btnCerrarSesion.FlatAppearance.MouseOverBackColor = Color.MistyRose;
             btnCerrarSesion.FlatStyle = FlatStyle.Flat;
-            btnCerrarSesion.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCerrarSesion.Location = new Point(730, 537);
+            btnCerrarSesion.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCerrarSesion.ForeColor = Color.Crimson;
+            btnCerrarSesion.Location = new Point(20, 612);
             btnCerrarSesion.Name = "btnCerrarSesion";
-            btnCerrarSesion.Size = new Size(252, 47);
+            btnCerrarSesion.Size = new Size(166, 38);
             btnCerrarSesion.TabIndex = 8;
+            btnCerrarSesion.TabStop = false;
             btnCerrarSesion.Text = "Cerrar sesión";
             btnCerrarSesion.UseVisualStyleBackColor = true;
             btnCerrarSesion.Click += btnCerrarSesion_Click;
