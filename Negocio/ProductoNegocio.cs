@@ -78,13 +78,8 @@ namespace SistemaVentas.Negocio
         /// <exception cref="Exception">Se lanza cuando alguna validación de negocio falla.</exception>
         public bool InsertarProducto(ProductoDTO productoDto)
         {
-            if (string.IsNullOrWhiteSpace(productoDto.Nombre))
-                throw new Exception("El nombre del producto es requerido.");
+            ValidarDatosProducto(productoDto);
 
-            if (productoDto.Precio <= 0)
-                throw new Exception("El precio debe ser mayor a 0.");
-
-            // Validaciones de unicidad
             if (productoRepositorio.ExisteCodigo(productoDto.Codigo, null))
                 throw new Exception("El código ya está registrado.");
 
@@ -104,18 +99,26 @@ namespace SistemaVentas.Negocio
         /// <exception cref="Exception">Se lanza cuando alguna validación de negocio falla.</exception>
         public bool EditarProducto(ProductoDTO productoDto)
         {
-            if (string.IsNullOrWhiteSpace(productoDto.Nombre))
-                throw new Exception("El nombre del producto es requerido.");
+            ValidarDatosProducto(productoDto);
 
-            if (productoDto.Precio <= 0)
-                throw new Exception("El precio debe ser mayor a 0.");
+            if (productoDto.Id <= 0)
+                throw new Exception("El producto seleccionado no es válido.");
 
-            // Validaciones de unicidad (excluir el propio registro)
-            if (productoRepositorio.ExisteCodigo(productoDto.Codigo, productoDto.Id))
-                throw new Exception("El código ya está registrado por otro producto.");
+            if (productoRepositorio.ExisteCodigo(
+                    productoDto.Codigo,
+                    productoDto.Id))
+            {
+                throw new Exception(
+                    "El código ya está registrado por otro producto.");
+            }
 
-            if (productoRepositorio.ExisteNombre(productoDto.Nombre, productoDto.Id))
-                throw new Exception("El nombre del producto ya está registrado por otro producto.");
+            if (productoRepositorio.ExisteNombre(
+                    productoDto.Nombre,
+                    productoDto.Id))
+            {
+                throw new Exception(
+                    "El nombre del producto ya está registrado por otro producto.");
+            }
 
             return productoRepositorio.EditarProducto(AEntidad(productoDto));
         }
@@ -235,6 +238,47 @@ namespace SistemaVentas.Negocio
             };
         }
 
+
+        private static void ValidarDatosProducto(ProductoDTO productoDto)
+        {
+            if (productoDto == null)
+                throw new ArgumentNullException(nameof(productoDto));
+
+            productoDto.Codigo = productoDto.Codigo?.Trim() ?? string.Empty;
+            productoDto.Nombre = productoDto.Nombre?.Trim() ?? string.Empty;
+            productoDto.Descripcion =
+                productoDto.Descripcion?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(productoDto.Codigo))
+                throw new Exception("El código del producto es requerido.");
+
+            if (productoDto.Codigo.Length > 50)
+                throw new Exception("El código no puede superar los 50 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(productoDto.Nombre))
+                throw new Exception("El nombre del producto es requerido.");
+
+            if (productoDto.Nombre.Length > 100)
+                throw new Exception("El nombre no puede superar los 100 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(productoDto.Descripcion))
+                throw new Exception("La descripción del producto es requerida.");
+
+            if (productoDto.Descripcion.Length > 255)
+            {
+                throw new Exception(
+                    "La descripción no puede superar los 255 caracteres.");
+            }
+
+            if (productoDto.Precio <= 0)
+                throw new Exception("El precio debe ser mayor a 0.");
+
+            if (productoDto.Precio > 99_999_999.99m)
+                throw new Exception("El precio ingresado es demasiado alto.");
+
+            if (productoDto.Stock < 0)
+                throw new Exception("El stock no puede ser negativo.");
+        }
         /// <summary>
         /// Función de mapeo: convierte un <see cref="ProductoDTO"/> en la entidad <see cref="Producto"/> correspondiente.
         /// </summary>

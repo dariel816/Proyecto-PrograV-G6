@@ -34,7 +34,7 @@ namespace SistemaVentas.Pruebas
             {
                 Nombre = "Cliente Prueba " + sufijo,
                 Correo = "prueba" + sufijo + "@test.com",
-                Telefono = "8" + sufijo.Substring(0, 7)
+                Telefono = GenerarTelefono()
             };
 
             bool creado = clienteNegocio.InsertarCliente(cliente);
@@ -57,7 +57,7 @@ namespace SistemaVentas.Pruebas
             {
                 Nombre = "Cliente Original " + sufijo,
                 Correo = "duplicado" + sufijo + "@test.com",
-                Telefono = "8" + sufijo.Substring(0, 7)
+                Telefono = GenerarTelefono()
             };
 
             clienteNegocio.InsertarCliente(original);
@@ -70,7 +70,7 @@ namespace SistemaVentas.Pruebas
                 {
                     Nombre = "Cliente Duplicado " + sufijo,
                     Correo = original.Correo,
-                    Telefono = "7" + sufijo.Substring(0, 7)
+                    Telefono = GenerarTelefono()
                 };
 
                 Assert.ThrowsExactly<Exception>(() => clienteNegocio.InsertarCliente(duplicado));
@@ -89,7 +89,7 @@ namespace SistemaVentas.Pruebas
             {
                 Nombre = "Cliente JSON " + sufijo,
                 Correo = "json" + sufijo + "@test.com",
-                Telefono = "9" + sufijo.Substring(0, 7)
+                Telefono = GenerarTelefono()
             };
 
             clienteNegocio.InsertarCliente(cliente);
@@ -120,6 +120,13 @@ namespace SistemaVentas.Pruebas
                 if (File.Exists(rutaTemp))
                     File.Delete(rutaTemp);
             }
+        }
+
+        private static string GenerarTelefono()
+        {
+            return Random.Shared
+                .Next(10_000_000, 100_000_000)
+                .ToString();
         }
     }
 }

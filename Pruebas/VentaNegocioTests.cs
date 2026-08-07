@@ -54,11 +54,11 @@ namespace SistemaVentas.Pruebas
         public void CrearVenta_StockInsuficiente_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta" + sufijo + "@test.com", Telefono = "8" + sufijo.Substring(0, 7) };
+            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta" + sufijo + "@test.com", Telefono = GenerarTelefono() };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo)!.Id;
 
-            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 1 };
+            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Venta " + sufijo, Descripcion = "Producto creado para probar ventas", Precio = 10, Stock = 1 };
             productoNegocio.InsertarProducto(producto);
             int idProducto = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo)!.Id;
 
@@ -83,11 +83,11 @@ namespace SistemaVentas.Pruebas
         public void CrearVenta_StockSuficiente_RegistraLaVentaYDescuentaElStock()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta2" + sufijo + "@test.com", Telefono = "7" + sufijo.Substring(0, 7) };
+            var cliente = new ClienteDTO { Nombre = "Cliente Venta " + sufijo, Correo = "venta2" + sufijo + "@test.com", Telefono = GenerarTelefono() };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo)!.Id;
 
-            var producto = new ProductoDTO { Codigo = "PV-" + sufijo, Nombre = "Producto Venta " + sufijo, Precio = 10, Stock = 10 };
+            var producto = new ProductoDTO { Codigo = "PV-" + sufijo, Nombre = "Producto Venta " + sufijo, Descripcion = "Producto creado para probar ventas", Precio = 10, Stock = 10 };
             productoNegocio.InsertarProducto(producto);
             int idProducto = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo)!.Id;
 
@@ -131,7 +131,7 @@ namespace SistemaVentas.Pruebas
             {
                 Nombre = "Cliente Repetido " + sufijo,
                 Correo = "repetido" + sufijo + "@test.com",
-                Telefono = "6" + sufijo.Substring(0, 7)
+                Telefono = GenerarTelefono()
             };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes()
@@ -191,7 +191,7 @@ namespace SistemaVentas.Pruebas
             {
                 Nombre = "Cliente Sin Stock " + sufijo,
                 Correo = "sinstock" + sufijo + "@test.com",
-                Telefono = "5" + sufijo.Substring(0, 7)
+                Telefono = GenerarTelefono()
             };
             clienteNegocio.InsertarCliente(cliente);
             int idCliente = clienteNegocio.ObtenerClientes()
@@ -230,6 +230,13 @@ namespace SistemaVentas.Pruebas
                 productoNegocio.EliminarProducto(idProducto);
                 clienteNegocio.EliminarCliente(idCliente);
             }
+        }
+
+        private static string GenerarTelefono()
+        {
+            return Random.Shared
+                .Next(10_000_000, 100_000_000)
+                .ToString();
         }
     }
 }

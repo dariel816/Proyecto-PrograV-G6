@@ -22,7 +22,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_PrecioCero_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = 0, Stock = 5 };
+            var producto = new ProductoDTO{Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Descripcion = "Producto para validar precio cero", Precio = 0,Stock = 5};
 
             Assert.ThrowsExactly<Exception>(() => productoNegocio.InsertarProducto(producto));
         }
@@ -31,7 +31,7 @@ namespace SistemaVentas.Pruebas
         public void InsertarProducto_PrecioNegativo_LanzaExcepcion()
         {
             string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
-            var producto = new ProductoDTO { Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo, Precio = -5, Stock = 5 };
+            var producto = new ProductoDTO{ Codigo = "P-" + sufijo, Nombre = "Producto Prueba " + sufijo,Descripcion = "Producto para validar precio negativo",Precio = -5, Stock = 5};
 
             Assert.ThrowsExactly<Exception>(() => productoNegocio.InsertarProducto(producto));
         }
@@ -70,6 +70,7 @@ namespace SistemaVentas.Pruebas
             {
                 Codigo = "P-" + sufijo,
                 Nombre = "Producto Original " + sufijo,
+                Descripcion = "Producto original para probar código duplicado",
                 Precio = 10,
                 Stock = 5
             };
@@ -84,6 +85,7 @@ namespace SistemaVentas.Pruebas
                 {
                     Codigo = original.Codigo,
                     Nombre = "Producto Duplicado " + sufijo,
+                    Descripcion = "Producto duplicado para realizar la prueba",
                     Precio = 20,
                     Stock = 3
                 };
