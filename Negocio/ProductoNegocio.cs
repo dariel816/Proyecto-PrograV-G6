@@ -104,12 +104,19 @@ namespace SistemaVentas.Negocio
             if (productoDto.Id <= 0)
                 throw new Exception("El producto seleccionado no es válido.");
 
-            if (productoRepositorio.ExisteCodigo(
+            var productoActual =
+                productoRepositorio.ObtenerProductoPorId(productoDto.Id);
+
+            if (productoActual == null)
+                throw new Exception("El producto seleccionado no existe.");
+
+            if (!string.Equals(
+                    productoActual.Codigo,
                     productoDto.Codigo,
-                    productoDto.Id))
+                    StringComparison.OrdinalIgnoreCase))
             {
                 throw new Exception(
-                    "El código ya está registrado por otro producto.");
+                    "El código del producto no puede modificarse después de crearlo.");
             }
 
             if (productoRepositorio.ExisteNombre(
@@ -120,7 +127,8 @@ namespace SistemaVentas.Negocio
                     "El nombre del producto ya está registrado por otro producto.");
             }
 
-            return productoRepositorio.EditarProducto(AEntidad(productoDto));
+            return productoRepositorio.EditarProducto(
+                AEntidad(productoDto));
         }
 
         /// <summary>

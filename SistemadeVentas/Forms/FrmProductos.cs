@@ -103,6 +103,7 @@ namespace SistemadeVentas.Presentacion.Forms
         private void limpiarCampos() //Método para limpiar los campos de entrada después de agregar o actualizar un producto
         {
             txtID.Clear(); // Limpiar el campo de ID (aunque generalmente no se debería mostrar ni editar el ID directamente)
+            txtCodigo.ReadOnly = false;
             txtCodigo.Clear(); // Limpiar el campo de código
             txtNombre.Clear();
             txtDescripcion.Clear();
@@ -233,10 +234,6 @@ namespace SistemadeVentas.Presentacion.Forms
         /// Manejador reservado para el evento de clic en el contenido de una celda del
         /// <c>DataGridView</c> de productos. Actualmente no realiza ninguna acción.
         /// </summary>
-        private void dgvProductos_CellContentClick(object sender, DataGridViewCellEventArgs e) //Evento para manejar el clic en una celda del DataGridView, se utiliza para cargar los datos del producto seleccionado en los campos de entrada para su edición
-        {
-
-        }
 
         /// <summary>
         /// Carga los datos del producto de la fila seleccionada en el <c>DataGridView</c>
@@ -248,6 +245,7 @@ namespace SistemadeVentas.Presentacion.Forms
             {
                 DataGridViewRow fila = dgvProductos.Rows[e.RowIndex];// Obtener la fila seleccionada
                 txtCodigo.Text = fila.Cells["Codigo"].Value.ToString(); // Cargar el valor del código del producto en el campo de texto correspondiente
+                txtCodigo.ReadOnly = true;
                 txtNombre.Text = fila.Cells["Nombre"].Value.ToString(); // Cargar el valor del nombre del producto en el campo de texto correspondiente
                 txtDescripcion.Text = fila.Cells["Descripcion"].Value.ToString(); // Cargar el valor de la descripción del producto en el campo de texto correspondiente
                 txtPrecio.Text = fila.Cells["Precio"].Value.ToString(); // Cargar el valor del precio del producto en el campo de texto correspondiente

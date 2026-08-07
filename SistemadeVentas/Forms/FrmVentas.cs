@@ -228,7 +228,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-               //var producto = (ProductoDTO)cmbProducto.SelectedItem;
+                //var producto = (ProductoDTO)cmbProducto.SelectedItem;
 
                 DetalleVentaDTO? detalleExistente = detallesTemp.Find(
                     d => d.ProductoId == producto.Id);
@@ -447,6 +447,43 @@ namespace SistemadeVentas.Presentacion.Forms
         private void btnVolver_Click(object sender, EventArgs e)
         {
             Close();// Cierra el formulario actual y vuelve al formulario principal
+        }
+
+        private void cmbProducto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MostrarStockDisponible();
+        }
+
+        private void MostrarStockDisponible()
+        {
+            if (cmbProducto.SelectedItem is ProductoDTO productoSeleccionado)
+            {
+                ProductoDTO? productoActualizado =
+                    productoNegocio.ObtenerProductoPorId(
+                        productoSeleccionado.Id);
+
+                if (productoActualizado != null)
+                {
+                    // Actualiza también el objeto que conserva el ComboBox.
+                    productoSeleccionado.Stock =
+                        productoActualizado.Stock;
+
+                    lblStockDisponible.Text =
+                        $"Stock disponible: {productoActualizado.Stock} unidades";
+
+                    lblStockDisponible.ForeColor =
+                        productoActualizado.Stock > 0
+                            ? Color.SeaGreen
+                            : Color.Firebrick;
+
+                    return;
+                }
+            }
+
+            lblStockDisponible.Text =
+                "Stock disponible: 0 unidades";
+
+            lblStockDisponible.ForeColor = Color.Firebrick;
         }
     }
 }

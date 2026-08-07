@@ -64,10 +64,9 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvProductos.Location = new Point(30, 282);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.RowHeadersWidth = 62;
-            dgvProductos.Size = new Size(905, 357);
+            dgvProductos.Size = new Size(905, 375);
             dgvProductos.TabIndex = 0;
             dgvProductos.CellClick += dgvProductos_CellClick;
-            dgvProductos.CellContentClick += dgvProductos_CellContentClick;
             // 
             // txtCodigo
             // 
@@ -115,11 +114,11 @@ namespace SistemadeVentas.Presentacion.Forms
             btnGuardar.IconColor = Color.White;
             btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnGuardar.IconSize = 20;
-            btnGuardar.Location = new Point(46, 225);
+            btnGuardar.Location = new Point(30, 218);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(120, 36);
+            btnGuardar.Size = new Size(254, 51);
             btnGuardar.TabIndex = 6;
-            btnGuardar.Text = "Guardar";
+            btnGuardar.Text = "Crear Producto";
             btnGuardar.TextImageRelation = TextImageRelation.ImageBeforeText;
             btnGuardar.UseVisualStyleBackColor = false;
             btnGuardar.Click += btnGuardar_Click;
@@ -135,9 +134,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEditar.IconColor = Color.RoyalBlue;
             btnEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEditar.IconSize = 20;
-            btnEditar.Location = new Point(196, 225);
+            btnEditar.Location = new Point(302, 219);
             btnEditar.Name = "btnEditar";
-            btnEditar.Size = new Size(120, 36);
+            btnEditar.Size = new Size(165, 48);
             btnEditar.TabIndex = 7;
             btnEditar.Text = "Editar";
             btnEditar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -155,9 +154,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.IconColor = Color.White;
             btnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEliminar.IconSize = 20;
-            btnEliminar.Location = new Point(333, 225);
+            btnEliminar.Location = new Point(485, 225);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(120, 36);
+            btnEliminar.Size = new Size(134, 44);
             btnEliminar.TabIndex = 8;
             btnEliminar.Text = "Eliminar";
             btnEliminar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -175,9 +174,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnLimpiar.IconColor = Color.DimGray;
             btnLimpiar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnLimpiar.IconSize = 20;
-            btnLimpiar.Location = new Point(476, 225);
+            btnLimpiar.Location = new Point(643, 222);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(120, 36);
+            btnLimpiar.Size = new Size(134, 51);
             btnLimpiar.TabIndex = 9;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -195,7 +194,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnExportarJson.IconColor = Color.SteelBlue;
             btnExportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnExportarJson.IconSize = 18;
-            btnExportarJson.Location = new Point(793, 234);
+            btnExportarJson.Location = new Point(793, 218);
             btnExportarJson.Name = "btnExportarJson";
             btnExportarJson.Size = new Size(160, 42);
             btnExportarJson.TabIndex = 16;
@@ -215,7 +214,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnImportarJson.IconColor = Color.DarkOrange;
             btnImportarJson.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnImportarJson.IconSize = 18;
-            btnImportarJson.Location = new Point(793, 169);
+            btnImportarJson.Location = new Point(793, 150);
             btnImportarJson.Name = "btnImportarJson";
             btnImportarJson.Size = new Size(160, 39);
             btnImportarJson.TabIndex = 17;
@@ -298,9 +297,9 @@ namespace SistemadeVentas.Presentacion.Forms
             btnVolver.FlatStyle = FlatStyle.Flat;
             btnVolver.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnVolver.ForeColor = Color.RoyalBlue;
-            btnVolver.Location = new Point(20, 651);
+            btnVolver.Location = new Point(20, 663);
             btnVolver.Name = "btnVolver";
-            btnVolver.Size = new Size(217, 34);
+            btnVolver.Size = new Size(231, 46);
             btnVolver.TabIndex = 18;
             btnVolver.Text = "← Volver al menú";
             btnVolver.UseVisualStyleBackColor = true;
@@ -308,7 +307,7 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             // txtID
             // 
-            txtID.Location = new Point(785, 85);
+            txtID.Location = new Point(815, 95);
             txtID.Name = "txtID";
             txtID.Size = new Size(150, 33);
             txtID.TabIndex = 19;
@@ -318,7 +317,7 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
-            ClientSize = new Size(965, 697);
+            ClientSize = new Size(965, 715);
             Controls.Add(txtID);
             Controls.Add(btnVolver);
             Controls.Add(lblStock);

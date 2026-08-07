@@ -342,8 +342,105 @@ namespace SistemaVentas.Negocio
         /// <returns><c>true</c> si la venta fue eliminada correctamente.</returns>
         public bool EliminarVenta(int id)
         {
-            detalleVentaRepositorio.EliminarDetallesPorVenta(id);
-            return ventaRepositorio.EliminarVenta(id);
+            if (id <= 0)
+                throw new Exception("La venta seleccionada no es válida.");
+
+            ConexionDB conexionDB = new ConexionDB();
+
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (MySqlTransaction transaccion = conexion.BeginTransaction())
+                {
+                    try
+                    {
+                        // Obtener la venta antes de eliminarla.
+                        Venta? venta = ventaRepositorio.ObtenerVentaPorId(
+                            id,
+                            conexion,
+                            transaccion);
+
+                        if (venta == null)
+                        {
+                            transaccion.Rollback();
+                            return false;
+                        }
+
+                        // Obtener los detalles antes de borrarlos.
+                        List<DetalleVenta> detalles =
+                            detalleVentaRepositorio.ObtenerDetallesPorVenta(
+                                id,
+                                conexion,
+                                transaccion);
+
+                        // Agrupar las cantidades por producto.
+                        var cantidadesPorProducto = detalles
+                            .GroupBy(d => d.ProductoId)
+                            .Select(grupo => new
+                            {
+                                ProductoId = grupo.Key,
+                                Cantidad = grupo.Sum(d => d.Cantidad)
+                            })
+                            .ToList();
+
+                        // Devolver las unidades al inventario.
+                        foreach (var item in cantidadesPorProducto)
+                        {
+                            ProductoDTO? producto =
+                                productoNegocio.ObtenerProductoPorId(
+                                    item.ProductoId,
+                                    conexion,
+                                    transaccion);
+
+                            if (producto == null)
+                            {
+                                throw new Exception(
+                                    $"No se encontró el producto con Id={item.ProductoId}.");
+                            }
+
+                            int stockRestaurado =
+                                producto.Stock + item.Cantidad;
+
+                            bool actualizado =
+                                productoNegocio.ActualizarStock(
+                                    item.ProductoId,
+                                    stockRestaurado,
+                                    conexion,
+                                    transaccion);
+
+                            if (!actualizado)
+                            {
+                                throw new Exception(
+                                    $"No fue posible restaurar el stock de {producto.Nombre}.");
+                            }
+                        }
+
+                        // Después de restaurar el stock, eliminar los registros.
+                        detalleVentaRepositorio.EliminarDetallesPorVenta(
+                            id,
+                            conexion,
+                            transaccion);
+
+                        if (!ventaRepositorio.EliminarVenta(
+                                id,
+                                conexion,
+                                transaccion))
+                        {
+                            throw new Exception(
+                                "No fue posible eliminar la venta.");
+                        }
+
+                        transaccion.Commit();
+                        return true;
+                    }
+                    catch
+                    {
+                        transaccion.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
     }
 }
