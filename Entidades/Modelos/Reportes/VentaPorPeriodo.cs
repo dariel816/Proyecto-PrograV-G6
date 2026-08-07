@@ -13,7 +13,7 @@ namespace SistemaVentas.Entidades.Modelos.Reportes
     public class VentaPorPeriodo
     {
         /// <summary>Texto que identifica el período agregado (por ejemplo, "2026-08" o "Agosto 2026").</summary>
-        public string Periodo { get; set; }
+        public string Periodo { get; set; } = string.Empty;
 
         /// <summary>Monto total de ventas correspondiente al período.</summary>
         public decimal Total { get; set; }

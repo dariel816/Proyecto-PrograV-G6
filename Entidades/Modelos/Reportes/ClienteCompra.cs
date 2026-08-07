@@ -16,7 +16,7 @@ namespace SistemaVentas.Entidades.Modelos.Reportes
         public int ClienteId { get; set; }
 
         /// <summary>Nombre del cliente.</summary>
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         /// <summary>Cantidad total de ventas realizadas al cliente.</summary>
         public int CantidadVentas { get; set; }

@@ -16,12 +16,12 @@ namespace SistemaVentas.Entidades.DTOs
         public int Id { get; set; }
 
         /// <summary>Nombre completo del cliente.</summary>
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         /// <summary>Número de teléfono de contacto del cliente.</summary>
-        public string Telefono { get; set; }
+        public string Telefono { get; set; } = string.Empty;
 
         /// <summary>Correo electrónico de contacto del cliente.</summary>
-        public string Correo { get; set; }
+        public string Correo { get; set; } = string.Empty;
     }
 }

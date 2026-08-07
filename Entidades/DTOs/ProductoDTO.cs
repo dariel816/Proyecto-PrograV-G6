@@ -16,13 +16,13 @@ namespace SistemaVentas.Entidades.DTOs
         public int Id { get; set; }
 
         /// <summary>Código interno que identifica al producto.</summary>
-        public string Codigo { get; set; }
+        public string Codigo { get; set; } = string.Empty;
 
         /// <summary>Nombre del producto.</summary>
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         /// <summary>Descripción detallada del producto.</summary>
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
 
         /// <summary>Precio unitario de venta del producto.</summary>
         public decimal Precio { get; set; }

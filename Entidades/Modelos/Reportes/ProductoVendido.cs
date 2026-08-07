@@ -16,7 +16,7 @@ namespace SistemaVentas.Entidades.Modelos.Reportes
         public int ProductoId { get; set; }
 
         /// <summary>Nombre del producto.</summary>
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
 
         /// <summary>Cantidad total de unidades vendidas del producto.</summary>
         public int CantidadVendida { get; set; }

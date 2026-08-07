@@ -23,7 +23,7 @@ namespace SistemaVentas.Entidades.DTOs
         public int ProductoId { get; set; }
 
         /// <summary>Nombre del producto, incluido para evitar consultas adicionales en la capa de Presentación.</summary>
-        public string ProductoNombre { get; set; }
+        public string ProductoNombre { get; set; } = string.Empty;
 
         /// <summary>Cantidad de unidades vendidas del producto.</summary>
         public int Cantidad { get; set; }
