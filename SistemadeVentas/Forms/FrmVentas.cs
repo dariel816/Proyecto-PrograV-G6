@@ -435,7 +435,9 @@ namespace SistemadeVentas.Presentacion.Forms
                     {
                         MessageBox.Show("Venta eliminada exitosamente", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LimpiarFormulario();
+                        CargarProductos();
                         CargarVentas();
+                        MostrarStockDisponible();
                     }
                     else
                     {

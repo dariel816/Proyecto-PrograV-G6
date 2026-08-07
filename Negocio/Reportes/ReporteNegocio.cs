@@ -127,5 +127,30 @@ namespace SistemaVentas.Negocio.Reportes
                 .Take(top)
                 .ToList();
         }
+
+        /// <summary>
+        /// Obtiene todos los clientes registrados junto con la cantidad
+        /// de ventas y el total comprado por cada uno.
+        /// </summary>
+        public List<ClienteCompra> ObtenerTodosLosClientesConCompras()
+        {
+            var ventas = ventaNegocio.ObtenerVentas();
+
+            return clienteNegocio.ObtenerClientes()
+                .GroupJoin(
+                    ventas,
+                    cliente => cliente.Id,
+                    venta => venta.ClienteId,
+                    (cliente, ventasCliente) => new ClienteCompra
+                    {
+                        ClienteId = cliente.Id,
+                        Nombre = cliente.Nombre,
+                        CantidadVentas = ventasCliente.Count(),
+                        TotalComprado = ventasCliente.Sum(
+                            venta => venta.Total)
+                    })
+                .OrderBy(cliente => cliente.Nombre)
+                .ToList();
+        }
     }
 }

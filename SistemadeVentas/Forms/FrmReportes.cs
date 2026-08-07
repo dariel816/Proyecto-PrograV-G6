@@ -255,7 +255,7 @@ namespace SistemadeVentas.Presentacion.Forms
         /// </summary>
         private void GenerarReporteClientes()
         {
-            clientesActuales = reporteNegocio.ObtenerClientesConMasCompras(5);
+            clientesActuales =reporteNegocio.ObtenerTodosLosClientesConCompras();
 
             dgvReporte.DataSource = null;
             dgvReporte.DataSource = clientesActuales;
@@ -264,7 +264,13 @@ namespace SistemadeVentas.Presentacion.Forms
             serie.Points.Clear();
             serie.ChartType = SeriesChartType.Column;
             serie.IsXValueIndexed = true;
-            foreach (var cliente in clientesActuales)
+
+            var clientesParaGrafico = clientesActuales
+    .OrderByDescending(cliente => cliente.TotalComprado)
+    .Take(5)
+    .ToList();
+
+            foreach (var cliente in clientesParaGrafico)
             {
                 serie.Points.AddXY(cliente.Nombre, cliente.TotalComprado);
             }
