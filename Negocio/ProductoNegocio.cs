@@ -207,8 +207,10 @@ namespace SistemaVentas.Negocio
                     try
                     {
                         producto.Id = 0;
-                        InsertarProducto(producto);
-                        importados++;
+                        if (InsertarProducto(producto))
+                            importados++;
+                        else
+                            omitidos++;
                     }
                     catch
                     {

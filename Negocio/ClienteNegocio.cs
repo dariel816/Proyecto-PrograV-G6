@@ -147,8 +147,10 @@ namespace SistemaVentas.Negocio
                     try
                     {
                         cliente.Id = 0;
-                        InsertarCliente(cliente);
-                        importados++;
+                        if (InsertarCliente(cliente))
+                            importados++;
+                        else
+                            omitidos++;
                     }
                     catch
                     {
