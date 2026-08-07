@@ -30,6 +30,12 @@ namespace SistemaVentas.Negocio.Reportes
         /// <returns>Lista de ventas dentro del rango de fechas.</returns>
         public List<VentaDTO> ObtenerVentasPorRango(DateTime desde, DateTime hasta)
         {
+            if (desde.Date > hasta.Date)
+            {
+                throw new Exception(
+                    "La fecha inicial no puede ser mayor que la fecha final.");
+            }
+
             return ventaNegocio.ObtenerVentas()
                 .Where(v => v.Fecha.Date >= desde.Date && v.Fecha.Date <= hasta.Date)
                 .OrderBy(v => v.Fecha)
@@ -40,9 +46,9 @@ namespace SistemaVentas.Negocio.Reportes
         /// Agrupa el total de ventas por periodo (año-mes) para armar el reporte de ventas mensuales.
         /// </summary>
         /// <returns>Lista de totales agrupados por periodo ("yyyy-MM"), ordenada cronológicamente.</returns>
-        public List<VentaPorPeriodo> ObtenerVentasPorMes()
+        public List<VentaPorPeriodo> ObtenerVentasPorMes( DateTime desde,DateTime hasta)
         {
-            return ventaNegocio.ObtenerVentas()
+            return ObtenerVentasPorRango(desde, hasta)
                 .GroupBy(v => v.Fecha.ToString("yyyy-MM"))
                 .Select(g => new VentaPorPeriodo
                 {

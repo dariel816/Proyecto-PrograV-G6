@@ -6,6 +6,7 @@ using System.Globalization;
 using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos.Reportes;
 using SistemaVentas.Negocio.Reportes;
+using System.Linq;
 
 namespace SistemadeVentas.Presentacion.Forms
 {
@@ -48,7 +49,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
 
                 var colName = dgv.Columns[e.ColumnIndex].Name;
-                if ((colName == "Stock" || colName == "CantidadVendida" || colName == "Cantidad") && e.Value != null)
+                if ((colName == "Stock" || colName == "Cantidad Vendida" || colName == "Cantidad") && e.Value != null)
                 {
                     if (e.Value is int vi)
                     {
@@ -160,10 +161,11 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvReporte.CellFormatting -= DgvReporte_CellFormatting;
             dgvReporte.CellFormatting += DgvReporte_CellFormatting;
 
-            var ventasPorMes = reporteNegocio.ObtenerVentasPorMes();
+            var ventasPorMes = reporteNegocio.ObtenerVentasPorMes(dtpDesde.Value,dtpHasta.Value);
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
             serie.ChartType = SeriesChartType.Column;
+            serie.IsXValueIndexed = true;
             foreach (var punto in ventasPorMes)
             {
                 serie.Points.AddXY(punto.Periodo, punto.Total);
@@ -181,14 +183,34 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             productosActuales = reporteNegocio.ObtenerTodosLosProductos();
 
-            productosMasVendidosActuales =
-                reporteNegocio.ObtenerProductosMasVendidos(5);
+            var ventasPorProducto = reporteNegocio.ObtenerProductosMasVendidos( productosActuales.Count);
+
+            productosMasVendidosActuales =ventasPorProducto.Take(5).ToList();
 
             productosBajoStockActuales =
                 reporteNegocio.ObtenerProductosBajoStock(5);
 
+            var cantidadesVendidas = ventasPorProducto.ToDictionary(producto => producto.ProductoId,producto => producto.CantidadVendida);
+
+            var productosParaMostrar = productosActuales
+                .Select(producto => new
+                {
+                    producto.Codigo,
+                    producto.Nombre,
+                    producto.Descripcion,
+                    producto.Precio,
+                    producto.Stock,
+
+                    CantidadVendida = cantidadesVendidas.TryGetValue(
+                        producto.Id,
+                        out int cantidad)
+                            ? cantidad
+                            : 0
+                })
+                .ToList();
+
             dgvReporte.DataSource = null;
-            dgvReporte.DataSource = productosActuales;
+            dgvReporte.DataSource = productosParaMostrar;
 
             if (dgvReporte.Columns.Contains("Id"))
                 dgvReporte.Columns["Id"].Visible = false;
@@ -211,6 +233,7 @@ namespace SistemadeVentas.Presentacion.Forms
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
             serie.ChartType = SeriesChartType.Column;
+            serie.IsXValueIndexed = true;
 
             foreach (var producto in productosMasVendidosActuales)
             {
@@ -240,6 +263,7 @@ namespace SistemadeVentas.Presentacion.Forms
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
             serie.ChartType = SeriesChartType.Column;
+            serie.IsXValueIndexed = true;
             foreach (var cliente in clientesActuales)
             {
                 serie.Points.AddXY(cliente.Nombre, cliente.TotalComprado);
