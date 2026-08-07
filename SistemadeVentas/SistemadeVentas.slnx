@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/Documentacion/">
     <File Path="DiagramaEntidades.puml" />
+    <File Path="../../../../Downloads/diagrama-uml-sistema-ventas.drawio" />
+    <File Path="../../../../Downloads/diagrama-uml-sistema-ventas.png" />
     <File Path="DiagramaCapas.puml" />
   </Folder>
   <Folder Name="/SQL/">
