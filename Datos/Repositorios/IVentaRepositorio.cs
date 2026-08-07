@@ -24,6 +24,14 @@ namespace SistemaVentas.Datos.Repositorios
         Venta? ObtenerVentaPorId(int id);
 
         /// <summary>
+        /// Busca y bloquea una venta dentro de una transacción existente.
+        /// </summary>
+        Venta? ObtenerVentaPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion);
+
+        /// <summary>
         /// Inserta una nueva venta, abriendo su propia conexión.
         /// </summary>
         /// <param name="venta">Datos de la venta a insertar.</param>
@@ -53,5 +61,13 @@ namespace SistemaVentas.Datos.Repositorios
         /// <param name="id">Id de la venta a eliminar.</param>
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         bool EliminarVenta(int id);
+
+        /// <summary>
+        /// Elimina una venta dentro de una transacción existente.
+        /// </summary>
+        bool EliminarVenta(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion);
     }
 }

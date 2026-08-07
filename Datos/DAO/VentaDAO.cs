@@ -125,6 +125,44 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
+        /// Busca y bloquea una venta dentro de una transacción existente. El bloqueo evita que
+        /// la misma venta sea modificada o eliminada simultáneamente durante su cancelación.
+        /// </summary>
+        /// <param name="id">Id de la venta.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns>La venta bloqueada, o <c>null</c> si no existe.</returns>
+        public Venta? ObtenerVentaPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query = @"SELECT id, fecha, cliente_id, total
+                                   FROM ventas
+                                   WHERE id = @id
+                                   FOR UPDATE";
+
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@id", id);
+
+                using (MySqlDataReader reader = comando.ExecuteReader())
+                {
+                    if (!reader.Read())
+                        return null;
+
+                    return new Venta
+                    {
+                        Id = Convert.ToInt32(reader["id"]),
+                        Fecha = Convert.ToDateTime(reader["fecha"]),
+                        ClienteId = Convert.ToInt32(reader["cliente_id"]),
+                        Total = Convert.ToDecimal(reader["total"])
+                    };
+                }
+            }
+        }
+
+        /// <summary>
         /// Inserta una nueva venta en la base de datos, abriendo su propia conexión.
         /// </summary>
         /// <param name="venta">Datos de la venta a insertar.</param>
@@ -270,6 +308,28 @@ namespace SistemaVentas.Datos.DAO
                     $"Error al eliminar la venta con Id={id}: " +
                     ex.Message,
                     ex);
+            }
+        }
+
+        /// <summary>
+        /// Elimina una venta utilizando una conexión y transacción existentes.
+        /// </summary>
+        /// <param name="id">Id de la venta.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns><c>true</c> si la venta fue eliminada.</returns>
+        public bool EliminarVenta(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query = @"DELETE FROM ventas
+                                   WHERE id = @id";
+
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@id", id);
+                return comando.ExecuteNonQuery() > 0;
             }
         }
 

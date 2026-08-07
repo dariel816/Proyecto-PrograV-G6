@@ -20,6 +20,15 @@ namespace SistemaVentas.Datos.Repositorios
         public List<DetalleVenta> ObtenerDetallesPorVenta(int ventaId) => detalleVentaDAO.ObtenerDetallesPorVenta(ventaId);
 
         /// <summary>
+        /// Obtiene y bloquea los detalles de una venta dentro de una transacción existente.
+        /// </summary>
+        public List<DetalleVenta> ObtenerDetallesPorVenta(
+            int ventaId,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+            => detalleVentaDAO.ObtenerDetallesPorVenta(ventaId, conexion, transaccion);
+
+        /// <summary>
         /// Busca un detalle de venta por su identificador.
         /// </summary>
         /// <param name="id">Id del detalle a buscar.</param>
@@ -64,5 +73,14 @@ namespace SistemaVentas.Datos.Repositorios
         /// <param name="ventaId">Id de la venta cuyos detalles se desean eliminar.</param>
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         public bool EliminarDetallesPorVenta(int ventaId) => detalleVentaDAO.EliminarDetallesPorVenta(ventaId);
+
+        /// <summary>
+        /// Elimina todos los detalles de una venta dentro de una transacción existente.
+        /// </summary>
+        public bool EliminarDetallesPorVenta(
+            int ventaId,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+            => detalleVentaDAO.EliminarDetallesPorVenta(ventaId, conexion, transaccion);
     }
 }

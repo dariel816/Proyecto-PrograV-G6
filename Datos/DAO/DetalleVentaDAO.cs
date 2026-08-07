@@ -93,6 +93,50 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
+        /// Obtiene y bloquea los detalles de una venta dentro de una transacción existente.
+        /// </summary>
+        /// <param name="ventaId">Id de la venta.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns>Detalles bloqueados de la venta.</returns>
+        public List<DetalleVenta> ObtenerDetallesPorVenta(
+            int ventaId,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query = @"SELECT id, venta_id, producto_id, cantidad, precio, subtotal
+                                   FROM detalle_ventas
+                                   WHERE venta_id = @venta_id
+                                   ORDER BY producto_id
+                                   FOR UPDATE";
+
+            List<DetalleVenta> detalles = new List<DetalleVenta>();
+
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@venta_id", ventaId);
+
+                using (MySqlDataReader reader = comando.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        detalles.Add(new DetalleVenta
+                        {
+                            Id = Convert.ToInt32(reader["id"]),
+                            VentaId = Convert.ToInt32(reader["venta_id"]),
+                            ProductoId = Convert.ToInt32(reader["producto_id"]),
+                            Cantidad = Convert.ToInt32(reader["cantidad"]),
+                            PrecioUnitario = Convert.ToDecimal(reader["precio"]),
+                            Subtotal = Convert.ToDecimal(reader["subtotal"])
+                        });
+                    }
+                }
+            }
+
+            return detalles;
+        }
+
+        /// <summary>
         /// Busca un detalle de venta por su identificador.
         /// </summary>
         /// <param name="id">Id del detalle a buscar.</param>
@@ -383,6 +427,29 @@ namespace SistemaVentas.Datos.DAO
                     $"Error al eliminar los detalles de la venta " +
                     $"con Id={ventaId}: {ex.Message}",
                     ex);
+            }
+        }
+
+        /// <summary>
+        /// Elimina todos los detalles de una venta dentro de una transacción existente.
+        /// </summary>
+        /// <param name="ventaId">Id de la venta.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns><c>true</c> si la operación se ejecutó correctamente.</returns>
+        public bool EliminarDetallesPorVenta(
+            int ventaId,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query = @"DELETE FROM detalle_ventas
+                                   WHERE venta_id = @venta_id";
+
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@venta_id", ventaId);
+                comando.ExecuteNonQuery();
+                return true;
             }
         }
 

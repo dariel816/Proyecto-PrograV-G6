@@ -26,6 +26,15 @@ namespace SistemaVentas.Datos.Repositorios
         public Venta? ObtenerVentaPorId(int id) => ventaDAO.ObtenerVentaPorId(id);
 
         /// <summary>
+        /// Busca y bloquea una venta dentro de una transacción existente.
+        /// </summary>
+        public Venta? ObtenerVentaPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+            => ventaDAO.ObtenerVentaPorId(id, conexion, transaccion);
+
+        /// <summary>
         /// Inserta una nueva venta, abriendo su propia conexión.
         /// </summary>
         /// <param name="venta">Datos de la venta a insertar.</param>
@@ -56,5 +65,14 @@ namespace SistemaVentas.Datos.Repositorios
         /// <param name="id">Id de la venta a eliminar.</param>
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         public bool EliminarVenta(int id) => ventaDAO.EliminarVenta(id);
+
+        /// <summary>
+        /// Elimina una venta dentro de una transacción existente.
+        /// </summary>
+        public bool EliminarVenta(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+            => ventaDAO.EliminarVenta(id, conexion, transaccion);
     }
 }
