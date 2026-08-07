@@ -3,9 +3,11 @@
     <File Path="DiagramaEntidades.puml" />
     <File Path="../../../../Downloads/diagrama-uml-sistema-ventas.drawio" />
     <File Path="../../../../Downloads/diagrama-uml-sistema-ventas.png" />
+    <File Path="../README.md" />
     <File Path="DiagramaCapas.puml" />
   </Folder>
   <Folder Name="/SQL/">
+    <File Path="../SQL/BaseDeDatos.sql" />
     <File Path="../SQL/usuarios.sql" />
   </Folder>
   <Project Path="../Datos/SistemaVentas.Datos.csproj" />

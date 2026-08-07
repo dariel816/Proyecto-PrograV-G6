@@ -1,17 +1,18 @@
 -- Ejecutar en la base de datos sistema_ventas (misma que usa el resto del sistema).
-/*
 
-CREATE DATABASE sistema_ventas;
+
+CREATE DATABASE IF NOT EXISTS sistema_ventas;
+
 USE sistema_ventas;
 
-CREATE TABLE clientes (
+CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     telefono VARCHAR(20),
     correo VARCHAR(100)
 );
 
-CREATE TABLE productos (
+CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(50) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
@@ -20,7 +21,7 @@ CREATE TABLE productos (
     stock INT NOT NULL
 );
 
-CREATE TABLE ventas (
+CREATE TABLE IF NOT EXISTS ventas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATETIME NOT NULL,
     cliente_id INT,
@@ -29,7 +30,7 @@ CREATE TABLE ventas (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 
-CREATE TABLE detalle_ventas (
+CREATE TABLE  IF NOT EXISTS detalle_ventas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     venta_id INT,
     producto_id INT,
