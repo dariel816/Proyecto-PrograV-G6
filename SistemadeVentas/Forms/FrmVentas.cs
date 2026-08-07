@@ -385,7 +385,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     : ventaNegocio.CrearVenta(venta, detallesTemp);
 
 
-                ventaNegocio.CrearVenta(venta, detallesTemp);
+
 
                 if (ventaGuardada)
                 {
