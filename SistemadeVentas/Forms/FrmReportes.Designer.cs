@@ -141,6 +141,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvReporte.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvReporte.BackgroundColor = Color.White;
             dgvReporte.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvReporte.GridColor = Color.LightGray;
+            dgvReporte.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvReporte.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvReporte.BorderStyle = BorderStyle.FixedSingle;
             dgvReporte.Location = new Point(12, 336);
             dgvReporte.Name = "dgvReporte";
             dgvReporte.RowHeadersWidth = 62;

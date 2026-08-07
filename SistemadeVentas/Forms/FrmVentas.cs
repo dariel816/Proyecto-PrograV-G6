@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Globalization;
 using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Negocio;
 
@@ -27,6 +28,38 @@ namespace SistemadeVentas.Presentacion.Forms
             InitializeComponent();
         }
 
+        private void DgvDetalles_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            try
+            {
+                var dgv = sender as DataGridView;
+                if (dgv == null)
+                    return;
+
+                if (e.ColumnIndex < 0 || e.ColumnIndex >= dgv.Columns.Count)
+                    return;
+
+                var colName = dgv.Columns[e.ColumnIndex].Name;
+                if ((colName == "Cantidad") && e.Value != null)
+                {
+                    if (e.Value is int cantidadInt)
+                    {
+                        e.Value = cantidadInt + " unidades";
+                        e.FormattingApplied = true;
+                    }
+                    else if (int.TryParse(Convert.ToString(e.Value), out int cantidad))
+                    {
+                        e.Value = cantidad + " unidades";
+                        e.FormattingApplied = true;
+                    }
+                }
+            }
+            catch
+            {
+                // ignorar errores de formateo
+            }
+        }
+
         /// <summary>
         /// Carga los combos de clientes y productos y el listado de ventas al mostrarse el formulario.
         /// </summary>
@@ -44,9 +77,15 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
-                cmbCliente.DataSource = clienteNegocio.ObtenerClientes();
+                var clientes = clienteNegocio.ObtenerClientes() ?? new System.Collections.Generic.List<SistemaVentas.Entidades.DTOs.ClienteDTO>();
+                cmbCliente.DataSource = null;
                 cmbCliente.DisplayMember = "Nombre";
                 cmbCliente.ValueMember = "Id";
+                cmbCliente.DataSource = clientes;
+                if (clientes.Count > 0)
+                    cmbCliente.SelectedIndex = 0;
+                else
+                    cmbCliente.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -61,9 +100,15 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
-                cmbProducto.DataSource = productoNegocio.ObtenerProductos();
+                var productos = productoNegocio.ObtenerProductos() ?? new System.Collections.Generic.List<SistemaVentas.Entidades.DTOs.ProductoDTO>();
+                cmbProducto.DataSource = null;
                 cmbProducto.DisplayMember = "Nombre";
                 cmbProducto.ValueMember = "Id";
+                cmbProducto.DataSource = productos;
+                if (productos.Count > 0)
+                    cmbProducto.SelectedIndex = 0;
+                else
+                    cmbProducto.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -86,6 +131,15 @@ namespace SistemadeVentas.Presentacion.Forms
                     dgvVentas.Columns["Detalles"].Visible = false;
                 if (dgvVentas.Columns.Contains("ClienteId"))
                     dgvVentas.Columns["ClienteId"].Visible = false;
+                // Formatear columna Total con símbolo de colones
+                if (dgvVentas.Columns.Contains("Total"))
+                {
+                    var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                    nfi.CurrencySymbol = "₡";
+                    dgvVentas.Columns["Total"].DefaultCellStyle.Format = "C2";
+                    dgvVentas.Columns["Total"].DefaultCellStyle.FormatProvider = nfi;
+                    dgvVentas.Columns["Total"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
             }
             catch (Exception ex)
             {
@@ -121,7 +175,30 @@ namespace SistemadeVentas.Presentacion.Forms
                     dgvDetalles.DataSource = venta.Detalles;
                     if (dgvDetalles.Columns.Contains("VentaId"))
                         dgvDetalles.Columns["VentaId"].Visible = false;
-                    txtTotal.Text = venta.Total.ToString("C2");
+
+                    // Formatear columnas de detalles: PrecioUnitario y Subtotal con símbolo ₡, Cantidad con sufijo
+                    if (dgvDetalles.Columns.Contains("PrecioUnitario"))
+                    {
+                        var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                        nfi.CurrencySymbol = "₡";
+                        dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.Format = "C2";
+                        dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.FormatProvider = nfi;
+                        dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    }
+                    if (dgvDetalles.Columns.Contains("Subtotal"))
+                    {
+                        var nfi2 = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                        nfi2.CurrencySymbol = "₡";
+                        dgvDetalles.Columns["Subtotal"].DefaultCellStyle.Format = "C2";
+                        dgvDetalles.Columns["Subtotal"].DefaultCellStyle.FormatProvider = nfi2;
+                        dgvDetalles.Columns["Subtotal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    }
+
+                    // Suscribir evento para formatear Cantidad con 'unidades'
+                    dgvDetalles.CellFormatting -= DgvDetalles_CellFormatting;
+                    dgvDetalles.CellFormatting += DgvDetalles_CellFormatting;
+
+                    txtTotal.Text = "₡" + venta.Total.ToString("N2");
                 }
             }
             catch (Exception ex)
@@ -182,6 +259,26 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvDetalles.DataSource = new List<DetalleVentaDTO>(detallesTemp);
             if (dgvDetalles.Columns.Contains("VentaId"))
                 dgvDetalles.Columns["VentaId"].Visible = false;
+            // Aplicar formateo similar al de detalles guardados: PrecioUnitario y Subtotal con símbolo ₡,
+            // y suscribirse al evento para mostrar Cantidad con 'unidades'.
+            if (dgvDetalles.Columns.Contains("PrecioUnitario"))
+            {
+                var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                nfi.CurrencySymbol = "₡";
+                dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.Format = "C2";
+                dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.FormatProvider = nfi;
+                dgvDetalles.Columns["PrecioUnitario"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+            if (dgvDetalles.Columns.Contains("Subtotal"))
+            {
+                var nfi2 = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                nfi2.CurrencySymbol = "₡";
+                dgvDetalles.Columns["Subtotal"].DefaultCellStyle.Format = "C2";
+                dgvDetalles.Columns["Subtotal"].DefaultCellStyle.FormatProvider = nfi2;
+                dgvDetalles.Columns["Subtotal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+            dgvDetalles.CellFormatting -= DgvDetalles_CellFormatting;
+            dgvDetalles.CellFormatting += DgvDetalles_CellFormatting;
         }
 
         /// <summary>
@@ -305,8 +402,15 @@ namespace SistemadeVentas.Presentacion.Forms
         /// </summary>
         private void LimpiarFormulario()
         {
-            cmbCliente.SelectedIndex = 0;
-            cmbProducto.SelectedIndex = 0;
+            if (cmbCliente.Items.Count > 0)
+                cmbCliente.SelectedIndex = 0;
+            else
+                cmbCliente.SelectedIndex = -1;
+
+            if (cmbProducto.Items.Count > 0)
+                cmbProducto.SelectedIndex = 0;
+            else
+                cmbProducto.SelectedIndex = -1;
             txtCantidad.Clear();
             txtTotal.Clear();
             detallesTemp.Clear();

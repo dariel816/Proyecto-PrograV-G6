@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Forms;
 using SistemaVentas.Entidades.DTOs;//Importación del espacio de nombres que contiene los DTO para trabajar con los datos de productos en la capa de presentación
 using SistemaVentas.Negocio;
@@ -39,6 +40,60 @@ namespace SistemadeVentas.Presentacion.Forms
         private void CargarProductos()
         {
             dgvProductos.DataSource = productoNegocio.ObtenerProductos();
+
+            // Formatear columnas: Precio con símbolo de colones y Stock con sufijo 'unidades'
+            if (dgvProductos.Columns.Contains("Precio"))
+            {
+                var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                nfi.CurrencySymbol = "₡";
+                dgvProductos.Columns["Precio"].DefaultCellStyle.Format = "C2";
+                dgvProductos.Columns["Precio"].DefaultCellStyle.FormatProvider = nfi;
+                dgvProductos.Columns["Precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+
+            if (dgvProductos.Columns.Contains("Stock"))
+            {
+                // Mostrar el valor y añadir " unidades" en la presentación
+                dgvProductos.CellFormatting -= DgvProductos_CellFormatting;
+                dgvProductos.CellFormatting += DgvProductos_CellFormatting;
+                dgvProductos.Columns["Stock"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+        }
+
+        private void DgvProductos_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            try
+            {
+                var dgv = sender as DataGridView;
+                if (dgv == null)
+                    return;
+
+                if (e.ColumnIndex < 0 || e.ColumnIndex >= dgv.Columns.Count)
+                    return;
+
+                var col = dgv.Columns[e.ColumnIndex];
+                if (col?.Name == "Stock" && e.Value != null)
+                {
+                    // Mostrar como "9 unidades"
+                    if (e.Value is int stockInt)
+                    {
+                        e.Value = stockInt + " unidades";
+                        e.FormattingApplied = true;
+                    }
+                    else
+                    {
+                        if (int.TryParse(Convert.ToString(e.Value), out int stock))
+                        {
+                            e.Value = stock + " unidades";
+                            e.FormattingApplied = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignorar errores de formato aquí para no romper la UI
+            }
         }
 
         /// <summary>

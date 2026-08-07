@@ -63,6 +63,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvVentas.BackgroundColor = Color.White;
             dgvVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvVentas.GridColor = Color.LightGray;
+            dgvVentas.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvVentas.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvVentas.BorderStyle = BorderStyle.FixedSingle;
             dgvVentas.Dock = DockStyle.Fill;
             dgvVentas.Location = new Point(6, 34);
             dgvVentas.Margin = new Padding(6, 7, 6, 7);
@@ -93,6 +97,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvDetalles.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDetalles.BackgroundColor = Color.White;
             dgvDetalles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDetalles.GridColor = Color.LightGray;
+            dgvDetalles.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvDetalles.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvDetalles.BorderStyle = BorderStyle.FixedSingle;
             dgvDetalles.Dock = DockStyle.Fill;
             dgvDetalles.Location = new Point(6, 34);
             dgvDetalles.Margin = new Padding(6, 7, 6, 7);
@@ -271,7 +279,7 @@ namespace SistemadeVentas.Presentacion.Forms
             lblTotal.Name = "lblTotal";
             lblTotal.Size = new Size(58, 28);
             lblTotal.TabIndex = 10;
-            lblTotal.Text = "Total:";
+            lblTotal.Text = "Total (₡):";
             // 
             // txtTotal
             // 

@@ -59,6 +59,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProductos.BackgroundColor = Color.White;
             dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvProductos.GridColor = Color.LightGray;
+            dgvProductos.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvProductos.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvProductos.BorderStyle = BorderStyle.FixedSingle;
             dgvProductos.Location = new Point(30, 282);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.RowHeadersWidth = 62;
@@ -254,18 +258,18 @@ namespace SistemadeVentas.Presentacion.Forms
             lblPrecio.AutoSize = true;
             lblPrecio.Location = new Point(430, 100);
             lblPrecio.Name = "lblPrecio";
-            lblPrecio.Size = new Size(70, 28);
+            lblPrecio.Size = new Size(100, 28);
             lblPrecio.TabIndex = 13;
-            lblPrecio.Text = "Precio:";
+            lblPrecio.Text = "Precio (₡):";
             // 
             // lblStock
             // 
             lblStock.AutoSize = true;
             lblStock.Location = new Point(430, 140);
             lblStock.Name = "lblStock";
-            lblStock.Size = new Size(64, 28);
+            lblStock.Size = new Size(140, 28);
             lblStock.TabIndex = 14;
-            lblStock.Text = "Stock:";
+            lblStock.Text = "Stock (unidades):";
             // 
             // txtID
             // 

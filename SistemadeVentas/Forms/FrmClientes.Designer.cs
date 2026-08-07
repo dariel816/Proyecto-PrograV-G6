@@ -230,7 +230,10 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvClientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvClientes.BackgroundColor = Color.White;
             dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvClientes.GridColor = Color.White;
+            dgvClientes.GridColor = Color.LightGray;
+            dgvClientes.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            dgvClientes.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvClientes.BorderStyle = BorderStyle.FixedSingle;
             dgvClientes.Location = new Point(30, 328);
             dgvClientes.Name = "dgvClientes";
             dgvClientes.RowHeadersWidth = 62;

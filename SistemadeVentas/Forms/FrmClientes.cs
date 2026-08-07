@@ -326,10 +326,19 @@ namespace SistemadeVentas.Presentacion.Forms
             // Validar formato de correo básico
             try
             {
-                var addr = new System.Net.Mail.MailAddress(txtCorreo.Text.Trim());
-                if (addr.Address != txtCorreo.Text.Trim())
+                var correoTrim = txtCorreo.Text.Trim();
+                var addr = new System.Net.Mail.MailAddress(correoTrim);
+                if (addr.Address != correoTrim)
                 {
                     MessageBox.Show("Ingrese un correo electrónico válido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtCorreo.Focus();
+                    return false;
+                }
+
+                // Requerir específicamente que el correo termine en .com
+                if (!correoTrim.EndsWith(".com", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("El correo debe terminar en '.com'.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtCorreo.Focus();
                     return false;
                 }

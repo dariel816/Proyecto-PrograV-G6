@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Globalization;
 using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos.Reportes;
 using SistemaVentas.Negocio.Reportes;
@@ -33,6 +34,38 @@ namespace SistemadeVentas.Presentacion.Forms
         public FrmReportes()
         {
             InitializeComponent();
+        }
+
+        private void DgvReporte_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            try
+            {
+                var dgv = sender as DataGridView;
+                if (dgv == null)
+                    return;
+
+                if (e.ColumnIndex < 0 || e.ColumnIndex >= dgv.Columns.Count)
+                    return;
+
+                var colName = dgv.Columns[e.ColumnIndex].Name;
+                if ((colName == "Stock" || colName == "CantidadVendida" || colName == "Cantidad") && e.Value != null)
+                {
+                    if (e.Value is int vi)
+                    {
+                        e.Value = vi + " unidades";
+                        e.FormattingApplied = true;
+                    }
+                    else if (int.TryParse(Convert.ToString(e.Value), out int v))
+                    {
+                        e.Value = v + " unidades";
+                        e.FormattingApplied = true;
+                    }
+                }
+            }
+            catch
+            {
+                // ignorar
+            }
         }
 
         /// <summary>
@@ -114,6 +147,19 @@ namespace SistemadeVentas.Presentacion.Forms
             if (dgvReporte.Columns.Contains("ClienteId"))
                 dgvReporte.Columns["ClienteId"].Visible = false;
 
+            // Formatear columna Total con símbolo ₡
+            if (dgvReporte.Columns.Contains("Total"))
+            {
+                var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                nfi.CurrencySymbol = "₡";
+                dgvReporte.Columns["Total"].DefaultCellStyle.Format = "C2";
+                dgvReporte.Columns["Total"].DefaultCellStyle.FormatProvider = nfi;
+                dgvReporte.Columns["Total"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+
+            dgvReporte.CellFormatting -= DgvReporte_CellFormatting;
+            dgvReporte.CellFormatting += DgvReporte_CellFormatting;
+
             var ventasPorMes = reporteNegocio.ObtenerVentasPorMes();
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
@@ -146,6 +192,21 @@ namespace SistemadeVentas.Presentacion.Forms
 
             if (dgvReporte.Columns.Contains("Id"))
                 dgvReporte.Columns["Id"].Visible = false;
+
+            // Formatear Precio con ₡ y Stock con sufijo unidades
+            if (dgvReporte.Columns.Contains("Precio"))
+            {
+                var nfi = (NumberFormatInfo)CultureInfo.CurrentCulture.NumberFormat.Clone();
+                nfi.CurrencySymbol = "₡";
+                dgvReporte.Columns["Precio"].DefaultCellStyle.Format = "C2";
+                dgvReporte.Columns["Precio"].DefaultCellStyle.FormatProvider = nfi;
+                dgvReporte.Columns["Precio"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+            if (dgvReporte.Columns.Contains("Stock"))
+            {
+                dgvReporte.CellFormatting -= DgvReporte_CellFormatting;
+                dgvReporte.CellFormatting += DgvReporte_CellFormatting;
+            }
 
             var serie = chartReporte.Series["Series1"];
             serie.Points.Clear();
