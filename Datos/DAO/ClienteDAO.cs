@@ -7,7 +7,7 @@ using SistemaVentas.Entidades.Modelos;
 namespace SistemaVentas.Datos.DAO
 {
     /// <summary>
-    /// Acceso a datos de la tabla <c>Clientes</c> en MySQL mediante ADO.NET
+    /// Acceso a datos de la tabla <c>clientes</c> en MySQL mediante ADO.NET
     /// (MySql.Data.MySqlClient).
     /// </summary>
     public class ClienteDAO
@@ -24,7 +24,7 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
-        /// Obtiene todos los clientes registrados en la tabla <c>Clientes</c>.
+        /// Obtiene todos los clientes registrados en la tabla <c>clientes</c>.
         /// </summary>
         /// <returns>Lista de todos los clientes encontrados (puede estar vacía).</returns>
         public List<Cliente> ObtenerTodos()
@@ -34,7 +34,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT Id, Nombre, Correo, Telefono FROM Clientes";
+                string query = "SELECT id, nombre, correo, telefono FROM clientes";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -68,7 +68,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT Id, Nombre, Correo, Telefono FROM Clientes WHERE Id = @id";
+                string query = "SELECT id, nombre, correo, telefono FROM clientes WHERE id = @id";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -103,7 +103,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "INSERT INTO Clientes (Nombre, Correo, Telefono) VALUES (@nombre, @correo, @telefono)";
+                string query = "INSERT INTO clientes (nombre, correo, telefono) VALUES (@nombre, @correo, @telefono)";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -126,7 +126,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "UPDATE Clientes SET Nombre = @nombre, Correo = @correo, Telefono = @telefono WHERE Id = @id";
+                string query = "UPDATE clientes SET nombre = @nombre, correo = @correo, telefono = @telefono WHERE id = @id";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -150,7 +150,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "DELETE FROM Clientes WHERE Id = @id";
+                string query = "DELETE FROM clientes WHERE id = @id";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -161,7 +161,7 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
-        /// Verifica si ya existe un correo en la tabla Clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// Verifica si ya existe un correo en la tabla clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
         /// </summary>
         /// <param name="correo">Correo a verificar.</param>
         /// <param name="excludeId">Id de cliente a excluir de la búsqueda (opcional, útil al actualizar).</param>
@@ -172,8 +172,8 @@ namespace SistemaVentas.Datos.DAO
             {
                 connection.Open();
                 string query = excludeId.HasValue
-                    ? "SELECT COUNT(1) FROM Clientes WHERE Correo = @correo AND Id <> @id"
-                    : "SELECT COUNT(1) FROM Clientes WHERE Correo = @correo";
+                    ? "SELECT COUNT(1) FROM clientes WHERE correo = @correo AND id <> @id"
+                    : "SELECT COUNT(1) FROM clientes WHERE correo = @correo";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -189,7 +189,7 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
-        /// Verifica si ya existe un teléfono en la tabla Clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
+        /// Verifica si ya existe un teléfono en la tabla clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
         /// </summary>
         /// <param name="telefono">Teléfono a verificar.</param>
         /// <param name="excludeId">Id de cliente a excluir de la búsqueda (opcional, útil al actualizar).</param>
@@ -200,8 +200,8 @@ namespace SistemaVentas.Datos.DAO
             {
                 connection.Open();
                 string query = excludeId.HasValue
-                    ? "SELECT COUNT(1) FROM Clientes WHERE Telefono = @telefono AND Id <> @id"
-                    : "SELECT COUNT(1) FROM Clientes WHERE Telefono = @telefono";
+                    ? "SELECT COUNT(1) FROM clientes WHERE telefono = @telefono AND id <> @id"
+                    : "SELECT COUNT(1) FROM clientes WHERE telefono = @telefono";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {

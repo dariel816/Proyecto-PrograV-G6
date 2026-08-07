@@ -39,7 +39,7 @@ namespace SistemaVentas.Datos.DAO
                             Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre")),
                             Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion")),
                             Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]),
-                            Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]) 
+                            Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"])
                         };
 
                         lista.Add(producto);
@@ -79,7 +79,7 @@ namespace SistemaVentas.Datos.DAO
                                 Nombre = reader.IsDBNull(reader.GetOrdinal("nombre")) ? string.Empty : reader.GetString(reader.GetOrdinal("nombre")),
                                 Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion")) ? string.Empty : reader.GetString(reader.GetOrdinal("descripcion")),
                                 Precio = reader.IsDBNull(reader.GetOrdinal("precio")) ? 0m : Convert.ToDecimal(reader["precio"]),
-                                Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"]) 
+                                Stock = reader.IsDBNull(reader.GetOrdinal("stock")) ? 0 : Convert.ToInt32(reader["stock"])
                             };
                         }
                     }
@@ -87,6 +87,57 @@ namespace SistemaVentas.Datos.DAO
             }
 
             return producto;
+        }
+
+        /// <summary>
+        /// Busca un producto dentro de una transacción existente y bloquea su fila hasta que
+        /// la transacción termine. Esto evita que dos ventas descuenten simultáneamente el mismo
+        /// stock usando un valor desactualizado.
+        /// </summary>
+        /// <param name="id">Id del producto a consultar.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns>El producto bloqueado, o <c>null</c> si no existe.</returns>
+        public Producto? ObtenerProductoPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query = @"SELECT id, codigo, nombre, descripcion, precio, stock
+                                   FROM productos
+                                   WHERE id = @id
+                                   FOR UPDATE";
+
+            using (MySqlCommand comando = new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue("@id", id);
+
+                using (MySqlDataReader reader = comando.ExecuteReader())
+                {
+                    if (!reader.Read())
+                        return null;
+
+                    return new Producto
+                    {
+                        Id = Convert.ToInt32(reader["id"]),
+                        Codigo = reader.IsDBNull(reader.GetOrdinal("codigo"))
+                            ? string.Empty
+                            : reader.GetString(reader.GetOrdinal("codigo")),
+                        Nombre = reader.IsDBNull(reader.GetOrdinal("nombre"))
+                            ? string.Empty
+                            : reader.GetString(reader.GetOrdinal("nombre")),
+                        Descripcion = reader.IsDBNull(reader.GetOrdinal("descripcion"))
+                            ? string.Empty
+                            : reader.GetString(reader.GetOrdinal("descripcion")),
+                        Precio = reader.IsDBNull(reader.GetOrdinal("precio"))
+                            ? 0m
+                            : Convert.ToDecimal(reader["precio"]),
+                        Stock = reader.IsDBNull(reader.GetOrdinal("stock"))
+                            ? 0
+                            : Convert.ToInt32(reader["stock"])
+                    };
+                }
+            }
         }
 
         /// <summary>

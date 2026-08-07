@@ -229,16 +229,41 @@ namespace SistemadeVentas.Presentacion.Forms
 
                 var producto = (ProductoDTO)cmbProducto.SelectedItem;
 
-                var detalle = new DetalleVentaDTO
-                {
-                    ProductoId = producto.Id,
-                    ProductoNombre = producto.Nombre,
-                    Cantidad = cantidad,
-                    PrecioUnitario = producto.Precio,
-                    Subtotal = cantidad * producto.Precio
-                };
+                DetalleVentaDTO? detalleExistente = detallesTemp.Find(
+                    d => d.ProductoId == producto.Id);
 
-                detallesTemp.Add(detalle);
+                int cantidadAcumulada = cantidad + (detalleExistente?.Cantidad ?? 0);
+
+                if (cantidadAcumulada > producto.Stock)
+                {
+                    MessageBox.Show(
+                        $"Stock insuficiente para {producto.Nombre}. Disponible: {producto.Stock}.",
+                        "Advertencia",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (detalleExistente != null)
+                {
+                    detalleExistente.Cantidad = cantidadAcumulada;
+                    detalleExistente.Subtotal =
+                        detalleExistente.Cantidad * detalleExistente.PrecioUnitario;
+                }
+                else
+                {
+                    var detalle = new DetalleVentaDTO
+                    {
+                        ProductoId = producto.Id,
+                        ProductoNombre = producto.Nombre,
+                        Cantidad = cantidad,
+                        PrecioUnitario = producto.Precio,
+                        Subtotal = cantidad * producto.Precio
+                    };
+
+                    detallesTemp.Add(detalle);
+                }
+
                 ActualizarGridDetalles();
                 ActualizarTotal();
                 txtCantidad.Clear();

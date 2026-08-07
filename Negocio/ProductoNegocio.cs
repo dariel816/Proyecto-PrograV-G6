@@ -53,6 +53,23 @@ namespace SistemaVentas.Negocio
         }
 
         /// <summary>
+        /// Obtiene un producto usando la conexión y transacción indicadas, bloqueando su fila
+        /// hasta finalizar la transacción. Se utiliza al validar y descontar inventario.
+        /// </summary>
+        /// <param name="id">Id del producto.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns>El producto bloqueado, o <c>null</c> si no existe.</returns>
+        public ProductoDTO? ObtenerProductoPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            var producto = productoRepositorio.ObtenerProductoPorId(id, conexion, transaccion);
+            return producto == null ? null : ADto(producto);
+        }
+
+        /// <summary>
         /// Valida y registra un nuevo producto, verificando que el nombre no esté vacío,
         /// que el precio sea mayor a 0 y que el código y el nombre no estén ya registrados.
         /// </summary>

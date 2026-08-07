@@ -6,7 +6,7 @@ using SistemaVentas.Entidades.Modelos;
 namespace SistemaVentas.Datos.DAO
 {
     /// <summary>
-    /// Acceso a datos de la tabla <c>Usuarios</c> en MySQL mediante ADO.NET (MySql.Data.MySqlClient).
+    /// Acceso a datos de la tabla <c>usuarios</c> en MySQL mediante ADO.NET (MySql.Data.MySqlClient).
     /// </summary>
     public class UsuarioDAO
     {
@@ -32,7 +32,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT Id, NombreUsuario, ClaveHash, Rol, Activo FROM Usuarios WHERE NombreUsuario = @nombreUsuario";
+                string query = "SELECT id, nombreusuario, clavehash, rol, activo FROM usuarios WHERE nombreusuario = @nombreUsuario";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -69,7 +69,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT Id, NombreUsuario, ClaveHash, Rol, Activo FROM Usuarios";
+                string query = "SELECT id, nombreusuario, clavehash, rol, activo FROM usuarios";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -103,7 +103,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "INSERT INTO Usuarios (NombreUsuario, ClaveHash, Rol, Activo) VALUES (@nombreUsuario, @claveHash, @rol, @activo)";
+                string query = "INSERT INTO usuarios (nombreusuario, clavehash, rol, activo) VALUES (@nombreUsuario, @claveHash, @rol, @activo)";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
@@ -127,7 +127,7 @@ namespace SistemaVentas.Datos.DAO
             using (MySqlConnection connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "SELECT COUNT(1) FROM Usuarios WHERE NombreUsuario = @nombreUsuario";
+                string query = "SELECT COUNT(1) FROM usuarios WHERE nombreusuario = @nombreUsuario";
 
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {

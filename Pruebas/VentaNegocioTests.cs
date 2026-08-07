@@ -122,5 +122,114 @@ namespace SistemaVentas.Pruebas
                 clienteNegocio.EliminarCliente(idCliente);
             }
         }
+
+        [TestMethod]
+        public void CrearVenta_ProductoRepetido_AcumulaCantidadYDescuentaStockCorrectamente()
+        {
+            string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
+            var cliente = new ClienteDTO
+            {
+                Nombre = "Cliente Repetido " + sufijo,
+                Correo = "repetido" + sufijo + "@test.com",
+                Telefono = "6" + sufijo.Substring(0, 7)
+            };
+            clienteNegocio.InsertarCliente(cliente);
+            int idCliente = clienteNegocio.ObtenerClientes()
+                .Find(c => c.Correo == cliente.Correo)!.Id;
+
+            var producto = new ProductoDTO
+            {
+                Codigo = "PR-" + sufijo,
+                Nombre = "Producto Repetido " + sufijo,
+                Descripcion = "Producto para validar cantidades acumuladas",
+                Precio = 10m,
+                Stock = 10
+            };
+            productoNegocio.InsertarProducto(producto);
+            int idProducto = productoNegocio.ObtenerProductos()
+                .Find(p => p.Codigo == producto.Codigo)!.Id;
+
+            int? idVentaCreada = null;
+
+            try
+            {
+                var venta = new VentaDTO { ClienteId = idCliente };
+                var detalles = new List<DetalleVentaDTO>
+                {
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 3 },
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 2 }
+                };
+
+                Assert.IsTrue(ventaNegocio.CrearVenta(venta, detalles));
+
+                var productoActualizado = productoNegocio.ObtenerProductoPorId(idProducto);
+                Assert.IsNotNull(productoActualizado);
+                Assert.AreEqual(5, productoActualizado.Stock);
+
+                var ventaCreada = ventaNegocio.ObtenerVentaPorId(venta.Id);
+                Assert.IsNotNull(ventaCreada);
+                Assert.AreEqual(50m, ventaCreada.Total);
+                Assert.AreEqual(1, ventaCreada.Detalles.Count);
+                Assert.AreEqual(5, ventaCreada.Detalles[0].Cantidad);
+                idVentaCreada = ventaCreada.Id;
+            }
+            finally
+            {
+                if (idVentaCreada.HasValue)
+                    ventaNegocio.EliminarVenta(idVentaCreada.Value);
+
+                productoNegocio.EliminarProducto(idProducto);
+                clienteNegocio.EliminarCliente(idCliente);
+            }
+        }
+
+        [TestMethod]
+        public void CrearVenta_ProductoRepetidoSuperaStock_RechazaVentaSinDescontarInventario()
+        {
+            string sufijo = Guid.NewGuid().ToString("N").Substring(0, 8);
+            var cliente = new ClienteDTO
+            {
+                Nombre = "Cliente Sin Stock " + sufijo,
+                Correo = "sinstock" + sufijo + "@test.com",
+                Telefono = "5" + sufijo.Substring(0, 7)
+            };
+            clienteNegocio.InsertarCliente(cliente);
+            int idCliente = clienteNegocio.ObtenerClientes()
+                .Find(c => c.Correo == cliente.Correo)!.Id;
+
+            var producto = new ProductoDTO
+            {
+                Codigo = "PS-" + sufijo,
+                Nombre = "Producto Sin Stock " + sufijo,
+                Descripcion = "Producto para validar stock insuficiente acumulado",
+                Precio = 10m,
+                Stock = 10
+            };
+            productoNegocio.InsertarProducto(producto);
+            int idProducto = productoNegocio.ObtenerProductos()
+                .Find(p => p.Codigo == producto.Codigo)!.Id;
+
+            try
+            {
+                var venta = new VentaDTO { ClienteId = idCliente };
+                var detalles = new List<DetalleVentaDTO>
+                {
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 6 },
+                    new DetalleVentaDTO { ProductoId = idProducto, Cantidad = 6 }
+                };
+
+                Assert.ThrowsExactly<Exception>(
+                    () => ventaNegocio.CrearVenta(venta, detalles));
+
+                var productoActual = productoNegocio.ObtenerProductoPorId(idProducto);
+                Assert.IsNotNull(productoActual);
+                Assert.AreEqual(10, productoActual.Stock);
+            }
+            finally
+            {
+                productoNegocio.EliminarProducto(idProducto);
+                clienteNegocio.EliminarCliente(idCliente);
+            }
+        }
     }
 }

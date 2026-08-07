@@ -26,6 +26,15 @@ namespace SistemaVentas.Datos.Repositorios
         public Producto? ObtenerProductoPorId(int id) => productoDAO.ObtenerProductoPorId(id);
 
         /// <summary>
+        /// Busca y bloquea un producto dentro de una transacción existente.
+        /// </summary>
+        public Producto? ObtenerProductoPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+            => productoDAO.ObtenerProductoPorId(id, conexion, transaccion);
+
+        /// <summary>
         /// Inserta un nuevo producto.
         /// </summary>
         /// <param name="producto">Datos del producto a insertar.</param>

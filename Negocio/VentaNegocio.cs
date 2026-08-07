@@ -106,16 +106,15 @@ namespace SistemaVentas.Negocio
         /// <summary>
         /// Crea una nueva venta junto con todos sus detalles dentro de una única transacción MySQL.
         /// <para>
-        /// Validaciones que realiza antes de tocar la base de datos: que la venta y la lista de
-        /// detalles no sean nulas y que existan detalles; que cada detalle tenga un producto válido
-        /// y una cantidad mayor a cero; que el producto exista y que su stock actual sea suficiente
-        /// para cubrir la cantidad solicitada. También completa la fecha de la venta si no fue
-        /// indicada, recalcula el precio unitario y el subtotal de cada detalle a partir del precio
-        /// vigente del producto, y calcula el total de la venta.
+        /// Validaciones que realiza: que la venta y la lista de detalles no sean nulas y que existan
+        /// detalles; que el cliente y cada producto tengan un identificador válido; y que cada
+        /// cantidad sea mayor a cero. Si un producto aparece varias veces, acumula sus cantidades.
+        /// Ya dentro de la transacción bloquea cada producto, comprueba el stock más reciente,
+        /// recalcula precios, subtotales y total, y solo entonces guarda la venta.
         /// </para>
         /// <para>
-        /// Garantías de la transacción: la inserción de la venta, la inserción de cada uno de sus
-        /// detalles y el descuento del stock de cada producto se ejecutan sobre la misma
+        /// Garantías de la transacción: la validación y bloqueo del stock, la inserción de la venta,
+        /// la inserción de cada uno de sus detalles y el descuento del inventario se ejecutan sobre la misma
         /// <see cref="MySqlConnection"/> y <see cref="MySqlTransaction"/>. Si cualquier paso falla
         /// (la venta, un detalle o una actualización de stock), se hace <c>Rollback</c> de toda la
         /// transacción y se relanza la excepción, de modo que nunca queda una venta guardada sin
@@ -143,9 +142,12 @@ namespace SistemaVentas.Negocio
                 throw new Exception("La venta debe contener al menos un producto.");
             }
 
-            decimal totalVenta = 0;
+            if (venta.ClienteId <= 0)
+            {
+                throw new Exception("El cliente es requerido.");
+            }
 
-            // Validar productos, cantidades, precios y stock
+            // Las validaciones básicas se hacen antes de abrir la transacción.
             foreach (DetalleVentaDTO detalle in detalles)
             {
                 if (detalle.ProductoId <= 0)
@@ -157,43 +159,24 @@ namespace SistemaVentas.Negocio
                 {
                     throw new Exception("La cantidad debe ser mayor que cero.");
                 }
-
-                ProductoDTO? producto =
-                    productoNegocio.ObtenerProductoPorId(detalle.ProductoId);
-
-                if (producto == null)
-                {
-                    throw new Exception(
-                        $"No se encontró el producto con Id={detalle.ProductoId}.");
-                }
-
-                if (producto.Stock < detalle.Cantidad)
-                {
-                    throw new Exception(
-                        $"Stock insuficiente para el producto {producto.Nombre}. " +
-                        $"Disponible: {producto.Stock}.");
-                }
-
-                if (venta.Fecha == DateTime.MinValue)
-                {
-                    venta.Fecha = DateTime.Now;
-                }
-
-                detalle.ProductoNombre = producto.Nombre;
-                detalle.PrecioUnitario = producto.Precio;
-                detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
-
-                totalVenta += detalle.Subtotal;
             }
 
-            venta.Total = totalVenta;
+            // Si el mismo producto fue agregado varias veces, se convierte en una sola línea.
+            // Esto hace que la cantidad total se compare contra el stock disponible.
+            List<DetalleVentaDTO> detallesAgrupados = detalles
+                .GroupBy(d => d.ProductoId)
+                .Select(grupo => new DetalleVentaDTO
+                {
+                    ProductoId = grupo.Key,
+                    Cantidad = grupo.Sum(d => d.Cantidad)
+                })
+                .OrderBy(d => d.ProductoId)
+                .ToList();
 
-            Venta ventaEntidad = new Venta
+            if (venta.Fecha == DateTime.MinValue)
             {
-                ClienteId = venta.ClienteId,
-                Fecha = venta.Fecha,
-                Total = venta.Total
-            };
+                venta.Fecha = DateTime.Now;
+            }
 
             ConexionDB conexionDB = new ConexionDB();
 
@@ -205,6 +188,49 @@ namespace SistemaVentas.Negocio
                 {
                     try
                     {
+                        decimal totalVenta = 0;
+                        Dictionary<int, ProductoDTO> productosBloqueados =
+                            new Dictionary<int, ProductoDTO>();
+
+                        // Todas las lecturas de stock se hacen dentro de esta misma transacción.
+                        // FOR UPDATE mantiene cada producto bloqueado hasta Commit o Rollback.
+                        foreach (DetalleVentaDTO detalle in detallesAgrupados)
+                        {
+                            ProductoDTO? producto = productoNegocio.ObtenerProductoPorId(
+                                detalle.ProductoId,
+                                conexion,
+                                transaccion);
+
+                            if (producto == null)
+                            {
+                                throw new Exception(
+                                    $"No se encontró el producto con Id={detalle.ProductoId}.");
+                            }
+
+                            if (producto.Stock < detalle.Cantidad)
+                            {
+                                throw new Exception(
+                                    $"Stock insuficiente para el producto {producto.Nombre}. " +
+                                    $"Disponible: {producto.Stock}.");
+                            }
+
+                            detalle.ProductoNombre = producto.Nombre;
+                            detalle.PrecioUnitario = producto.Precio;
+                            detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
+                            totalVenta += detalle.Subtotal;
+                            productosBloqueados.Add(producto.Id, producto);
+                        }
+
+                        venta.Total = totalVenta;
+                        venta.Detalles = detallesAgrupados;
+
+                        Venta ventaEntidad = new Venta
+                        {
+                            ClienteId = venta.ClienteId,
+                            Fecha = venta.Fecha,
+                            Total = venta.Total
+                        };
+
                         int ventaId =
                             ventaRepositorio.InsertarVenta(
                                 ventaEntidad,
@@ -218,7 +244,7 @@ namespace SistemaVentas.Negocio
 
                         venta.Id = ventaId;
 
-                        foreach (DetalleVentaDTO detalle in detalles)
+                        foreach (DetalleVentaDTO detalle in detallesAgrupados)
                         {
                             detalle.VentaId = ventaId;
 
@@ -244,16 +270,7 @@ namespace SistemaVentas.Negocio
                                     $"Id={detalle.ProductoId}.");
                             }
 
-                            ProductoDTO? producto =
-                                productoNegocio.ObtenerProductoPorId(
-                                    detalle.ProductoId);
-
-                            if (producto == null)
-                            {
-                                throw new Exception(
-                                    $"No se encontró el producto con " +
-                                    $"Id={detalle.ProductoId}.");
-                            }
+                            ProductoDTO producto = productosBloqueados[detalle.ProductoId];
 
                             int nuevoStock =
                                 producto.Stock - detalle.Cantidad;

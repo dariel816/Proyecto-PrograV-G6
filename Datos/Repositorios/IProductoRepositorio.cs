@@ -24,6 +24,19 @@ namespace SistemaVentas.Datos.Repositorios
         Producto? ObtenerProductoPorId(int id);
 
         /// <summary>
+        /// Busca y bloquea un producto dentro de una transacción existente para que su stock
+        /// no pueda modificarse simultáneamente desde otra venta.
+        /// </summary>
+        /// <param name="id">Id del producto a buscar.</param>
+        /// <param name="conexion">Conexión abierta de la transacción actual.</param>
+        /// <param name="transaccion">Transacción MySQL actual.</param>
+        /// <returns>El producto bloqueado, o <c>null</c> si no existe.</returns>
+        Producto? ObtenerProductoPorId(
+            int id,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion);
+
+        /// <summary>
         /// Inserta un nuevo producto.
         /// </summary>
         /// <param name="producto">Datos del producto a insertar.</param>
