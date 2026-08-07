@@ -272,6 +272,43 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+
+        /// <summary>
+        /// Actualiza la cabecera de una venta utilizando una transacción existente.
+        /// </summary>
+        public bool EditarVenta(
+            Venta venta,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            const string query =
+                @"UPDATE ventas
+          SET fecha = @fecha,
+              cliente_id = @cliente_id,
+              total = @total
+          WHERE id = @id";
+
+            using (MySqlCommand comando =
+                   new MySqlCommand(query, conexion, transaccion))
+            {
+                comando.Parameters.AddWithValue(
+                    "@id", venta.Id);
+
+                comando.Parameters.AddWithValue(
+                    "@fecha", venta.Fecha);
+
+                comando.Parameters.AddWithValue(
+                    "@cliente_id", venta.ClienteId);
+
+                comando.Parameters.AddWithValue(
+                    "@total", venta.Total);
+
+                comando.ExecuteNonQuery();
+
+                return true;
+            }
+        }
+
         /// <summary>
         /// Elimina una venta de la base de datos por su Id.
         /// </summary>

@@ -55,6 +55,15 @@ namespace SistemaVentas.Datos.Repositorios
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         bool EditarVenta(Venta venta);
 
+
+        /// <summary>
+        /// Actualiza una venta dentro de una transacción existente.
+        /// </summary>
+        bool EditarVenta(
+            Venta venta,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion);
+
         /// <summary>
         /// Elimina una venta por su Id.
         /// </summary>

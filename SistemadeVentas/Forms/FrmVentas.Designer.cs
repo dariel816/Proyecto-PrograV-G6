@@ -36,6 +36,8 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
             btnVolver = new Button();
+            btnEditar = new FontAwesome.Sharp.IconButton();
+            btnQuitarDetalle = new FontAwesome.Sharp.IconButton();
             gbVentas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvVentas).BeginInit();
             gbDetalles.SuspendLayout();
@@ -110,6 +112,7 @@ namespace SistemadeVentas.Presentacion.Forms
             // gbNuevaVenta
             // 
             gbNuevaVenta.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            gbNuevaVenta.Controls.Add(btnQuitarDetalle);
             gbNuevaVenta.Controls.Add(lblStockDisponible);
             gbNuevaVenta.Controls.Add(lblCantidad);
             gbNuevaVenta.Controls.Add(txtCantidad);
@@ -165,7 +168,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnAgregar.IconColor = Color.White;
             btnAgregar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnAgregar.IconSize = 24;
-            btnAgregar.Location = new Point(1234, 73);
+            btnAgregar.Location = new Point(1242, 13);
             btnAgregar.Margin = new Padding(6, 7, 6, 7);
             btnAgregar.Name = "btnAgregar";
             btnAgregar.Size = new Size(196, 49);
@@ -248,7 +251,7 @@ namespace SistemadeVentas.Presentacion.Forms
             btnEliminar.IconColor = Color.White;
             btnEliminar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnEliminar.IconSize = 24;
-            btnEliminar.Location = new Point(941, 799);
+            btnEliminar.Location = new Point(1141, 799);
             btnEliminar.Margin = new Padding(6, 7, 6, 7);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Size = new Size(138, 49);
@@ -337,11 +340,54 @@ namespace SistemadeVentas.Presentacion.Forms
             btnVolver.UseVisualStyleBackColor = true;
             btnVolver.Click += btnVolver_Click;
             // 
+            // btnEditar
+            // 
+            btnEditar.BackColor = Color.DarkGoldenrod;
+            btnEditar.Cursor = Cursors.Hand;
+            btnEditar.FlatAppearance.BorderSize = 0;
+            btnEditar.FlatStyle = FlatStyle.Flat;
+            btnEditar.ForeColor = Color.White;
+            btnEditar.IconChar = FontAwesome.Sharp.IconChar.Pencil;
+            btnEditar.IconColor = Color.White;
+            btnEditar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnEditar.IconSize = 24;
+            btnEditar.Location = new Point(947, 799);
+            btnEditar.Margin = new Padding(6, 7, 6, 7);
+            btnEditar.Name = "btnEditar";
+            btnEditar.Size = new Size(138, 49);
+            btnEditar.TabIndex = 13;
+            btnEditar.Text = "Editar";
+            btnEditar.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnEditar.UseVisualStyleBackColor = false;
+            btnEditar.Click += btnEditar_Click;
+            // 
+            // btnQuitarDetalle
+            // 
+            btnQuitarDetalle.BackColor = Color.RoyalBlue;
+            btnQuitarDetalle.Cursor = Cursors.Hand;
+            btnQuitarDetalle.FlatAppearance.BorderSize = 0;
+            btnQuitarDetalle.FlatStyle = FlatStyle.Flat;
+            btnQuitarDetalle.ForeColor = Color.White;
+            btnQuitarDetalle.IconChar = FontAwesome.Sharp.IconChar.MinusCircle;
+            btnQuitarDetalle.IconColor = Color.White;
+            btnQuitarDetalle.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            btnQuitarDetalle.IconSize = 24;
+            btnQuitarDetalle.Location = new Point(1242, 78);
+            btnQuitarDetalle.Margin = new Padding(6, 7, 6, 7);
+            btnQuitarDetalle.Name = "btnQuitarDetalle";
+            btnQuitarDetalle.Size = new Size(196, 49);
+            btnQuitarDetalle.TabIndex = 14;
+            btnQuitarDetalle.Text = "Quitar detalle";
+            btnQuitarDetalle.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnQuitarDetalle.UseVisualStyleBackColor = false;
+            btnQuitarDetalle.Click += btnQuitarDetalle_Click;
+            // 
             // FrmVentas
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(1497, 905);
+            Controls.Add(btnEditar);
             Controls.Add(btnVolver);
             Controls.Add(txtTotal);
             Controls.Add(lblTotal);
@@ -392,5 +438,7 @@ namespace SistemadeVentas.Presentacion.Forms
         private Label lblTituloForm;
         private Button btnVolver;
         private Label lblStockDisponible;
+        private FontAwesome.Sharp.IconButton btnEditar;
+        private FontAwesome.Sharp.IconButton btnQuitarDetalle;
     }
 }

@@ -60,6 +60,20 @@ namespace SistemaVentas.Datos.Repositorios
         public bool EditarVenta(Venta venta) => ventaDAO.EditarVenta(venta);
 
         /// <summary>
+        /// Actualiza una venta dentro de una transacción existente.
+        /// </summary>
+        public bool EditarVenta(
+            Venta venta,
+            MySqlConnection conexion,
+            MySqlTransaction transaccion)
+        {
+            return ventaDAO.EditarVenta(
+                venta,
+                conexion,
+                transaccion);
+        }
+
+        /// <summary>
         /// Elimina una venta por su Id.
         /// </summary>
         /// <param name="id">Id de la venta a eliminar.</param>

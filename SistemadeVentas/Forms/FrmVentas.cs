@@ -20,6 +20,12 @@ namespace SistemadeVentas.Presentacion.Forms
         private List<DetalleVentaDTO> detallesTemp = new List<DetalleVentaDTO>();
         private int ventaSeleccionada = 0;
 
+        private int ventaEnEdicionId = 0;
+        private DateTime fechaVentaEnEdicion = DateTime.MinValue;
+
+        private readonly Dictionary<int, int> cantidadesOriginalesEdicion =
+            new Dictionary<int, int>();
+
         /// <summary>
         /// Inicializa el formulario de ventas.
         /// </summary>
@@ -233,12 +239,18 @@ namespace SistemadeVentas.Presentacion.Forms
                 DetalleVentaDTO? detalleExistente = detallesTemp.Find(
                     d => d.ProductoId == producto.Id);
 
-                int cantidadAcumulada = cantidad + (detalleExistente?.Cantidad ?? 0);
+                int cantidadResultante =
+    ventaEnEdicionId > 0 && detalleExistente != null
+        ? cantidad
+        : cantidad + (detalleExistente?.Cantidad ?? 0);
 
-                if (cantidadAcumulada > producto.Stock)
+                int stockDisponible =
+                    ObtenerStockDisponible(producto);
+
+                if (cantidadResultante > stockDisponible)
                 {
                     MessageBox.Show(
-                        $"Stock insuficiente para {producto.Nombre}. Disponible: {producto.Stock}.",
+                        $"Stock insuficiente para {producto.Nombre}. Disponible: {stockDisponible}.",
                         "Advertencia",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -247,7 +259,7 @@ namespace SistemadeVentas.Presentacion.Forms
 
                 if (detalleExistente != null)
                 {
-                    detalleExistente.Cantidad = cantidadAcumulada;
+                    detalleExistente.Cantidad = cantidadResultante;
                     detalleExistente.Subtotal =
                         detalleExistente.Cantidad * detalleExistente.PrecioUnitario;
                 }
@@ -321,6 +333,20 @@ namespace SistemadeVentas.Presentacion.Forms
             txtTotal.Text = total.ToString("C2");
         }
 
+
+        private int ObtenerStockDisponible(ProductoDTO producto)
+        {
+            int cantidadOriginal =
+                ventaEnEdicionId > 0 &&
+                cantidadesOriginalesEdicion.TryGetValue(
+                    producto.Id,
+                    out int cantidad)
+                    ? cantidad
+                    : 0;
+
+            return checked(producto.Stock + cantidadOriginal);
+        }
+
         /// <summary>
         /// Valida que haya un cliente seleccionado y al menos un detalle agregado, y guarda la
         /// venta junto con sus detalles mediante <see cref="VentaNegocio.CrearVenta"/> (operación
@@ -344,21 +370,30 @@ namespace SistemadeVentas.Presentacion.Forms
 
                 var venta = new VentaDTO
                 {
+                    Id = ventaEnEdicionId,
                     ClienteId = clienteSeleccionado.Id,
-                    Fecha = DateTime.Now,
+                    Fecha = ventaEnEdicionId > 0
+        ? fechaVentaEnEdicion
+        : DateTime.Now,
                     Detalles = detallesTemp
                 };
 
-                bool ventaGuardada =
-     ventaNegocio.CrearVenta(venta, detallesTemp);
+                bool esEdicion = ventaEnEdicionId > 0;
+
+                bool ventaGuardada = esEdicion
+                    ? ventaNegocio.EditarVenta(venta, detallesTemp)
+                    : ventaNegocio.CrearVenta(venta, detallesTemp);
+
+
+                ventaNegocio.CrearVenta(venta, detallesTemp);
 
                 if (ventaGuardada)
                 {
-                    MessageBox.Show(
-                        "Venta guardada exitosamente",
-                        "Éxito",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    MessageBox.Show(esEdicion ? "Venta actualizada exitosamente"
+                        : "Venta guardada exitosamente",
+                            "Éxito",
+                                     MessageBoxButtons.OK,
+                                         MessageBoxIcon.Information);
 
                     LimpiarFormulario();
                     CargarProductos();
@@ -442,6 +477,18 @@ namespace SistemadeVentas.Presentacion.Forms
             detallesTemp.Clear();
             dgvDetalles.DataSource = null;
             ventaSeleccionada = 0;
+
+            cantidadesOriginalesEdicion.Clear();
+
+            ventaEnEdicionId = 0;
+            fechaVentaEnEdicion = DateTime.MinValue;
+
+            gbNuevaVenta.Text = "Nueva Venta";
+            btnGuardar.Text = "Guardar";
+
+            btnEditar.Enabled = true;
+            btnEliminar.Enabled = true;
+            dgvVentas.Enabled = true;
         }
 
         private void btnVolver_Click(object sender, EventArgs e)
@@ -456,34 +503,116 @@ namespace SistemadeVentas.Presentacion.Forms
 
         private void MostrarStockDisponible()
         {
-            if (cmbProducto.SelectedItem is ProductoDTO productoSeleccionado)
+            if (cmbProducto.SelectedItem is ProductoDTO producto)
             {
-                ProductoDTO? productoActualizado =
-                    productoNegocio.ObtenerProductoPorId(
-                        productoSeleccionado.Id);
+                int stockDisponible =
+                    ObtenerStockDisponible(producto);
 
-                if (productoActualizado != null)
+                lblStockDisponible.Text =
+                    $"Stock disponible: {stockDisponible}";
+            }
+            else
+            {
+                lblStockDisponible.Text =
+                    "Stock disponible: 0";
+            }
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ventaSeleccionada <= 0)
                 {
-                    // Actualiza también el objeto que conserva el ComboBox.
-                    productoSeleccionado.Stock =
-                        productoActualizado.Stock;
-
-                    lblStockDisponible.Text =
-                        $"Stock disponible: {productoActualizado.Stock} unidades";
-
-                    lblStockDisponible.ForeColor =
-                        productoActualizado.Stock > 0
-                            ? Color.SeaGreen
-                            : Color.Firebrick;
+                    MessageBox.Show(
+                        "Seleccione una venta para editar.",
+                        "Advertencia",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
 
                     return;
                 }
+
+                VentaDTO? venta =
+                    ventaNegocio.ObtenerVentaPorId(ventaSeleccionada);
+
+                if (venta == null)
+                {
+                    MessageBox.Show(
+                        "La venta seleccionada ya no existe.",
+                        "Advertencia",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    CargarVentas();
+                    return;
+                }
+
+                ventaEnEdicionId = venta.Id;
+                fechaVentaEnEdicion = venta.Fecha;
+
+                detallesTemp.Clear();
+                cantidadesOriginalesEdicion.Clear();
+
+                foreach (DetalleVentaDTO detalle in venta.Detalles)
+                {
+                    DetalleVentaDTO copia = new DetalleVentaDTO
+                    {
+                        Id = detalle.Id,
+                        VentaId = detalle.VentaId,
+                        ProductoId = detalle.ProductoId,
+                        ProductoNombre = detalle.ProductoNombre,
+                        Cantidad = detalle.Cantidad,
+                        PrecioUnitario = detalle.PrecioUnitario,
+                        Subtotal = detalle.Subtotal
+                    };
+
+                    detallesTemp.Add(copia);
+
+                    cantidadesOriginalesEdicion[detalle.ProductoId] =
+                        detalle.Cantidad;
+                }
+
+                cmbCliente.SelectedValue = venta.ClienteId;
+
+                gbNuevaVenta.Text = $"Editando Venta #{venta.Id}";
+                btnGuardar.Text = "Actualizar";
+                btnEditar.Enabled = false;
+                btnEliminar.Enabled = false;
+                dgvVentas.Enabled = false;
+
+                ActualizarGridDetalles();
+                ActualizarTotal();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Error al preparar la edición: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnQuitarDetalle_Click(object sender, EventArgs e)
+        {
+            if (dgvDetalles.CurrentRow?.DataBoundItem
+    is not DetalleVentaDTO detalle)
+            {
+                MessageBox.Show(
+                    "Seleccione un detalle para quitar.",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
             }
 
-            lblStockDisponible.Text =
-                "Stock disponible: 0 unidades";
+            detallesTemp.RemoveAll(
+                d => d.ProductoId == detalle.ProductoId);
 
-            lblStockDisponible.ForeColor = Color.Firebrick;
+            ActualizarGridDetalles();
+            ActualizarTotal();
         }
     }
 }

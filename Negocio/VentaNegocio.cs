@@ -304,6 +304,63 @@ namespace SistemaVentas.Negocio
         }
 
         /// <summary>
+        /// Valida los datos recibidos al editar una venta y agrupa los
+        /// productos repetidos en una sola línea.
+        /// </summary>
+        private static List<DetalleVentaDTO> PrepararDetallesEdicion(
+            VentaDTO venta,
+            List<DetalleVentaDTO> detalles)
+        {
+            if (venta == null)
+            {
+                throw new ArgumentNullException(nameof(venta));
+            }
+
+            if (venta.Id <= 0)
+            {
+                throw new Exception(
+                    "La venta seleccionada no es válida.");
+            }
+
+            if (venta.ClienteId <= 0)
+            {
+                throw new Exception(
+                    "El cliente es requerido.");
+            }
+
+            if (detalles == null || detalles.Count == 0)
+            {
+                throw new Exception(
+                    "La venta debe contener al menos un producto.");
+            }
+
+            foreach (DetalleVentaDTO detalle in detalles)
+            {
+                if (detalle.ProductoId <= 0)
+                {
+                    throw new Exception(
+                        "Existe un producto inválido en la venta.");
+                }
+
+                if (detalle.Cantidad <= 0)
+                {
+                    throw new Exception(
+                        "La cantidad debe ser mayor que cero.");
+                }
+            }
+
+            return detalles
+                .GroupBy(d => d.ProductoId)
+                .Select(grupo => new DetalleVentaDTO
+                {
+                    ProductoId = grupo.Key,
+                    Cantidad = grupo.Sum(d => d.Cantidad)
+                })
+                .OrderBy(d => d.ProductoId)
+                .ToList();
+        }
+
+        /// <summary>
         /// Valida y actualiza los datos generales de una venta y recalcula los subtotales
         /// y el total a partir de sus detalles. No modifica el stock de los productos.
         /// </summary>
@@ -312,28 +369,283 @@ namespace SistemaVentas.Negocio
         /// <exception cref="Exception">Se lanza cuando el cliente indicado no es válido.</exception>
         public bool EditarVenta(VentaDTO venta)
         {
-            if (venta.ClienteId <= 0)
-                throw new Exception("El cliente es requerido.");
-
-            decimal total = 0;
-            foreach (var detalle in venta.Detalles)
+            if (venta == null)
             {
-                detalle.Subtotal = detalle.Cantidad * detalle.PrecioUnitario;
-                total += detalle.Subtotal;
+                throw new ArgumentNullException(nameof(venta));
             }
 
-            venta.Total = total;
-
-            Venta ventaEntidad = new Venta
-            {
-                Id = venta.Id,
-                ClienteId = venta.ClienteId,
-                Fecha = venta.Fecha,
-                Total = venta.Total
-            };
-
-            return ventaRepositorio.EditarVenta(ventaEntidad);
+            return EditarVenta(venta, venta.Detalles);
         }
+
+
+        /// <summary>
+        /// Actualiza una venta, sus detalles y el stock dentro de una
+        /// única transacción.
+        /// </summary>
+        public bool EditarVenta(
+            VentaDTO venta,
+            List<DetalleVentaDTO> detalles)
+        {
+            List<DetalleVentaDTO> detallesAgrupados =
+                PrepararDetallesEdicion(venta, detalles);
+
+            ConexionDB conexionDB = new ConexionDB();
+
+            using (MySqlConnection conexion =
+                   conexionDB.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (MySqlTransaction transaccion =
+                       conexion.BeginTransaction())
+                {
+                    try
+                    {
+                        // Obtener y bloquear la venta.
+                        Venta? ventaActual =
+                            ventaRepositorio.ObtenerVentaPorId(
+                                venta.Id,
+                                conexion,
+                                transaccion);
+
+                        if (ventaActual == null)
+                        {
+                            throw new Exception(
+                                "La venta seleccionada ya no existe.");
+                        }
+
+                        // Obtener los detalles originales.
+                        List<DetalleVenta> detallesAnteriores =
+                            detalleVentaRepositorio
+                                .ObtenerDetallesPorVenta(
+                                    venta.Id,
+                                    conexion,
+                                    transaccion);
+
+                        // Cantidades que tenía la venta anteriormente.
+                        Dictionary<int, int> cantidadesAnteriores =
+                            detallesAnteriores
+                                .GroupBy(d => d.ProductoId)
+                                .ToDictionary(
+                                    grupo => grupo.Key,
+                                    grupo => grupo.Sum(d => d.Cantidad));
+
+                        // Nuevas cantidades solicitadas.
+                        Dictionary<int, int> cantidadesNuevas =
+                            detallesAgrupados.ToDictionary(
+                                d => d.ProductoId,
+                                d => d.Cantidad);
+
+                        // Unir productos anteriores y nuevos.
+                        List<int> productosInvolucrados =
+                            cantidadesAnteriores.Keys
+                                .Union(cantidadesNuevas.Keys)
+                                .OrderBy(id => id)
+                                .ToList();
+
+                        Dictionary<int, ProductoDTO>
+                            productosBloqueados =
+                                new Dictionary<int, ProductoDTO>();
+
+                        Dictionary<int, int> stockFinal =
+                            new Dictionary<int, int>();
+
+                        decimal totalVenta = 0;
+
+                        foreach (int productoId
+                                 in productosInvolucrados)
+                        {
+                            ProductoDTO? producto =
+                                productoNegocio.ObtenerProductoPorId(
+                                    productoId,
+                                    conexion,
+                                    transaccion);
+
+                            if (producto == null)
+                            {
+                                throw new Exception(
+                                    $"No se encontró el producto " +
+                                    $"con Id={productoId}.");
+                            }
+
+                            int cantidadAnterior =
+                                cantidadesAnteriores.TryGetValue(
+                                    productoId,
+                                    out int anterior)
+                                        ? anterior
+                                        : 0;
+
+                            int cantidadNueva =
+                                cantidadesNuevas.TryGetValue(
+                                    productoId,
+                                    out int nueva)
+                                        ? nueva
+                                        : 0;
+
+                            // Se devuelve provisionalmente la cantidad
+                            // que pertenecía a la venta anterior.
+                            int stockDisponible = checked(
+                                producto.Stock + cantidadAnterior);
+
+                            if (cantidadNueva > stockDisponible)
+                            {
+                                throw new Exception(
+                                    $"Stock insuficiente para " +
+                                    $"{producto.Nombre}. " +
+                                    $"Disponible para esta edición: " +
+                                    $"{stockDisponible}.");
+                            }
+
+                            if (cantidadNueva > 0)
+                            {
+                                DetalleVentaDTO? detalleNuevo =
+                                    detallesAgrupados.Find(
+                                        d => d.ProductoId ==
+                                             productoId);
+
+                                if (detalleNuevo == null)
+                                {
+                                    throw new Exception(
+                                        "No fue posible preparar " +
+                                        "el detalle de la venta.");
+                                }
+
+                                DetalleVenta? detalleAnterior =
+                                    detallesAnteriores.Find(
+                                        d => d.ProductoId ==
+                                             productoId);
+
+                                detalleNuevo.VentaId = venta.Id;
+                                detalleNuevo.ProductoNombre =
+                                    producto.Nombre;
+
+                                // Conserva el precio histórico si el
+                                // producto ya estaba en la venta.
+                                detalleNuevo.PrecioUnitario =
+                                    detalleAnterior?.PrecioUnitario
+                                    ?? producto.Precio;
+
+                                detalleNuevo.Subtotal =
+                                    detalleNuevo.Cantidad *
+                                    detalleNuevo.PrecioUnitario;
+
+                                totalVenta +=
+                                    detalleNuevo.Subtotal;
+                            }
+
+                            productosBloqueados.Add(
+                                productoId,
+                                producto);
+
+                            stockFinal.Add(
+                                productoId,
+                                stockDisponible - cantidadNueva);
+                        }
+
+                        DateTime fechaActualizada =
+                            venta.Fecha == DateTime.MinValue
+                                ? ventaActual.Fecha
+                                : venta.Fecha;
+
+                        Venta ventaEntidad = new Venta
+                        {
+                            Id = venta.Id,
+                            ClienteId = venta.ClienteId,
+                            Fecha = fechaActualizada,
+                            Total = totalVenta
+                        };
+
+                        // Eliminar los detalles anteriores.
+                        detalleVentaRepositorio
+                            .EliminarDetallesPorVenta(
+                                venta.Id,
+                                conexion,
+                                transaccion);
+
+                        // Actualizar la cabecera.
+                        ventaRepositorio.EditarVenta(
+                            ventaEntidad,
+                            conexion,
+                            transaccion);
+
+                        // Guardar los nuevos detalles.
+                        foreach (DetalleVentaDTO detalle
+                                 in detallesAgrupados)
+                        {
+                            DetalleVenta detalleEntidad =
+                                new DetalleVenta
+                                {
+                                    VentaId = venta.Id,
+                                    ProductoId =
+                                        detalle.ProductoId,
+                                    Cantidad = detalle.Cantidad,
+                                    PrecioUnitario =
+                                        detalle.PrecioUnitario,
+                                    Subtotal = detalle.Subtotal
+                                };
+
+                            bool detalleGuardado =
+                                detalleVentaRepositorio
+                                    .InsertarDetalleVenta(
+                                        detalleEntidad,
+                                        conexion,
+                                        transaccion);
+
+                            if (!detalleGuardado)
+                            {
+                                throw new Exception(
+                                    $"No fue posible guardar el " +
+                                    $"detalle del producto " +
+                                    $"Id={detalle.ProductoId}.");
+                            }
+                        }
+
+                        // Aplicar el stock final.
+                        foreach (int productoId
+                                 in productosInvolucrados)
+                        {
+                            ProductoDTO producto =
+                                productosBloqueados[productoId];
+
+                            int nuevoStock =
+                                stockFinal[productoId];
+
+                            if (nuevoStock != producto.Stock)
+                            {
+                                bool actualizado =
+                                    productoNegocio.ActualizarStock(
+                                        productoId,
+                                        nuevoStock,
+                                        conexion,
+                                        transaccion);
+
+                                if (!actualizado)
+                                {
+                                    throw new Exception(
+                                        $"No fue posible actualizar " +
+                                        $"el stock de " +
+                                        $"{producto.Nombre}.");
+                                }
+                            }
+                        }
+
+                        transaccion.Commit();
+
+                        venta.Fecha = fechaActualizada;
+                        venta.Total = totalVenta;
+                        venta.Detalles = detallesAgrupados;
+
+                        return true;
+                    }
+                    catch
+                    {
+                        transaccion.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Elimina una venta por su identificador, eliminando primero todos sus detalles asociados.
