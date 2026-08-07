@@ -127,6 +127,15 @@ namespace SistemaVentas.Negocio
         /// <returns><c>true</c> si el producto fue eliminado correctamente.</returns>
         public bool EliminarProducto(int id)
         {
+            if (id <= 0)
+                throw new Exception("El producto seleccionado no es válido.");
+
+            if (productoRepositorio.TieneVentas(id))
+            {
+                throw new Exception(
+                    "No se puede eliminar el producto porque aparece en una venta registrada.");
+            }
+
             return productoRepositorio.EliminarProducto(id);
         }
 

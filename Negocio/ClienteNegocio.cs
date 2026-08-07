@@ -101,6 +101,15 @@ namespace SistemaVentas.Negocio
         /// <returns><c>true</c> si el cliente fue eliminado correctamente.</returns>
         public bool EliminarCliente(int id)
         {
+            if (id <= 0)
+                throw new Exception("El cliente seleccionado no es válido.");
+
+            if (clienteRepositorio.TieneVentas(id))
+            {
+                throw new Exception(
+                    "No se puede eliminar el cliente porque tiene ventas registradas.");
+            }
+
             return clienteRepositorio.Eliminar(id);
         }
 

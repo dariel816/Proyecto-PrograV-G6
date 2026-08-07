@@ -45,7 +45,6 @@ namespace SistemadeVentas.Presentacion.Forms
             lblDescripcion = new Label();
             lblPrecio = new Label();
             lblStock = new Label();
-            txtID = new TextBox();
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
             btnVolver = new Button();
@@ -58,11 +57,9 @@ namespace SistemadeVentas.Presentacion.Forms
             dgvProductos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvProductos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvProductos.BackgroundColor = Color.White;
+            dgvProductos.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dgvProductos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvProductos.GridColor = Color.LightGray;
-            dgvProductos.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-            dgvProductos.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvProductos.BorderStyle = BorderStyle.FixedSingle;
             dgvProductos.Location = new Point(30, 282);
             dgvProductos.Name = "dgvProductos";
             dgvProductos.RowHeadersWidth = 62;
@@ -73,35 +70,35 @@ namespace SistemadeVentas.Presentacion.Forms
             // 
             // txtCodigo
             // 
-            txtCodigo.Location = new Point(140, 97);
+            txtCodigo.Location = new Point(176, 100);
             txtCodigo.Name = "txtCodigo";
             txtCodigo.Size = new Size(250, 33);
             txtCodigo.TabIndex = 1;
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(140, 137);
+            txtNombre.Location = new Point(174, 137);
             txtNombre.Name = "txtNombre";
             txtNombre.Size = new Size(250, 33);
             txtNombre.TabIndex = 2;
             // 
             // txtDescripcion
             // 
-            txtDescripcion.Location = new Point(140, 177);
+            txtDescripcion.Location = new Point(176, 177);
             txtDescripcion.Name = "txtDescripcion";
             txtDescripcion.Size = new Size(250, 33);
             txtDescripcion.TabIndex = 3;
             // 
             // txtPrecio
             // 
-            txtPrecio.Location = new Point(540, 97);
+            txtPrecio.Location = new Point(594, 95);
             txtPrecio.Name = "txtPrecio";
             txtPrecio.Size = new Size(150, 33);
             txtPrecio.TabIndex = 4;
             // 
             // txtStock
             // 
-            txtStock.Location = new Point(540, 137);
+            txtStock.Location = new Point(596, 134);
             txtStock.Name = "txtStock";
             txtStock.Size = new Size(150, 33);
             txtStock.TabIndex = 5;
@@ -256,9 +253,9 @@ namespace SistemadeVentas.Presentacion.Forms
             // lblPrecio
             // 
             lblPrecio.AutoSize = true;
-            lblPrecio.Location = new Point(430, 100);
+            lblPrecio.Location = new Point(446, 100);
             lblPrecio.Name = "lblPrecio";
-            lblPrecio.Size = new Size(100, 28);
+            lblPrecio.Size = new Size(98, 28);
             lblPrecio.TabIndex = 13;
             lblPrecio.Text = "Precio (₡):";
             // 
@@ -267,17 +264,9 @@ namespace SistemadeVentas.Presentacion.Forms
             lblStock.AutoSize = true;
             lblStock.Location = new Point(430, 140);
             lblStock.Name = "lblStock";
-            lblStock.Size = new Size(140, 28);
+            lblStock.Size = new Size(160, 28);
             lblStock.TabIndex = 14;
             lblStock.Text = "Stock (unidades):";
-            // 
-            // txtID
-            // 
-            txtID.Location = new Point(770, 97);
-            txtID.Name = "txtID";
-            txtID.Size = new Size(100, 33);
-            txtID.TabIndex = 15;
-            txtID.Visible = false;
             // 
             // pnlEncabezado
             // 
@@ -322,7 +311,6 @@ namespace SistemadeVentas.Presentacion.Forms
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(965, 697);
             Controls.Add(btnVolver);
-            Controls.Add(txtID);
             Controls.Add(lblStock);
             Controls.Add(lblPrecio);
             Controls.Add(lblDescripcion);
@@ -372,7 +360,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private Label lblDescripcion;
         private Label lblPrecio;
         private Label lblStock;
-        private TextBox txtID;
         private Panel pnlEncabezado;
         private Label lblTituloForm;
         private Button btnVolver;

@@ -57,6 +57,9 @@ namespace SistemaVentas.Datos.Repositorios
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         bool EliminarProducto(int id);
 
+
+        bool TieneVentas(int id);
+
         /// <summary>
         /// Actualiza el stock de un producto.
         /// </summary>
