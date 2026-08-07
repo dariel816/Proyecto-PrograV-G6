@@ -23,7 +23,7 @@ namespace SistemaVentas.Entidades.DTOs
         public int ClienteId { get; set; }
 
         /// <summary>Nombre del cliente, incluido para evitar consultas adicionales en la capa de Presentación.</summary>
-        public string ClienteNombre { get; set; }
+        public string ClienteNombre { get; set; } = string.Empty;
 
         /// <summary>Monto total de la venta.</summary>
         public decimal Total { get; set; }

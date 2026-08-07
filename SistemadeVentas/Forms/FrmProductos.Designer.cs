@@ -48,6 +48,7 @@ namespace SistemadeVentas.Presentacion.Forms
             pnlEncabezado = new Panel();
             lblTituloForm = new Label();
             btnVolver = new Button();
+            txtID = new TextBox();
             ((System.ComponentModel.ISupportInitialize)dgvProductos).BeginInit();
             pnlEncabezado.SuspendLayout();
             SuspendLayout();
@@ -305,11 +306,20 @@ namespace SistemadeVentas.Presentacion.Forms
             btnVolver.UseVisualStyleBackColor = true;
             btnVolver.Click += btnVolver_Click;
             // 
+            // txtID
+            // 
+            txtID.Location = new Point(785, 85);
+            txtID.Name = "txtID";
+            txtID.Size = new Size(150, 33);
+            txtID.TabIndex = 19;
+            txtID.Visible = false;
+            // 
             // FrmProductos
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(245, 247, 250);
             ClientSize = new Size(965, 697);
+            Controls.Add(txtID);
             Controls.Add(btnVolver);
             Controls.Add(lblStock);
             Controls.Add(lblPrecio);
@@ -363,5 +373,6 @@ namespace SistemadeVentas.Presentacion.Forms
         private Panel pnlEncabezado;
         private Label lblTituloForm;
         private Button btnVolver;
+        private TextBox txtID;
     }
 }

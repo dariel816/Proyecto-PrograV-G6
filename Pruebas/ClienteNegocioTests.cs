@@ -106,7 +106,7 @@ namespace SistemaVentas.Pruebas
                 clienteNegocio.EliminarCliente(idOriginal);
 
                 var resultado = clienteNegocio.ImportarClientesJson(rutaTemp);
-                Assert.IsTrue(resultado.Importados >= 1);
+                Assert.IsGreaterThanOrEqualTo(1, resultado.Importados);
 
                 var reimportado = clienteNegocio.ObtenerClientes().Find(c => c.Correo == cliente.Correo);
                 Assert.IsNotNull(reimportado);

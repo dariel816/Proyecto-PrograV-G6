@@ -215,9 +215,10 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
-                if (cmbProducto.SelectedIndex == -1)
+                if (cmbProducto.SelectedItem is not ProductoDTO producto)
                 {
-                    MessageBox.Show("Seleccione un producto", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Seleccione un producto", "Advertencia",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -227,7 +228,7 @@ namespace SistemadeVentas.Presentacion.Forms
                     return;
                 }
 
-                var producto = (ProductoDTO)cmbProducto.SelectedItem;
+               //var producto = (ProductoDTO)cmbProducto.SelectedItem;
 
                 DetalleVentaDTO? detalleExistente = detallesTemp.Find(
                     d => d.ProductoId == producto.Id);
@@ -329,7 +330,7 @@ namespace SistemadeVentas.Presentacion.Forms
         {
             try
             {
-                if (cmbCliente.SelectedIndex == -1)
+                if (cmbCliente.SelectedItem is not ClienteDTO clienteSeleccionado)
                 {
                     MessageBox.Show("Seleccione un cliente", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -343,7 +344,7 @@ namespace SistemadeVentas.Presentacion.Forms
 
                 var venta = new VentaDTO
                 {
-                    ClienteId = (int)cmbCliente.SelectedValue,
+                    ClienteId = clienteSeleccionado.Id,
                     Fecha = DateTime.Now,
                     Detalles = detallesTemp
                 };

@@ -169,7 +169,7 @@ namespace SistemaVentas.Pruebas
                 var ventaCreada = ventaNegocio.ObtenerVentaPorId(venta.Id);
                 Assert.IsNotNull(ventaCreada);
                 Assert.AreEqual(50m, ventaCreada.Total);
-                Assert.AreEqual(1, ventaCreada.Detalles.Count);
+                Assert.HasCount(1, ventaCreada.Detalles);
                 Assert.AreEqual(5, ventaCreada.Detalles[0].Cantidad);
                 idVentaCreada = ventaCreada.Id;
             }

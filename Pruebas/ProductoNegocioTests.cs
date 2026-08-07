@@ -123,7 +123,7 @@ namespace SistemaVentas.Pruebas
                 productoNegocio.EliminarProducto(idOriginal);
 
                 var resultado = productoNegocio.ImportarCatalogoJson(rutaTemp);
-                Assert.IsTrue(resultado.Importados >= 1);
+                Assert.IsGreaterThanOrEqualTo(1, resultado.Importados);
 
                 var reimportado = productoNegocio.ObtenerProductos().Find(p => p.Codigo == producto.Codigo);
                 Assert.IsNotNull(reimportado);

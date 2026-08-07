@@ -16,7 +16,7 @@ namespace SistemaVentas.Pruebas
 
             foreach (var producto in resultado)
             {
-                Assert.IsTrue(producto.Stock <= umbral);
+                Assert.IsLessThanOrEqualTo(umbral, producto.Stock);
             }
         }
 
@@ -27,7 +27,7 @@ namespace SistemaVentas.Pruebas
 
             for (int i = 1; i < resultado.Count; i++)
             {
-                Assert.IsTrue(resultado[i - 1].CantidadVendida >= resultado[i].CantidadVendida);
+                Assert.IsGreaterThanOrEqualTo( resultado[i].CantidadVendida,resultado[i - 1].CantidadVendida);
             }
         }
 
@@ -38,7 +38,7 @@ namespace SistemaVentas.Pruebas
 
             for (int i = 1; i < resultado.Count; i++)
             {
-                Assert.IsTrue(resultado[i - 1].TotalComprado >= resultado[i].TotalComprado);
+                Assert.IsGreaterThanOrEqualTo(resultado[i].TotalComprado,resultado[i - 1].TotalComprado);
             }
         }
 
@@ -50,7 +50,7 @@ namespace SistemaVentas.Pruebas
 
             var resultado = reporteNegocio.ObtenerVentasPorRango(desde, hasta);
 
-            Assert.AreEqual(0, resultado.Count);
+            Assert.IsEmpty(resultado);
         }
 
         [TestMethod]
