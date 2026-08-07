@@ -59,8 +59,7 @@ namespace SistemaVentas.Negocio
         /// <exception cref="Exception">Se lanza cuando alguna validación de negocio falla.</exception>
         public bool InsertarCliente(ClienteDTO clienteDto)
         {
-            if (string.IsNullOrWhiteSpace(clienteDto.Nombre))
-                throw new Exception("El nombre del cliente es requerido.");
+            ValidarDatosCliente(clienteDto);
 
             // Validaciones de unicidad
             if (clienteRepositorio.ExisteCorreo(clienteDto.Correo, null))
@@ -81,8 +80,7 @@ namespace SistemaVentas.Negocio
         /// <exception cref="Exception">Se lanza cuando alguna validación de negocio falla.</exception>
         public bool EditarCliente(ClienteDTO clienteDto)
         {
-            if (string.IsNullOrWhiteSpace(clienteDto.Nombre))
-                throw new Exception("El nombre del cliente es requerido.");
+            ValidarDatosCliente(clienteDto);
 
             // Validaciones de unicidad (excluir el propio registro)
             if (clienteRepositorio.ExisteCorreo(clienteDto.Correo, clienteDto.Id))
@@ -100,18 +98,18 @@ namespace SistemaVentas.Negocio
         /// <param name="id">Identificador del cliente a eliminar.</param>
         /// <returns><c>true</c> si el cliente fue eliminado correctamente.</returns>
         public bool EliminarCliente(int id)
-        {
-            if (id <= 0)
-                throw new Exception("El cliente seleccionado no es válido.");
+{
+    if (id <= 0)
+        throw new Exception("El cliente seleccionado no es válido.");
 
-            if (clienteRepositorio.TieneVentas(id))
-            {
-                throw new Exception(
-                    "No se puede eliminar el cliente porque tiene ventas registradas.");
-            }
+    if (clienteRepositorio.TieneVentas(id))
+    {
+        throw new Exception(
+            "No se puede eliminar el cliente porque tiene ventas registradas.");
+    }
 
-            return clienteRepositorio.Eliminar(id);
-        }
+    return clienteRepositorio.Eliminar(id);
+}
 
         /// <summary>
         /// Exporta el listado completo de clientes a un archivo JSON.
@@ -192,6 +190,64 @@ namespace SistemaVentas.Negocio
                 Correo = clienteDto.Correo,
                 Telefono = clienteDto.Telefono
             };
+        }
+
+        private static void ValidarDatosCliente(ClienteDTO clienteDto)
+        {
+            if (clienteDto == null)
+                throw new ArgumentNullException(nameof(clienteDto));
+
+            clienteDto.Nombre = clienteDto.Nombre.Trim();
+            clienteDto.Telefono = clienteDto.Telefono.Trim();
+            clienteDto.Correo = clienteDto.Correo.Trim();
+
+            if (string.IsNullOrWhiteSpace(clienteDto.Nombre))
+                throw new Exception("El nombre del cliente es requerido.");
+
+            if (clienteDto.Nombre.Length > 100)
+                throw new Exception("El nombre no puede superar los 100 caracteres.");
+
+            if (string.IsNullOrWhiteSpace(clienteDto.Telefono))
+                throw new Exception("El teléfono es requerido.");
+
+            if (clienteDto.Telefono.Length > 20)
+                throw new Exception("El teléfono no puede superar los 20 caracteres.");
+
+            string digitos = new string(
+                clienteDto.Telefono.Where(char.IsDigit).ToArray());
+
+            if (digitos.Length < 7)
+                throw new Exception("El teléfono debe contener al menos 7 dígitos.");
+
+            if (string.IsNullOrWhiteSpace(clienteDto.Correo))
+                throw new Exception("El correo electrónico es requerido.");
+
+            if (clienteDto.Correo.Length > 100)
+                throw new Exception("El correo no puede superar los 100 caracteres.");
+
+            try
+            {
+                var direccion = new System.Net.Mail.MailAddress(clienteDto.Correo);
+
+                if (!string.Equals(
+                        direccion.Address,
+                        clienteDto.Correo,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new FormatException();
+                }
+            }
+            catch (FormatException)
+            {
+                throw new Exception("Ingrese un correo electrónico válido.");
+            }
+
+            if (!clienteDto.Correo.EndsWith(
+                    ".com",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("El correo debe terminar en '.com'.");
+            }
         }
     }
 }
