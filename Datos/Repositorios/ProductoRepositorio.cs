@@ -1,7 +1,8 @@
-using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using SistemaVentas.Datos.DAO;
+using SistemaVentas.Entidades.DTOs;
 using SistemaVentas.Entidades.Modelos;
+using System.Collections.Generic;
 
 namespace SistemaVentas.Datos.Repositorios
 {
@@ -54,6 +55,16 @@ namespace SistemaVentas.Datos.Repositorios
         /// <param name="id">Id del producto a eliminar.</param>
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         public bool EliminarProducto(int id) => productoDAO.EliminarProducto(id);
+
+
+        /// <summary>   
+        /// Verifica si un cliente tiene ventas asociadas
+        /// </summary>
+        /// <param name="id">Id del cliente a verificar.</param>
+        /// <returns><c>true</c> si el cliente tiene ventas asociadas.</returns>  
+        /// 
+
+        public bool TieneVentas(int id) => productoDAO.TieneVentas(id);
 
         /// <summary>
         /// Actualiza el stock de un producto.

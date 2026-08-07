@@ -54,6 +54,15 @@ namespace SistemaVentas.Datos.Repositorios
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         public bool Eliminar(int id) => clienteDAO.Eliminar(id);
 
+        /// <summary>   
+        /// Verifica si un cliente tiene ventas asociadas
+        /// </summary>
+        /// <param name="id">Id del cliente a verificar.</param>
+        /// <returns><c>true</c> si el cliente tiene ventas asociadas.</returns>  
+        /// 
+
+        public bool TieneVentas(int id) => clienteDAO.TieneVentas(id);
+
         /// <summary>
         /// Verifica si ya existe un cliente con ese correo.
         /// </summary>

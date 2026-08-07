@@ -160,6 +160,23 @@ namespace SistemaVentas.Datos.DAO
             }
         }
 
+        public bool TieneVentas(int id)
+        {
+            using (MySqlConnection connection = new MySqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                const string query =
+                    "SELECT EXISTS(SELECT 1 FROM ventas WHERE cliente_id = @id)";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    return Convert.ToInt32(command.ExecuteScalar()) == 1;
+                }
+            }
+        }
+
         /// <summary>
         /// Verifica si ya existe un correo en la tabla clientes. Si excludeId tiene valor, lo excluye de la verificación (útil al actualizar).
         /// </summary>

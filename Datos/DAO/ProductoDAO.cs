@@ -242,6 +242,28 @@ namespace SistemaVentas.Datos.DAO
         }
 
         /// <summary>
+        /// Verifica si un producto tiene ventas asociadas en la tabla detalle_ventas.  
+        /// </summary>
+        /// <param name="id">Id del producto a verificar.</param>
+        /// <returns><c>true</c> si el producto tiene ventas asociadas; <c>false</c> en caso contrario.</returns>
+        public bool TieneVentas(int id)
+        {
+            using (MySqlConnection conexion = conexionDB.ObtenerConexion())
+            {
+                conexion.Open();
+
+                const string query =
+                    "SELECT EXISTS(SELECT 1 FROM detalle_ventas WHERE producto_id = @id)";
+
+                using (MySqlCommand comando = new MySqlCommand(query, conexion))
+                {
+                    comando.Parameters.AddWithValue("@id", id);
+                    return Convert.ToInt32(comando.ExecuteScalar()) == 1;
+                }
+            }
+        }
+
+        /// <summary>
         /// Actualiza el stock de un producto.
         /// </summary>
         /// <param name="id">Id del producto.</param>

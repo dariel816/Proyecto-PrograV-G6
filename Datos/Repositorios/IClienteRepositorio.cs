@@ -43,12 +43,24 @@ namespace SistemaVentas.Datos.Repositorios
         /// <returns><c>true</c> si la operación fue exitosa.</returns>
         bool Eliminar(int id);
 
+        /// <summary>   
+        /// Verifica si un cliente tiene ventas asociadas
+        /// </summary>
+        /// <param name="id">Id del cliente a verificar.</param>
+        /// <returns><c>true</c> si el cliente tiene ventas asociadas.</returns>  
+        /// 
+
+        bool TieneVentas(int id);
+
         /// <summary>
         /// Verifica si ya existe un cliente con ese correo.
         /// </summary>
         /// <param name="correo">Correo a verificar.</param>
         /// <param name="excludeId">Id de cliente a excluir de la búsqueda (opcional, útil al actualizar).</param>
         /// <returns><c>true</c> si ya existe un cliente con ese correo.</returns>
+        /// 
+
+
         bool ExisteCorreo(string correo, int? excludeId = null);
 
         /// <summary>
