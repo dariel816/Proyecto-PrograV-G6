@@ -1,5 +1,5 @@
 -- Ejecutar en la base de datos sistema_ventas (misma que usa el resto del sistema).
-
+/*
 
 CREATE DATABASE IF NOT EXISTS sistema_ventas;
 
@@ -86,3 +86,4 @@ VALUES (
     'Vendedor',
     1
 );
+*/
